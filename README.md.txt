@@ -1,0 +1,1 @@
+Eine extrem schnelle, deterministische Risiko-Engine in C#
