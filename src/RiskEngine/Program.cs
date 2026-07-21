@@ -28,6 +28,7 @@ Console.WriteLine($"Land [0]: {map.TerritoryNames[alaskaId]}");
 bool grenztAnNorthwest = map.AreNeighbors(alaskaId, northwestId);
 bool grenztAnKamchatka = map.AreNeighbors(alaskaId, kamchatkaId);
 
+//Nachbarn Testen
 Console.WriteLine($"Grenzt Alaska an Nordwest-Territorium (ID 1)? -> {grenztAnNorthwest}");
 Console.WriteLine($"Grenzt Alaska an Kamtschatka (ID 29)?            -> {grenztAnKamchatka}");
 Console.WriteLine($"Grenzt Alaska an Japan (ID 37)?                   -> {map.AreNeighbors(alaskaId, 37)}");
