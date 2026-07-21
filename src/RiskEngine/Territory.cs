@@ -1,25 +1,25 @@
 ﻿namespace RiskEngine;
 
-public readonly struct TerritoryState
+public readonly struct Territory
 {
     public byte OwnerId { get; }
     public ushort TroopCount { get; }
 
-    public TerritoryState(byte ownerId, ushort troopCount)
+    public Territory(byte ownerId, ushort troopCount)
     {
         OwnerId = ownerId;
         TroopCount = troopCount;
     }
 
     //Set Troops of Territory
-    public TerritoryState WithTroops(ushort newTroopCount)
+    public Territory WithTroops(ushort newTroopCount)
     {
-        return new TerritoryState(OwnerId, newTroopCount);
+        return new Territory(OwnerId, newTroopCount);
     }
 
     //Set Owner and Troops of Territory
-    public TerritoryState WithOwner(byte newOwnerId, ushort newTroopCount)
+    public Territory WithOwner(byte newOwnerId, ushort newTroopCount)
     {
-        return new TerritoryState(newOwnerId, newTroopCount);
+        return new Territory(newOwnerId, newTroopCount);
     }
 }
