@@ -1,0 +1,15 @@
+C:\Users\Henry Wolfrum\risiko-ai-engine\src\RiskEngine\bin\Debug\net9.0\RiskEngine.exe
+C:\Users\Henry Wolfrum\risiko-ai-engine\src\RiskEngine\bin\Debug\net9.0\RiskEngine.deps.json
+C:\Users\Henry Wolfrum\risiko-ai-engine\src\RiskEngine\bin\Debug\net9.0\RiskEngine.runtimeconfig.json
+C:\Users\Henry Wolfrum\risiko-ai-engine\src\RiskEngine\bin\Debug\net9.0\RiskEngine.dll
+C:\Users\Henry Wolfrum\risiko-ai-engine\src\RiskEngine\bin\Debug\net9.0\RiskEngine.pdb
+C:\Users\Henry Wolfrum\risiko-ai-engine\src\RiskEngine\obj\Debug\net9.0\RiskEngine.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Henry Wolfrum\risiko-ai-engine\src\RiskEngine\obj\Debug\net9.0\RiskEngine.AssemblyInfoInputs.cache
+C:\Users\Henry Wolfrum\risiko-ai-engine\src\RiskEngine\obj\Debug\net9.0\RiskEngine.AssemblyInfo.cs
+C:\Users\Henry Wolfrum\risiko-ai-engine\src\RiskEngine\obj\Debug\net9.0\RiskEngine.csproj.CoreCompileInputs.cache
+C:\Users\Henry Wolfrum\risiko-ai-engine\src\RiskEngine\obj\Debug\net9.0\RiskEngine.sourcelink.json
+C:\Users\Henry Wolfrum\risiko-ai-engine\src\RiskEngine\obj\Debug\net9.0\RiskEngine.dll
+C:\Users\Henry Wolfrum\risiko-ai-engine\src\RiskEngine\obj\Debug\net9.0\refint\RiskEngine.dll
+C:\Users\Henry Wolfrum\risiko-ai-engine\src\RiskEngine\obj\Debug\net9.0\RiskEngine.pdb
+C:\Users\Henry Wolfrum\risiko-ai-engine\src\RiskEngine\obj\Debug\net9.0\RiskEngine.genruntimeconfig.cache
+C:\Users\Henry Wolfrum\risiko-ai-engine\src\RiskEngine\obj\Debug\net9.0\ref\RiskEngine.dll

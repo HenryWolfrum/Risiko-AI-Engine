@@ -11,38 +11,15 @@ public readonly struct TerritoryState
         TroopCount = troopCount;
     }
 
-    // Fügt Truppen hinzu und verhindert Überläufe
-    public TerritoryState AddTroops(ushort amount)
+    // Erstellt einen neuen Zustand mit veränderter Truppenzahl
+    public TerritoryState WithTroops(ushort newTroopCount)
     {
-        int result = TroopCount + amount;
-
-        if (result > ushort.MaxValue)
-        {
-            return new TerritoryState(OwnerId, ushort.MaxValue);
-        }
-
-        return new TerritoryState(OwnerId, (ushort)result);
+        return new TerritoryState(OwnerId, newTroopCount);
     }
 
-    // Zieht Truppen ab und lässt mindestens 1 Truppe stehen
-    public TerritoryState RemoveTroops(ushort amount)
+    // Erstellt einen neuen Zustand mit neuem Besitzer und neuer Truppenzahl
+    public TerritoryState WithOwner(byte newOwnerId, ushort newTroopCount)
     {
-        if (amount >= TroopCount)
-        {
-            return new TerritoryState(OwnerId, 1);
-        }
-
-        return new TerritoryState(OwnerId, (ushort)(TroopCount - amount));
-    }
-
-    // Land wird erobert und bekommt neue Truppen
-    public TerritoryState Conquer(byte newOwnerId, ushort occupyingTroops)
-    {
-        if (occupyingTroops == 0)
-        {
-            return new TerritoryState(newOwnerId, 1);
-        }
-
-        return new TerritoryState(newOwnerId, occupyingTroops);
+        return new TerritoryState(newOwnerId, newTroopCount);
     }
 }

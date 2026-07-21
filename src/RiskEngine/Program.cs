@@ -19,7 +19,7 @@ foreach (var continent in map.Continents)
 // 3. Graph- & Nachbarschaftstest (Alaska ID 0)
 byte alaskaId = 0;
 byte northwestId = 1;
-byte kamchatkaId = 37;
+byte kamchatkaId = 29;
 
 Console.WriteLine($"\n--- Graph / Nachbarschafts-Test ---");
 Console.WriteLine($"Land [0]: {map.TerritoryNames[alaskaId]}");
@@ -29,6 +29,7 @@ bool grenztAnNorthwest = map.AreNeighbors(alaskaId, northwestId);
 bool grenztAnKamchatka = map.AreNeighbors(alaskaId, kamchatkaId);
 
 Console.WriteLine($"Grenzt Alaska an Nordwest-Territorium (ID 1)? -> {grenztAnNorthwest}");
-Console.WriteLine($"Grenzt Alaska an Kamtschatka (ID 37)?            -> {grenztAnKamchatka}");
+Console.WriteLine($"Grenzt Alaska an Kamtschatka (ID 29)?            -> {grenztAnKamchatka}");
+Console.WriteLine($"Grenzt Alaska an Japan (ID 37)?                   -> {map.AreNeighbors(alaskaId, 37)}");
 
 Console.WriteLine("\n=== METADATEN-TEST ERFOLGREICH BEENDET ===");
