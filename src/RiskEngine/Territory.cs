@@ -11,13 +11,13 @@ public readonly struct TerritoryState
         TroopCount = troopCount;
     }
 
-    // Erstellt einen neuen Zustand mit veränderter Truppenzahl
+    //Set Troops of Territory
     public TerritoryState WithTroops(ushort newTroopCount)
     {
         return new TerritoryState(OwnerId, newTroopCount);
     }
 
-    // Erstellt einen neuen Zustand mit neuem Besitzer und neuer Truppenzahl
+    //Set Owner and Troops of Territory
     public TerritoryState WithOwner(byte newOwnerId, ushort newTroopCount)
     {
         return new TerritoryState(newOwnerId, newTroopCount);
