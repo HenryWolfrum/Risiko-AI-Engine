@@ -1,5 +1,4 @@
-﻿using System;
-using RiskEngine;
+﻿using RiskEngine;
 
 Console.WriteLine("=== RISIKO ENGINE - MAP LAYOUT TEST ===");
 
