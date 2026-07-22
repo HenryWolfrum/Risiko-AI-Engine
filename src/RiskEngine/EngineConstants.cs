@@ -20,7 +20,9 @@ public readonly struct EngineConstants
    
     public const byte FORCE_TRADE_CARD_COUNT = 5;
 
- 
+    public const byte NO_VALUE = byte.MaxValue;
 
-   
+
+
+
 }
