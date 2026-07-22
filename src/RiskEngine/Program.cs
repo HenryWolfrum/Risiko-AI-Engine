@@ -1,36 +1,21 @@
-﻿using RiskEngine;
+﻿using System;
+using RiskEngine;
 
 Console.WriteLine("=== RISIKO ENGINE - MAP LAYOUT TEST ===");
 
 // 1. Die Karte wird über unsere statische Fabrik einmalig erzeugt
-MapLayout map = RiskMapFactory.CreateStandardRiskMap();
+GameLayout game = RiskMapFactory.CreateStandardRiskMap();
+MapLayout map = game.Map;
+DeckLayout deck = game.Deck;
 
-Console.WriteLine($"\n[Karte Geladen]:");
-Console.WriteLine($"- Anzahl Kontinente: {map.Continents.Length}");
-Console.WriteLine($"- Geladene Territorien: {map.TerritoryNames.Length}");
+// Quick Check
+Console.WriteLine($"Territorien: {map.TerritoryNames.Length}");
+Console.WriteLine($"Kontinente:  {map.Continents.Length}");
+Console.WriteLine($"Karten:      {deck.TerritoryToType.Length}");
 
-// 2. Kontinente-Übersicht testen
-Console.WriteLine("\n--- Kontinente ---");
-foreach (var continent in map.Continents)
-{
-    Console.WriteLine($"ID {continent.Id}: {continent.Name,-12} | Bonus: +{continent.BonusTroops} Truppen | Länder: {continent.TerritoryCount}");
-}
+// Beispiel: Alaska prüfen
+Console.WriteLine($"\n[0] {map.TerritoryNames[0]} ({map.Continents[map.TerritoryToContinent[0]].Name})");
+Console.WriteLine($"Kartentyp: {deck.TerritoryToType[0]}");
+Console.WriteLine($"Nachbar-IDs: {string.Join(", ", map.Adjacencies[0])}");
 
-// 3. Graph- & Nachbarschaftstest (Alaska ID 0)
-byte alaskaId = 0;
-byte northwestId = 1;
-byte kamchatkaId = 29;
-
-Console.WriteLine($"\n--- Graph / Nachbarschafts-Test ---");
-Console.WriteLine($"Land [0]: {map.TerritoryNames[alaskaId]}");
-
-// Abfrage über das MapLayout
-bool grenztAnNorthwest = map.AreNeighbors(alaskaId, northwestId);
-bool grenztAnKamchatka = map.AreNeighbors(alaskaId, kamchatkaId);
-
-//Nachbarn Testen
-Console.WriteLine($"Grenzt Alaska an Nordwest-Territorium (ID 1)? -> {grenztAnNorthwest}");
-Console.WriteLine($"Grenzt Alaska an Kamtschatka (ID 29)?            -> {grenztAnKamchatka}");
-Console.WriteLine($"Grenzt Alaska an Japan (ID 37)?                   -> {map.AreNeighbors(alaskaId, 37)}");
-
-Console.WriteLine("\n=== METADATEN-TEST ERFOLGREICH BEENDET ===");
+Console.WriteLine("\nOK!");

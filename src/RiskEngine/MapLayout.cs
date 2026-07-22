@@ -7,7 +7,7 @@ public class MapLayout
     //static list arrays
     public readonly string[] TerritoryNames;
     public readonly byte[][] Adjacencies;
-    public readonly byte[] TerritoryToContinentMap;
+    public readonly byte[] TerritoryToContinent;
     public readonly Continent[] Continents;
 
     public MapLayout(
@@ -18,7 +18,7 @@ public class MapLayout
     {
         TerritoryNames = territoryNames;
         Adjacencies = adjacencies;
-        TerritoryToContinentMap = territoryToContinentMap;
+        TerritoryToContinent = territoryToContinentMap;
         Continents = continents;
     }
 
@@ -42,7 +42,7 @@ public class MapLayout
 
     public Continent GetContinentOfTerritory(byte territoryId)
     {
-        byte continentId = TerritoryToContinentMap[territoryId];
+        byte continentId = TerritoryToContinent[territoryId];
         return Continents[continentId];
     }
 }

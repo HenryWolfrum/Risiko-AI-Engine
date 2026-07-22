@@ -2,7 +2,7 @@
 
 public static class RiskMapFactory
 {
-    public static MapLayout CreateStandardRiskMap()
+    public static GameLayout CreateStandardRiskMap()
     {
         //Define Continents
         var continents = new Continent[]
@@ -166,7 +166,9 @@ public static class RiskMapFactory
 
       
 
-      
-        return new MapLayout(territoryNames, adjacencies, territoryToContinent, continents);
+        MapLayout mapLayout = new MapLayout(territoryNames, adjacencies, territoryToContinent, continents);
+        DeckLayout deckLayout = new DeckLayout(territoryToType);
+
+        return new GameLayout(mapLayout, deckLayout);
     }
 }
