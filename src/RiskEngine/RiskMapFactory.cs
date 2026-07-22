@@ -140,8 +140,31 @@ public static class RiskMapFactory
             new byte[] { 38,41 },
             new byte[] { 38,41 },
             new byte[] { 39,40 }
-
+            
         };
+
+        CardType[] territoryToType = new CardType[]
+        {
+            // North-America (9)
+            CardType.Infantry, CardType.Artillery, CardType.Cavalry, CardType.Cavalry, CardType.Cavalry,
+            CardType.Artillery, CardType.Artillery, CardType.Cavalry, CardType.Artillery,
+            // South-America (4)
+            CardType.Infantry, CardType.Infantry, CardType.Artillery, CardType.Infantry,
+            // Africa (6)
+            CardType.Cavalry, CardType.Infantry, CardType.Infantry, CardType.Infantry, CardType.Cavalry, CardType.Artillery,
+            // Europe (7)
+            CardType.Artillery, CardType.Artillery, CardType.Artillery, CardType.Cavalry, CardType.Artillery, CardType.Infantry, CardType.Cavalry,
+            // Asia (12)
+            CardType.Cavalry, CardType.Cavalry, CardType.Cavalry, CardType.Infantry, CardType.Cavalry, CardType.Infantry,
+            CardType.Infantry, CardType.Infantry, CardType.Cavalry, CardType.Cavalry, CardType.Infantry, CardType.Artillery,
+            // Australia (4)
+            CardType.Artillery, CardType.Infantry, CardType.Artillery, CardType.Artillery,
+
+            //Joker (2)
+            CardType.Joker, CardType.Joker        
+        };
+
+      
 
       
         return new MapLayout(territoryNames, adjacencies, territoryToContinent, continents);

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RiskEngine")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cf13b11a889992601842a59ee548d7e18d411b40")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ede6abc6dd32727c3ccc6c8244b3f687567e5f4c")]
 [assembly: System.Reflection.AssemblyProductAttribute("RiskEngine")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RiskEngine")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

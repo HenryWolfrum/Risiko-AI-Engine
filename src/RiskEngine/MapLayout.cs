@@ -8,8 +8,6 @@ public class MapLayout
     public readonly string[] TerritoryNames;
     public readonly byte[][] Adjacencies;
     public readonly byte[] TerritoryToContinentMap;
-
-  
     public readonly Continent[] Continents;
 
     public MapLayout(
@@ -24,7 +22,7 @@ public class MapLayout
         Continents = continents;
     }
 
-  
+
     //Low Level check for Neighbors
     public bool AreNeighbors(byte territoryA, byte territoryB)
     {
