@@ -2,8 +2,11 @@
 
 public static class RiskMapFactory
 {
-    public static GameLayout CreateStandardRiskMap()
+    public static GameLayout CreateStandardRiskMap(EngineConfig? config=null)
     {
+        //Check for null config and set default values if necessary
+        EngineConfig gameConfig = config ?? new EngineConfig(EngineConstants.DEFAULT_PLAYERS, EngineConstants.MAX_ROUNDS);
+
         //Define Continents
         var continents = new Continent[]
         {
@@ -84,7 +87,7 @@ public static class RiskMapFactory
             5,5,5,5          // Australia
         };
 
-        //Adjaceny List for Neighboring Territories
+        //Neighboring Territories (Adjacency List)
         byte[][] adjacencies = new byte[][]
         {
             //North-America
@@ -143,6 +146,8 @@ public static class RiskMapFactory
             
         };
 
+
+        //TerritoryId -> CardType
         CardType[] territoryToType = new CardType[]
         {
             // North-America (9)
@@ -164,11 +169,10 @@ public static class RiskMapFactory
             CardType.Joker, CardType.Joker        
         };
 
-      
 
         MapLayout mapLayout = new MapLayout(territoryNames, adjacencies, territoryToContinent, continents);
         DeckLayout deckLayout = new DeckLayout(territoryToType);
 
-        return new GameLayout(mapLayout, deckLayout);
+        return new GameLayout(mapLayout, deckLayout,gameConfig);
     }
 }

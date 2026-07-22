@@ -4,9 +4,10 @@ public readonly struct EngineConstants
 {
     public const byte MAX_PLAYERS = 6;
     public const byte MIN_PLAYERS = 2;
+    public const byte DEFAULT_PLAYERS = 4;
 
-    public const byte TERRITORY_COUNT = 42;
-    public const byte CONTINENT_COUNT = 6;
+    public const byte DEFAULT_TERRITORY_COUNT = 42;
+    public const byte DEFAULT_CONTINENT_COUNT = 6;
 
     public const byte ATTACKER_DICE_COUNT = 3;
     public const byte DEFENDER_DICE_COUNT = 2;
