@@ -6,6 +6,8 @@ Console.WriteLine("=== RISIKO ENGINE BENCHMARK ===");
 
 // Map einmal erstellen
 GameLayout game = RiskMapFactory.CreateStandardRiskMap();
+MapLayout map = game.Map;
+byte playerCount = game.Config.PlayerCount;
 
 // ---------------------------
 // Warmup (JIT)
@@ -25,10 +27,11 @@ GameState lastState = default;
 
 for (int i = 0; i < Iterations; i++)
 {
-    lastState = GameInitializer.CreateInitialState(game, i);
+    lastState = GameInitializer.CreateInitialState(game,i);
 }
 
 stopwatch.Stop();
+
 
 long allocatedAfter = GC.GetAllocatedBytesForCurrentThread();
 
@@ -56,3 +59,36 @@ else
 }
 
 Console.ResetColor();
+
+// ---------------------------
+// Finale Territoriums-Übersicht des letzten States
+// ---------------------------
+Console.WriteLine("\n=== VOLLSTÄNDIGE TERRITORIUMS-ÜBERSICHT (Letzter State) ===");
+for (int i = 0; i < map.TerritoryNames.Length; i++)
+{
+    string tName = map.TerritoryNames[i];
+    byte owner = lastState.GetTerritoryOwner(i);
+    byte troops = lastState.GetTerritoryTroops(i);
+
+    Console.WriteLine($"Territorium [{i,2}] {tName,-22} -> Owner: Player {owner} | Truppen: {troops}");
+}
+
+// ---------------------------
+// Zusammenfassung: Territorien pro Spieler
+// ---------------------------
+Console.WriteLine("\n=== TERRITORIEN-VERTEILUNG PRO SPIELER ===");
+Span<int> territoryCounts = stackalloc int[playerCount];
+
+for (int i = 0; i < map.TerritoryNames.Length; i++)
+{
+    byte owner = lastState.GetTerritoryOwner(i);
+    if (owner < playerCount)
+    {
+        territoryCounts[owner]++;
+    }
+}
+
+for (byte p = 0; p < playerCount; p++)
+{
+    Console.WriteLine($"Spieler {p}: {territoryCounts[p]} Territorien");
+}
