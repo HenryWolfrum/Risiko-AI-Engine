@@ -1,36 +1,50 @@
 ﻿namespace RiskEngine;
 
-//Deterministic RNG Sequence
-public class EngineRandom
+// Deterministic, 100% Zero-Allocation RNG
+public struct EngineRandom
 {
-    private Random _rng;
+    //Internal state must not be 0
+    private uint _state;
 
     public int Seed { get; }
 
     public EngineRandom(int seed)
     {
         Seed = seed;
-        _rng = new Random(seed);
+        // XorShift needs start value not 0
+        _state = seed == 0 ? 1u : (uint)seed;
     }
 
-    //Next Random Range
+    //XorShift 32 Algorithm
+    private uint NextUInt()
+    {
+        uint x = _state;
+        x ^= x << 13;
+        x ^= x >> 17;
+        x ^= x << 5;
+        _state = x;
+        return x;
+    }
+
+    // Next Random Range
     public int Next(int minInclusive, int maxExclusive)
     {
-        return _rng.Next(minInclusive, maxExclusive);
+        uint range = (uint)(maxExclusive - minInclusive);
+        return (int)(minInclusive + (NextUInt() % range));
     }
 
-    //Roll Dice
+    // Roll Dice (1 to 6)
     public byte RollDice()
     {
-        return (byte)_rng.Next(1, 7);
+        return (byte)(1 + (NextUInt() % 6));
     }
 
-    //Fisher-Yates Shuffle Algorithm for zero Allocation
+    // Fisher-Yates Shuffle Algorithm for zero Allocation
     public void Shuffle<T>(Span<T> span)
     {
         for (int i = span.Length - 1; i > 0; i--)
         {
-            int j = _rng.Next(0, i + 1);
+            int j = (int)(NextUInt() % (uint)(i + 1));
             (span[i], span[j]) = (span[j], span[i]);
         }
     }

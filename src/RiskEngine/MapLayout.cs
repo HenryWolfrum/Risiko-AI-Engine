@@ -9,6 +9,7 @@ public class MapLayout
     public readonly byte[][] Adjacencies;
     public readonly byte[] TerritoryToContinent;
     public readonly Continent[] Continents;
+    
 
     public MapLayout(
         string[] territoryNames,

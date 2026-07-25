@@ -1,6 +1,6 @@
 ﻿namespace RiskEngine;
 
-public readonly struct EngineConstants
+public static class EngineConstants
 {
     public const byte MAX_PLAYERS = 6;
     public const byte MIN_PLAYERS = 2;
@@ -17,12 +17,10 @@ public readonly struct EngineConstants
     public const byte MISSION_COUNT = 12;
     public const byte CARD_COUNT = 44;
 
-   
     public const byte FORCE_TRADE_CARD_COUNT = 5;
 
     public const byte NO_VALUE = byte.MaxValue;
 
-
-
-
+    public const byte MIN_TROOPS_PER_TURN = 3;
+    
 }

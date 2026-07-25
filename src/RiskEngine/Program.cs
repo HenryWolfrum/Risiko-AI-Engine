@@ -1,20 +1,58 @@
-﻿using RiskEngine;
+﻿using System;
+using System.Diagnostics;
+using RiskEngine;
 
-Console.WriteLine("=== RISIKO ENGINE - MAP LAYOUT TEST ===");
+Console.WriteLine("=== RISIKO ENGINE BENCHMARK ===");
 
-// 1. Die Karte wird über unsere statische Fabrik einmalig erzeugt
+// Map einmal erstellen
 GameLayout game = RiskMapFactory.CreateStandardRiskMap();
-MapLayout map = game.Map;
-DeckLayout deck = game.Deck;
 
-// Quick Check
-Console.WriteLine($"Territorien: {map.TerritoryNames.Length}");
-Console.WriteLine($"Kontinente:  {map.Continents.Length}");
-Console.WriteLine($"Karten:      {deck.TerritoryToType.Length}");
+// ---------------------------
+// Warmup (JIT)
+// ---------------------------
+GameInitializer.CreateInitialState(game, 42);
 
-// Beispiel: Alaska prüfen
-Console.WriteLine($"\n[0] {map.TerritoryNames[0]} ({map.Continents[map.TerritoryToContinent[0]].Name})");
-Console.WriteLine($"Kartentyp: {deck.TerritoryToType[0]}");
-Console.WriteLine($"Nachbar-IDs: {string.Join(", ", map.Adjacencies[0])}");
+// ---------------------------
+// Benchmark
+// ---------------------------
+const int Iterations = 1_000_000;
 
-Console.WriteLine("\nOK!");
+long allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+
+var stopwatch = Stopwatch.StartNew();
+
+GameState lastState = default;
+
+for (int i = 0; i < Iterations; i++)
+{
+    lastState = GameInitializer.CreateInitialState(game, i);
+}
+
+stopwatch.Stop();
+
+long allocatedAfter = GC.GetAllocatedBytesForCurrentThread();
+
+long allocated = allocatedAfter - allocatedBefore;
+
+Console.WriteLine();
+Console.WriteLine("=== Ergebnisse ===");
+Console.WriteLine($"Initialisierungen : {Iterations:N0}");
+Console.WriteLine($"Zeit              : {stopwatch.ElapsedMilliseconds} ms");
+Console.WriteLine($"Allocation        : {allocated:N0} Bytes");
+Console.WriteLine($"Pro Initialisierung: {(double)stopwatch.Elapsed.TotalNanoseconds / Iterations:F1} ns");
+
+// Damit der Compiler die Schleife nicht theoretisch wegoptimieren kann
+Console.WriteLine($"Letzter Startspieler: {lastState.PlayerTurn}");
+
+if (allocated == 0)
+{
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.WriteLine("\n✓ ZERO ALLOCATION");
+}
+else
+{
+    Console.ForegroundColor = ConsoleColor.Yellow;
+    Console.WriteLine($"\n⚠ {allocated:N0} Bytes wurden allokiert.");
+}
+
+Console.ResetColor();

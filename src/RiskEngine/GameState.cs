@@ -1,95 +1,78 @@
 ﻿namespace RiskEngine;
 
-public struct GameState
+public unsafe struct GameState
 {
-    // Territory Info
-    public byte[] TerritoryOwners;
-    public byte[] TerritoryTroops;
+    // --- Territory Info ---
+    public fixed byte TerritoryOwners[EngineConstants.DEFAULT_TERRITORY_COUNT];
+    public fixed byte TerritoryTroops[EngineConstants.DEFAULT_TERRITORY_COUNT];
 
-    // Player Info
-    public byte[] PlayerTroopsToPlace;
-    public byte[][] PlayersCards;
-    public bool[] IsPlayerAlive;
+    // --- Player Info ---
+    public fixed byte PlayerTroopsToPlace[EngineConstants.MAX_PLAYERS];
+    public fixed bool IsPlayerAlive[EngineConstants.MAX_PLAYERS];
 
-    // Deck Info
+    // --- Cards & Deck Info ---
     public ulong CardDeckBitboard;
     public byte CardSetsTradedCount;
 
-    // History steps
+    // --- History / Game Loop ---
     public ushort CurrentRound;
     public byte PlayerTurn;
     public GamePhase CurrentPhase;
 
-    // GamePhase: Conquer
+    // --- Phase: Conquer ---
     public bool HasConqueredTerritoryThisTurn;
 
-    // GamePhase: Attack
+    // --- Phase: Attack ---
     public byte SelectedAttackerTerritory;
     public byte SelectedDefenderTerritory;
 
-    // GamePhase: Fortify / Move
+    // --- Phase: Fortify / Move ---
     public byte SelectedFortifySource;
     public byte SelectedFortifyTarget;
 
-    // Last Dice Info
+    // --- Dice Info ---
     public byte LastAttackerDiceCount;
     public byte LastDefenderDiceCount;
-    public byte[] LastAttackerDiceValues;
-    public byte[] LastDefenderDiceValues;
+    public fixed byte LastAttackerDiceValues[EngineConstants.ATTACKER_DICE_COUNT];
+    public fixed byte LastDefenderDiceValues[EngineConstants.DEFENDER_DICE_COUNT];
 
-    /// <summary>
-    /// Initializes a new instance of the GameState struct with default values based on the provided EngineConfig.
-    /// </summary>
-    public GameState(EngineConfig config)
+    
+    /// <summary>Gets the owner of a territory safely.</summary>
+    public byte GetTerritoryOwner(int index)
     {
-        TerritoryOwners = new byte[config.TerritoryCount];
-        TerritoryTroops = new byte[config.TerritoryCount];
-
-        PlayerTroopsToPlace = new byte[config.PlayerCount];
-        PlayersCards = new byte[config.PlayerCount][];
-        IsPlayerAlive = new bool[config.PlayerCount];
-
-        for (int i = 0; i < config.PlayerCount; i++)
-        {
-            IsPlayerAlive[i] = true;
-            PlayersCards[i] = Array.Empty<byte>();
-        }
-
-        CardDeckBitboard = 0;
-        CardSetsTradedCount = 0;
-
-        PlayerTurn = 0;
-        CurrentPhase = GamePhase.Default;
-        CurrentRound = 1;
-        HasConqueredTerritoryThisTurn = false;
-
-        SelectedAttackerTerritory = EngineConstants.NO_VALUE;
-        SelectedDefenderTerritory = EngineConstants.NO_VALUE;
-
-        SelectedFortifySource = EngineConstants.NO_VALUE;
-        SelectedFortifyTarget = EngineConstants.NO_VALUE;
-
-        LastAttackerDiceCount = EngineConstants.NO_VALUE;
-        LastDefenderDiceCount = EngineConstants.NO_VALUE;
-
-        LastAttackerDiceValues = Array.Empty<byte>();
-        LastDefenderDiceValues = Array.Empty<byte>();
+        return TerritoryOwners[index];
     }
 
-    /// <summary>
-    /// Setzt den Phasen-Kontext beim Wechsel von Phasen (z. B. Attack -> Fortify) zurück.
-    /// </summary>
-    public void ResetPhaseContext()
+    /// <summary>Gets the troop count of a territory safely.</summary>
+    public byte GetTerritoryTroops(int index)
     {
-        SelectedAttackerTerritory = EngineConstants.NO_VALUE;
-        SelectedDefenderTerritory = EngineConstants.NO_VALUE;
+        return TerritoryTroops[index];
+    }
+   
+    /// <summary>
+    /// Creates a clean, zeroed GameState instance on the stack.
+    /// </summary>
+    public static GameState CreateEmpty()
+    {
+        GameState state = default;
 
-        SelectedFortifySource = EngineConstants.NO_VALUE;
-        SelectedFortifyTarget = EngineConstants.NO_VALUE;
+        state.SelectedAttackerTerritory = EngineConstants.NO_VALUE;
+        state.SelectedDefenderTerritory = EngineConstants.NO_VALUE;
 
-        LastAttackerDiceCount = EngineConstants.NO_VALUE;
-        LastDefenderDiceCount = EngineConstants.NO_VALUE;
-        LastAttackerDiceValues = Array.Empty<byte>();
-        LastDefenderDiceValues = Array.Empty<byte>();
+        state.SelectedFortifySource = EngineConstants.NO_VALUE;
+        state.SelectedFortifyTarget = EngineConstants.NO_VALUE;
+
+        state.LastAttackerDiceCount = EngineConstants.NO_VALUE;
+        state.LastDefenderDiceCount = EngineConstants.NO_VALUE;
+
+        state.CurrentRound = 1;
+        state.CurrentPhase = GamePhase.Default;
+
+        for (int i = 0; i < EngineConstants.MAX_PLAYERS; i++)
+        {
+            state.IsPlayerAlive[i] = true;
+        }
+
+        return state;
     }
 }
