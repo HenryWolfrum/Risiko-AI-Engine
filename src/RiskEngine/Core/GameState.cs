@@ -12,6 +12,7 @@ public unsafe struct GameState
 
     // --- Cards & Deck Info ---
     public ulong CardDeckBitboard;
+    public fixed ulong PlayerCardsBitboard[EngineConstants.MAX_PLAYERS];
     public byte CardSetsTradedCount;
 
     // --- History / Game Loop ---

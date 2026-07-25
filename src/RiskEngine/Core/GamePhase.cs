@@ -6,5 +6,8 @@ public enum GamePhase : byte
     Reinforce = 1, 
     Attack = 2,
     Fortify = 3,
-    End = 4
+    End = 4,
+    
+    
+    Error = byte.MaxValue
 }

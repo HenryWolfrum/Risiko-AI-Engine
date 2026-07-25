@@ -6,9 +6,9 @@ public struct GameAction
     public ActionType Type;
     
     //For Card Retrieval
-    public CardType Card1;
-    public CardType Card2;
-    public CardType Card3;
+    public byte Card1;
+    public byte Card2;
+    public byte Card3;
     
     //For placing Troops
     public byte TroopCount;
