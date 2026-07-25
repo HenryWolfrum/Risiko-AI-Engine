@@ -5,7 +5,7 @@ namespace RiskEngine;
 public static class RuleValidator
 {
     //Check if action is legal in state context
-    public static ValidationResult Validate(in GameState state, in GameAction action)
+    public static ValidationResult Validate(in GameState state, in GameAction action, MapLayout map)
     {
         ValidationResult phaseResult = IsActionAllowedInPhase(state.CurrentPhase, action.Type);
 
@@ -22,7 +22,7 @@ public static class RuleValidator
                 return ReinforceRules.Validate(state, action);
 
             case ActionType.Attack:
-                return ValidationResult.Valid();
+                return AttackRules.Validate(state, action,map);
 
             case ActionType.Fortify:
                 return ValidationResult.Valid();

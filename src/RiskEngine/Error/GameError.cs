@@ -10,6 +10,12 @@
 
     InvalidTroopCount = 5,
     NotEnoughTroops = 6,
+    
+    TerritoriesNotAdjacent= 7,
+    CannotAttackOwnTerritory= 8,
+    NotEnoughAttackTroops= 9,
+    InvalidDiceCount= 10,
+    InvalidTarget= 11,
 
     InternalError = 255
 }

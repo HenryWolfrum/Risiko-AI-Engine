@@ -50,6 +50,12 @@ public unsafe struct GameState
         return TerritoryTroops[index];
     }
     
+    /// <summary>Sets the troop count of a territory.</summary>
+    public void SetTerritoryTroops(byte territory, byte amount)
+    {
+        TerritoryTroops[territory] = amount;
+    }
+    
     /// <summary>Gets the troop count player can use.</summary>
     public readonly byte GetPlayerTroopsToPlace(byte player)
     {

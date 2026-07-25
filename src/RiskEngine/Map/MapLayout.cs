@@ -11,11 +11,7 @@ public class MapLayout
     public readonly Continent[] Continents;
     
 
-    public MapLayout(
-        string[] territoryNames,
-        byte[][] adjacencies,
-        byte[] territoryToContinentMap,
-        Continent[] continents)
+    public MapLayout(string[] territoryNames, byte[][] adjacencies, byte[] territoryToContinentMap, Continent[] continents)
     {
         TerritoryNames = territoryNames;
         Adjacencies = adjacencies;
