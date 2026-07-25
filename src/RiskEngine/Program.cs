@@ -1,94 +1,81 @@
-﻿using System;
-using System.Diagnostics;
-using RiskEngine;
+﻿using RiskEngine;
+using RiskEngine.Validation;
 
-Console.WriteLine("=== RISIKO ENGINE BENCHMARK ===");
+Console.WriteLine("=== VALIDATOR TEST ===");
 
-// Map einmal erstellen
+
 GameLayout game = RiskMapFactory.CreateStandardRiskMap();
-MapLayout map = game.Map;
-byte playerCount = game.Config.PlayerCount;
 
-// ---------------------------
-// Warmup (JIT)
-// ---------------------------
-GameInitializer.CreateInitialState(game, 42);
+GameState state = GameInitializer.CreateInitialState(game, 123);
 
-// ---------------------------
-// Benchmark
-// ---------------------------
-const int Iterations = 1_000_000;
 
-long allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+// Eigenes Gebiet suchen
+byte ownTerritory = 255;
 
-var stopwatch = Stopwatch.StartNew();
-
-GameState lastState = default;
-
-for (int i = 0; i < Iterations; i++)
+for (byte i = 0; i < game.Map.TerritoryNames.Length; i++)
 {
-    lastState = GameInitializer.CreateInitialState(game,i);
-}
-
-stopwatch.Stop();
-
-
-long allocatedAfter = GC.GetAllocatedBytesForCurrentThread();
-
-long allocated = allocatedAfter - allocatedBefore;
-
-Console.WriteLine();
-Console.WriteLine("=== Ergebnisse ===");
-Console.WriteLine($"Initialisierungen : {Iterations:N0}");
-Console.WriteLine($"Zeit              : {stopwatch.ElapsedMilliseconds} ms");
-Console.WriteLine($"Allocation        : {allocated:N0} Bytes");
-Console.WriteLine($"Pro Initialisierung: {(double)stopwatch.Elapsed.TotalNanoseconds / Iterations:F1} ns");
-
-// Damit der Compiler die Schleife nicht theoretisch wegoptimieren kann
-Console.WriteLine($"Letzter Startspieler: {lastState.PlayerTurn}");
-
-if (allocated == 0)
-{
-    Console.ForegroundColor = ConsoleColor.Green;
-    Console.WriteLine("\n✓ ZERO ALLOCATION");
-}
-else
-{
-    Console.ForegroundColor = ConsoleColor.Yellow;
-    Console.WriteLine($"\n⚠ {allocated:N0} Bytes wurden allokiert.");
-}
-
-Console.ResetColor();
-
-// ---------------------------
-// Finale Territoriums-Übersicht des letzten States
-// ---------------------------
-Console.WriteLine("\n=== VOLLSTÄNDIGE TERRITORIUMS-ÜBERSICHT (Letzter State) ===");
-for (int i = 0; i < map.TerritoryNames.Length; i++)
-{
-    string tName = map.TerritoryNames[i];
-    byte owner = lastState.GetTerritoryOwner(i);
-    byte troops = lastState.GetTerritoryTroops(i);
-
-    Console.WriteLine($"Territorium [{i,2}] {tName,-22} -> Owner: Player {owner} | Truppen: {troops}");
-}
-
-// ---------------------------
-// Zusammenfassung: Territorien pro Spieler
-// ---------------------------
-Console.WriteLine("\n=== TERRITORIEN-VERTEILUNG PRO SPIELER ===");
-Span<int> territoryCounts = stackalloc int[playerCount];
-
-for (int i = 0; i < map.TerritoryNames.Length; i++)
-{
-    byte owner = lastState.GetTerritoryOwner(i);
-    if (owner < playerCount)
+    if (state.GetTerritoryOwner(i) == state.PlayerTurn)
     {
-        territoryCounts[owner]++;
+        ownTerritory = i;
+        break;
     }
 }
 
-for (byte p = 0; p < playerCount; p++)
+
+Console.WriteLine($"Player {state.PlayerTurn} owns territory {ownTerritory}");
+
+
+// 1. Gültige Aktion
+GameAction validAction = new GameAction
 {
-    Console.WriteLine($"Spieler {p}: {territoryCounts[p]} Territorien");
+    Type = ActionType.PlaceTroops,
+    SourceTerritory = ownTerritory,
+    TroopCount = 1
+};
+
+state.CurrentPhase = GamePhase.Reinforce;
+state.SetPlayerTroopsToPlace(state.PlayerTurn, 5);
+
+ValidationResult result = RuleValidator.Validate(state, validAction);
+
+
+Console.WriteLine($"Valid action: {result.IsValid}, Error: {result.Error}");
+
+
+// 2. Ungültig: fremdes Gebiet
+byte enemyTerritory = 255;
+
+for (byte i = 0; i < game.Map.TerritoryNames.Length; i++)
+{
+    if (state.GetTerritoryOwner(i) != state.PlayerTurn)
+    {
+        enemyTerritory = i;
+        break;
+    }
 }
+
+
+GameAction invalidOwnerAction = new GameAction
+{
+    Type = ActionType.PlaceTroops,
+    SourceTerritory = enemyTerritory,
+    TroopCount = 1
+};
+
+
+result = RuleValidator.Validate(state, invalidOwnerAction);
+
+
+Console.WriteLine(
+    $"Enemy territory: {result.IsValid}, Error: {result.Error}");
+
+
+// 3. Ungültig: falsche Phase
+state.CurrentPhase = GamePhase.Attack;
+
+
+result = RuleValidator.Validate(state, validAction);
+
+
+Console.WriteLine(
+    $"Wrong phase: {result.IsValid}, Error: {result.Error}");

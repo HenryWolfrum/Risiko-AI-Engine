@@ -1,83 +1,90 @@
-﻿namespace RiskEngine;
+﻿using RiskEngine.Validation;
+
+namespace RiskEngine;
 
 public static class RuleValidator
 {
-    public static bool Validate(
-        in GameState state,
-        in GameAction action)
+    //Check if action is legal in state context
+    public static ValidationResult Validate(in GameState state, in GameAction action)
     {
-        if (!IsActionAllowedInPhase(state.CurrentPhase, action.Type))
+        ValidationResult phaseResult = IsActionAllowedInPhase(state.CurrentPhase, action.Type);
+
+        //Illegal actions in context must not be executed
+        if (!phaseResult.IsValid)
         {
-            return false;
+            return phaseResult;
         }
 
+        //Unknown action types are also invalid
         switch (action.Type)
         {
             case ActionType.PlaceTroops:
-                // return ValidatePlaceTroops(state, action);
+                return ReinforceRules.Validate(state, action);
 
             case ActionType.Attack:
-                // return ValidateAttack(state, action);
+                return ValidationResult.Valid();
 
             case ActionType.Fortify:
-                // return ValidateFortify(state, action);
+                return ValidationResult.Valid();
 
             case ActionType.TurnInCards:
-                // return ValidateTradeCards(state, action);
+                return ValidationResult.Valid();
 
             case ActionType.EndTurn:
-              //  return ValidateEndTurn(state, action);
+                return ValidationResult.Valid();
 
             default:
-                return false;
+                return ValidationResult.Invalid(GameError.InvalidAction);
         }
     }
 
 
     //Action must be compatible with Phase
-    private static bool IsActionAllowedInPhase(GamePhase phase, ActionType action)
+    private static ValidationResult IsActionAllowedInPhase(
+        GamePhase phase,
+        ActionType action)
     {
         switch (phase)
         {
-            //Reinforce Phase
             case GamePhase.Reinforce:
 
                 if (action == ActionType.PlaceTroops)
-                    return true;
+                    return ValidationResult.Valid();
 
                 if (action == ActionType.TurnInCards)
-                    return true;
+                    return ValidationResult.Valid();
 
                 if (action == ActionType.EndTurn)
-                    return true;
+                    return ValidationResult.Valid();
 
-                return false;
+                return ValidationResult.Invalid(GameError.ActionNotAllowedInPhase);
 
-            //Attack Phase
+
             case GamePhase.Attack:
 
                 if (action == ActionType.Attack)
-                    return true;
+                    return ValidationResult.Valid();
 
                 if (action == ActionType.EndTurn)
-                    return true;
+                    return ValidationResult.Valid();
 
-                return false;
+                return ValidationResult.Invalid(GameError.ActionNotAllowedInPhase);
 
-            //Fortify Phase
+
             case GamePhase.Fortify:
 
                 if (action == ActionType.Fortify)
-                    return true;
+                    return ValidationResult.Valid();
 
                 if (action == ActionType.EndTurn)
-                    return true;
+                    return ValidationResult.Valid();
 
-                return false;
+                return ValidationResult.Invalid(GameError.ActionNotAllowedInPhase);
 
 
             default:
-                return false;
+
+                return ValidationResult.Invalid(GameError.ActionNotAllowedInPhase);
         }
     }
 }

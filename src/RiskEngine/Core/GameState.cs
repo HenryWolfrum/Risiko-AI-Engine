@@ -39,15 +39,29 @@ public unsafe struct GameState
 
     
     /// <summary>Gets the owner of a territory safely.</summary>
-    public byte GetTerritoryOwner(int index)
+    public readonly byte GetTerritoryOwner(int index)
     {
         return TerritoryOwners[index];
     }
 
     /// <summary>Gets the troop count of a territory safely.</summary>
-    public byte GetTerritoryTroops(int index)
+    public readonly byte GetTerritoryTroops(int index)
     {
         return TerritoryTroops[index];
+    }
+    
+    /// <summary>Gets the troop count player can use.</summary>
+    public readonly byte GetPlayerTroopsToPlace(byte player)
+    {
+        return PlayerTroopsToPlace[player];
+    }
+    
+    
+    /// <summary>Sets the troop count player can use.</summary>
+
+    public void SetPlayerTroopsToPlace(byte player, byte amount)
+    {
+        PlayerTroopsToPlace[player] = amount;
     }
    
     /// <summary>
