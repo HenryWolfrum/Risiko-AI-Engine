@@ -5,9 +5,9 @@ public static unsafe class ReinforceMutator
     // Places troops on a territory
     public static void Apply(ref GameState state, in GameAction action)
     {
-        byte territory = action.TargetTerritory;
-        byte amount = action.TroopCount;
-        byte player = state.PlayerTurn;
+        var territory = action.TargetTerritory;
+        var amount = action.TroopCount;
+        var player = state.PlayerTurn;
 
         // Add troops to territory
         state.TerritoryTroops[territory] += amount;

@@ -12,12 +12,12 @@ public static class GameStateMutator
             //Attack
             case ActionType.Attack:
             {
-                CombatResult result = CombatResolver.Resolve(ref state, in action, ref rng);
-                
+                var result = CombatResolver.Resolve(ref state, in action, ref rng);
+
                 AttackMutator.Apply(ref state, in action, ref result);
                 break;
             }
-            
+
             //Conquer
             case ActionType.Conquer:
             {

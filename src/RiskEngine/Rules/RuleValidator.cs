@@ -7,13 +7,10 @@ public static class RuleValidator
     //Check if action is legal in state context
     public static ValidationResult Validate(in GameState state, in GameAction action, GameLayout game)
     {
-        ValidationResult phaseResult = IsActionAllowedInPhase(state.CurrentPhase, action.Type);
+        var phaseResult = IsActionAllowedInPhase(state.CurrentPhase, action.Type);
 
         //Illegal actions in context must not be executed
-        if (!phaseResult.IsValid)
-        {
-            return phaseResult;
-        }
+        if (!phaseResult.IsValid) return phaseResult;
 
         //Check Action according to context rules
         switch (action.Type)
@@ -22,7 +19,7 @@ public static class RuleValidator
                 return ReinforceRules.Validate(state, action);
 
             case ActionType.Attack:
-                return AttackRules.Validate(state, action,game.Map);
+                return AttackRules.Validate(state, action, game.Map);
 
             case ActionType.Fortify:
                 return FortifyRules.Validate(state, action, game.Map);

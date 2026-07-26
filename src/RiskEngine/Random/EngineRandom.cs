@@ -1,5 +1,6 @@
-﻿namespace RiskEngine;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
+
+namespace RiskEngine;
 
 // Deterministic, 100% Zero-Allocation RNG
 public struct EngineRandom
@@ -18,7 +19,7 @@ public struct EngineRandom
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public uint NextUInt()
     {
-        uint x = _state;
+        var x = _state;
         x ^= x << 13;
         x ^= x >> 17;
         x ^= x << 5;
@@ -29,21 +30,21 @@ public struct EngineRandom
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Next(int minInclusive, int maxExclusive)
     {
-        uint range = (uint)(maxExclusive - minInclusive);
-        return (int)(minInclusive + (NextUInt() % range));
+        var range = (uint)(maxExclusive - minInclusive);
+        return (int)(minInclusive + NextUInt() % range);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public byte RollDice()
     {
-        return (byte)(1 + (NextUInt() % 6));
+        return (byte)(1 + NextUInt() % 6);
     }
 
     public void Shuffle<T>(Span<T> span)
     {
-        for (int i = span.Length - 1; i > 0; i--)
+        for (var i = span.Length - 1; i > 0; i--)
         {
-            int j = (int)(NextUInt() % (uint)(i + 1));
+            var j = (int)(NextUInt() % (uint)(i + 1));
             (span[i], span[j]) = (span[j], span[i]);
         }
     }

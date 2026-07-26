@@ -1,17 +1,17 @@
-namespace RiskEngine;
-
 using System.Numerics;
 using System.Runtime.CompilerServices;
+
+namespace RiskEngine;
 
 public static class CardHelper
 {
     /// <summary>
-    /// Checks if a player holds at least one valid card set that can be turned in.
+    ///     Checks if a player holds at least one valid card set that can be turned in.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasValidSet(in GameState state, byte player, DeckLayout deckLayout)
     {
-        ulong hand = GameStateHelper.GetPlayerCardsBitboard(in state, player);
+        var hand = GameStateHelper.GetPlayerCardsBitboard(in state, player);
 
         // Early exit 1: Impossible to form a set with less than 3 cards
         if (BitOperations.PopCount(hand) < 3)
@@ -22,30 +22,30 @@ public static class CardHelper
             return true;
 
         // Count total cards for each specific type using hardware PopCount
-        int infantryCount  = BitOperations.PopCount(hand & deckLayout.InfantryMask);
-        int cavalryCount   = BitOperations.PopCount(hand & deckLayout.CavalryMask);
-        int artilleryCount = BitOperations.PopCount(hand & deckLayout.ArtilleryMask);
+        var infantryCount = BitOperations.PopCount(hand & deckLayout.InfantryMask);
+        var cavalryCount = BitOperations.PopCount(hand & deckLayout.CavalryMask);
+        var artilleryCount = BitOperations.PopCount(hand & deckLayout.ArtilleryMask);
 
         // Condition A: Three of the same type
         if (infantryCount >= 3 || cavalryCount >= 3 || artilleryCount >= 3)
             return true;
 
         // Condition B: One card of each distinct type (1x Infantry + 1x Cavalry + 1x Artillery)
-        return (infantryCount > 0 && cavalryCount > 0 && artilleryCount > 0);
+        return infantryCount > 0 && cavalryCount > 0 && artilleryCount > 0;
     }
 
     /// <summary>
-    /// Finds the first valid card set for a player and constructs a GameAction.
-    /// Note: A valid set is mathematically guaranteed if player holds >= 5 cards.
+    ///     Finds the first valid card set for a player and constructs a GameAction.
+    ///     Note: A valid set is mathematically guaranteed if player holds >= 5 cards.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static GameAction FindFirstValidSet(in GameState state, byte player, DeckLayout deckLayout)
     {
-        ulong hand = GameStateHelper.GetPlayerCardsBitboard(in state, player);
+        var hand = GameStateHelper.GetPlayerCardsBitboard(in state, player);
 
-        ulong infantry  = hand & deckLayout.InfantryMask;
-        ulong cavalry   = hand & deckLayout.CavalryMask;
-        ulong artillery = hand & deckLayout.ArtilleryMask;
+        var infantry = hand & deckLayout.InfantryMask;
+        var cavalry = hand & deckLayout.CavalryMask;
+        var artillery = hand & deckLayout.ArtilleryMask;
 
         // --- Priority 1: Three of the same card type ---
         if (BitOperations.PopCount(infantry) >= 3)
@@ -59,7 +59,6 @@ public static class CardHelper
 
         // --- Priority 2: One card of each distinct type ---
         if (infantry != 0 && cavalry != 0 && artillery != 0)
-        {
             return new GameAction
             {
                 Type = ActionType.TurnInCards,
@@ -67,19 +66,18 @@ public static class CardHelper
                 Card2 = (byte)BitOperations.TrailingZeroCount(cavalry),
                 Card3 = (byte)BitOperations.TrailingZeroCount(artillery)
             };
-        }
 
         // --- Priority 3: Joker combinations (1 Joker + any 2 other cards) ---
-        ulong jokers = hand & deckLayout.JokerMask;
+        var jokers = hand & deckLayout.JokerMask;
         if (jokers != 0)
         {
-            byte jokerId = (byte)BitOperations.TrailingZeroCount(jokers);
-            ulong nonJokers = hand & ~deckLayout.JokerMask;
+            var jokerId = (byte)BitOperations.TrailingZeroCount(jokers);
+            var nonJokers = hand & ~deckLayout.JokerMask;
 
             // Extract the first two non-joker cards
-            byte c1 = (byte)BitOperations.TrailingZeroCount(nonJokers);
+            var c1 = (byte)BitOperations.TrailingZeroCount(nonJokers);
             nonJokers &= nonJokers - 1; // Clear lowest set bit
-            byte c2 = (byte)BitOperations.TrailingZeroCount(nonJokers);
+            var c2 = (byte)BitOperations.TrailingZeroCount(nonJokers);
 
             return new GameAction
             {
@@ -94,18 +92,18 @@ public static class CardHelper
     }
 
     /// <summary>
-    /// Extracts the first 3 card IDs from a bitmask and builds a TurnInCards GameAction.
+    ///     Extracts the first 3 card IDs from a bitmask and builds a TurnInCards GameAction.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static GameAction CreateTurnInAction(ulong mask)
     {
-        byte c1 = (byte)BitOperations.TrailingZeroCount(mask);
+        var c1 = (byte)BitOperations.TrailingZeroCount(mask);
         mask &= mask - 1; // Clear lowest set bit using BMI1 / x & (x - 1)
 
-        byte c2 = (byte)BitOperations.TrailingZeroCount(mask);
+        var c2 = (byte)BitOperations.TrailingZeroCount(mask);
         mask &= mask - 1;
 
-        byte c3 = (byte)BitOperations.TrailingZeroCount(mask);
+        var c3 = (byte)BitOperations.TrailingZeroCount(mask);
 
         return new GameAction
         {

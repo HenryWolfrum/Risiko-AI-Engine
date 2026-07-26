@@ -10,19 +10,19 @@
 
     InvalidTroopCount = 5,
     NotEnoughTroops = 6,
-    
-    TerritoriesNotAdjacent= 7,
-    CannotAttackOwnTerritory= 8,
-    NotEnoughAttackTroops= 9,
-    InvalidDiceCount= 10,
-    InvalidTarget= 11,
-    
+
+    TerritoriesNotAdjacent = 7,
+    CannotAttackOwnTerritory = 8,
+    NotEnoughAttackTroops = 9,
+    InvalidDiceCount = 10,
+    InvalidTarget = 11,
+
     NoPathFound = 12,
-    
+
     UnknownCard = 13,
     CardNotOwned = 14,
-    InvalidCardSet= 15,
-    
+    InvalidCardSet = 15,
+
 
     InternalError = 255
 }

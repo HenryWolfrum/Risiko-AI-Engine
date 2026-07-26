@@ -1,6 +1,5 @@
 ﻿namespace RiskEngine;
 
-
 public readonly struct Continent
 {
     public byte Id { get; }

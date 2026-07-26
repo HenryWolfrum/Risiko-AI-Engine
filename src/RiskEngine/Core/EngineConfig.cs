@@ -9,7 +9,8 @@ public readonly struct EngineConfig
     public ushort MaxRounds { get; }
 
 
-    public EngineConfig(byte playerCount=EngineConstants.DEFAULT_PLAYERS, byte territoryCount=EngineConstants.DEFAULT_TERRITORY_COUNT, ushort maxRounds = EngineConstants.MAX_ROUNDS)
+    public EngineConfig(byte playerCount = EngineConstants.DEFAULT_PLAYERS,
+        byte territoryCount = EngineConstants.DEFAULT_TERRITORY_COUNT, ushort maxRounds = EngineConstants.MAX_ROUNDS)
     {
         PlayerCount = playerCount;
         TerritoryCount = territoryCount;

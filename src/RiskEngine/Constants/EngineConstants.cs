@@ -25,5 +25,4 @@ public static class EngineConstants
 
     public const byte CARD_TERRITORY_BONUS_TROOPS = 2;
     public const byte MIN_REINFORCEMENT_TROOPS = 3;
-
 }

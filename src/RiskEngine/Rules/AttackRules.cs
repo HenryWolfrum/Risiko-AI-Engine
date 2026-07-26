@@ -1,14 +1,14 @@
-﻿namespace RiskEngine.Validation;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
+namespace RiskEngine.Validation;
 
 public static class AttackRules
 {
     public static ValidationResult Validate(in GameState state, in GameAction action, MapLayout map)
     {
-        byte source = action.SourceTerritory;
-        byte target = action.TargetTerritory;
-        byte player = state.PlayerTurn;
+        var source = action.SourceTerritory;
+        var target = action.TargetTerritory;
+        var player = state.PlayerTurn;
 
         // Territory range check
         if (source >= EngineConstants.DEFAULT_TERRITORY_COUNT || target >= EngineConstants.DEFAULT_TERRITORY_COUNT)
@@ -26,14 +26,14 @@ public static class AttackRules
         if (!map.AreNeighbors(source, target))
             return ValidationResult.Invalid(GameError.TerritoriesNotAdjacent);
 
-        byte attackerTroops = GameStateHelper.GetTerritoryTroops(in state, source);
+        var attackerTroops = GameStateHelper.GetTerritoryTroops(in state, source);
 
         // Need at least 2 troops to attack (1 must stay behind)
         if (attackerTroops < 2)
             return ValidationResult.Invalid(GameError.NotEnoughTroops);
 
         // Attacker dice validation (Max 3, but at most attackerTroops - 1)
-        byte maxAttackerDice = (byte)Math.Min(3, attackerTroops - 1);
+        var maxAttackerDice = (byte)Math.Min(3, attackerTroops - 1);
         if (action.ChosenAttackerDiceCount == 0 || action.ChosenAttackerDiceCount > maxAttackerDice)
             return ValidationResult.Invalid(GameError.InvalidDiceCount);
 
@@ -50,7 +50,7 @@ public static class AttackRules
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte GetMaxDefenderDice(in GameState state, byte targetTerritory)
     {
-        byte defenderTroops = GameStateHelper.GetTerritoryTroops(in state, targetTerritory);
+        var defenderTroops = GameStateHelper.GetTerritoryTroops(in state, targetTerritory);
         return defenderTroops >= 2 ? (byte)2 : (byte)1;
     }
 }
