@@ -250,18 +250,49 @@ public static class GameRunner
     {
         state.CurrentPhase = GamePhase.Fortify;
 
-        GameAction action = player.DecideAction(in state, GamePhase.Fortify, layout);
+        byte activePlayer = state.PlayerTurn;
+        byte ownedTerritoriesCount = (byte)GameStateHelper.GetOwnedTerritoryCount(in state, activePlayer);
 
-        if (action.Type == ActionType.Fortify)
+        //Limit n choose 2 (move actions)
+        int maxFortifyMoves = (ownedTerritoriesCount * (ownedTerritoriesCount - 1)) >> 1;
+        int moveCounter = 0;
+
+        while (moveCounter < maxFortifyMoves)
         {
-            ValidationResult validation = FortifyRules.Validate(in state, in action, layout.Map);
-            if (validation.IsValid)
+            GameAction action = player.DecideAction(in state, GamePhase.Fortify, layout);
+
+            if (action.Type == ActionType.SkipPhase || action.Type == ActionType.EndTurn)
             {
-                FortifyMutator.Apply(ref state, in action);
+                //Player ends Phase/Turn
+                break;
+            }
+
+            if (action.Type == ActionType.Fortify)
+            {
+                byte sourceTroops = GameStateHelper.GetTerritoryTroops(in state, action.SourceTerritory);
+                
+                byte maxMoveable = (byte)(sourceTroops - 1);
+                
+
+                ValidationResult validation = FortifyRules.Validate(in state, in action, layout.Map);
+                if (validation.IsValid)
+                {
+                    FortifyMutator.Apply(ref state, in action);
+                    moveCounter++;
+                }
+                else
+                {
+                    //Invalid Action break
+                    break; 
+                }
+            }
+            else
+            {
+                break;
             }
         }
     }
-
+    
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void AdvanceToNextTurn(ref GameState state, byte playerCount)
     {
