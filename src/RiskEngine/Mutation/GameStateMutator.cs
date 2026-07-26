@@ -1,49 +1,66 @@
-using RiskEngine;
-using RiskEngine.Mutation;
 using RiskEngine.Resolution;
 
-// Mutates the game state based on an action
+namespace RiskEngine.Mutation;
+
+/// <summary>
+/// Central mutation dispatcher.
+/// Applies validated game actions to the game state.
+/// </summary>
 public static class GameStateMutator
 {
+    /// <summary>
+    /// Applies an action and updates the game state.
+    /// Validation must happen before calling this method.
+    /// </summary>
     public static void Apply(ref GameState state, in GameAction action, ref EngineRandom rng)
     {
         switch (action.Type)
         {
-            //Attack
             case ActionType.Attack:
             {
-                var result = CombatResolver.Resolve(ref state, in action, ref rng);
+                // Resolve combat first, then apply troop losses.
+                var result = CombatResolver.Resolve(in state, in action, ref rng);
 
-                AttackMutator.Apply(ref state, in action, ref result);
+                AttackMutator.Apply(ref state, in action, in result);
                 break;
             }
 
-            //Conquer
+
             case ActionType.Conquer:
             {
+                // Transfer ownership and move troops.
                 ConquerMutator.Apply(ref state, in action);
                 break;
             }
 
-            //Reinforce
+
             case ActionType.Reinforce:
             {
+                // Place reinforcement troops.
                 ReinforceMutator.Apply(ref state, in action);
                 break;
             }
 
-            //Fortify
+
             case ActionType.Fortify:
             {
+                // Move troops between connected friendly territories.
                 FortifyMutator.Apply(ref state, in action);
                 break;
             }
 
-            //Turn In Cards
+
             case ActionType.TurnInCards:
             {
-                CardTurnInMutator.Apply(ref state, in action);
+                // Exchange a valid card set for reinforcements.
+                CardTurnInMutator.Apply(ref state, in action); 
                 break;
+            }
+
+
+            default:
+            {
+                throw new InvalidOperationException($"Unsupported action type: {action.Type}");
             }
         }
     }

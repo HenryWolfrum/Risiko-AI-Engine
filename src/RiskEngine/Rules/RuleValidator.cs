@@ -1,85 +1,114 @@
-﻿using RiskEngine.Validation;
+﻿using RiskEngine.Rules;
+using RiskEngine.Validation;
 
 namespace RiskEngine;
 
+/// <summary>
+/// Central validation entry point for all player actions.
+/// Ensures that actions are legal in the current phase and game context.
+/// </summary>
 public static class RuleValidator
 {
-    //Check if action is legal in state context
+    /// <summary>
+    /// Validates an action against the current game state and active rules.
+    /// </summary>
     public static ValidationResult Validate(in GameState state, in GameAction action, GameLayout game)
     {
+        // First check if the action type is allowed in the current phase
         var phaseResult = IsActionAllowedInPhase(state.CurrentPhase, action.Type);
 
-        //Illegal actions in context must not be executed
-        if (!phaseResult.IsValid) return phaseResult;
 
-        //Check Action according to context rules
-        switch (action.Type)
+        // Illegal actions must never reach the mutation layer
+        if (!phaseResult.IsValid)
+            return phaseResult;
+
+
+        // Skip and end actions are phase control commands.
+        // They do not require additional rule validation.
+        if (action.Type == ActionType.SkipPhase || action.Type == ActionType.EndTurn)
         {
-            case ActionType.Reinforce:
-                return ReinforceRules.Validate(state, action);
-
-            case ActionType.Attack:
-                return AttackRules.Validate(state, action, game.Map);
-
-            case ActionType.Fortify:
-                return FortifyRules.Validate(state, action, game.Map);
-
-            case ActionType.TurnInCards:
-                return ValidationResult.Valid();
-
-            case ActionType.EndTurn:
-                return ValidationResult.Valid();
-
-            default:
-                return ValidationResult.Invalid(GameError.InvalidAction);
+            return ValidationResult.Valid();
         }
+
+
+        // Validate action according to its specific rule set
+        return action.Type switch
+        {
+            ActionType.Reinforce => ReinforceRules.Validate(in state, in action),
+            
+            ActionType.Attack => AttackRules.Validate(in state, in action, game.Map),
+
+            ActionType.Fortify => FortifyRules.Validate(in state, in action, game.Map),
+
+            ActionType.TurnInCards => TurnInCardsRules.Validate(in state, in action, game.Deck),
+
+           ActionType.Conquer => ConquerRules.Validate(in state, in action),
+            
+            _ => ValidationResult.Invalid(GameError.InvalidAction)
+        };
     }
 
 
-    //Action must be compatible with Phase
+    /// <summary>
+    /// Checks whether an action type is allowed during the current phase.
+    /// </summary>
     private static ValidationResult IsActionAllowedInPhase(GamePhase phase, ActionType action)
     {
-        switch (phase)
+        return phase switch
         {
-            case GamePhase.Reinforce:
+            // Player must finish card handling before reinforcement
+            GamePhase.CardTurnIn => action switch
+            {
+                ActionType.TurnInCards => ValidationResult.Valid(),
 
-                if (action == ActionType.Reinforce)
-                    return ValidationResult.Valid();
-
-                if (action == ActionType.TurnInCards)
-                    return ValidationResult.Valid();
-
-                if (action == ActionType.EndTurn)
-                    return ValidationResult.Valid();
-
-                return ValidationResult.Invalid(GameError.ActionNotAllowedInPhase);
+                _ => ValidationResult.Invalid(GameError.ActionNotAllowedInPhase)
+            },
 
 
-            case GamePhase.Attack:
+            // Player must place all reinforcement troops
+            GamePhase.Reinforce => action switch
+            {
+                ActionType.Reinforce => ValidationResult.Valid(),
 
-                if (action == ActionType.Attack)
-                    return ValidationResult.Valid();
-
-                if (action == ActionType.EndTurn)
-                    return ValidationResult.Valid();
-
-                return ValidationResult.Invalid(GameError.ActionNotAllowedInPhase);
+                _ => ValidationResult.Invalid(GameError.ActionNotAllowedInPhase)
+            },
 
 
-            case GamePhase.Fortify:
+            // Player may attack multiple times or skip attacking
+            GamePhase.Attack => action switch
+            {
+                ActionType.Attack => ValidationResult.Valid(),
 
-                if (action == ActionType.Fortify)
-                    return ValidationResult.Valid();
+                ActionType.SkipPhase => ValidationResult.Valid(),
 
-                if (action == ActionType.EndTurn)
-                    return ValidationResult.Valid();
+                ActionType.EndTurn => ValidationResult.Valid(),
 
-                return ValidationResult.Invalid(GameError.ActionNotAllowedInPhase);
+                _ => ValidationResult.Invalid(GameError.ActionNotAllowedInPhase)
+            },
 
 
-            default:
+            // Conquer phase is mandatory after a successful conquest
+            GamePhase.Conquer => action switch
+            { 
+                ActionType.Conquer => ValidationResult.Valid(),
 
-                return ValidationResult.Invalid(GameError.ActionNotAllowedInPhase);
-        }
+                _ => ValidationResult.Invalid(GameError.ActionNotAllowedInPhase)
+            },
+
+
+            // Fortification is optional
+            GamePhase.Fortify => action switch
+            {
+                ActionType.Fortify => ValidationResult.Valid(),
+
+                ActionType.SkipPhase => ValidationResult.Valid(),
+
+                ActionType.EndTurn => ValidationResult.Valid(),
+
+                _ => ValidationResult.Invalid(GameError.ActionNotAllowedInPhase)
+            },
+            
+            _ => ValidationResult.Invalid(GameError.ActionNotAllowedInPhase)
+        };
     }
 }
