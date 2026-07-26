@@ -4,6 +4,11 @@ using RiskEngine.Resolution;
 
 Console.WriteLine("=== VALIDATOR TEST ===");
 
+unsafe
+{
+    Console.WriteLine(sizeof(GameState));
+
+}
 
 GameLayout game = RiskMapFactory.CreateStandardRiskMap();
 
@@ -82,7 +87,7 @@ ValidationResult result =
     RuleValidator.Validate(
         attackState,
         attackAction,
-        game.Map);
+        game);
 
 
 Console.WriteLine(
@@ -109,7 +114,7 @@ GameAction ownTerritoryAttack = new GameAction
 result = RuleValidator.Validate(
     attackState,
     ownTerritoryAttack,
-    game.Map);
+    game);
 
 
 Console.WriteLine(
@@ -144,7 +149,7 @@ GameAction nonAdjacentAttack = new GameAction
 result = RuleValidator.Validate(
     attackState,
     nonAdjacentAttack,
-    game.Map);
+    game);
 
 
 Console.WriteLine(
@@ -171,7 +176,7 @@ GameAction weakAttack = new GameAction
 result = RuleValidator.Validate(
     attackState,
     weakAttack,
-    game.Map);
+    game);
 
 
 Console.WriteLine(
@@ -202,7 +207,7 @@ GameAction twoDiceAttack = new GameAction
 result = RuleValidator.Validate(
     attackState,
     twoDiceAttack,
-    game.Map);
+    game);
 
 
 Console.WriteLine(
@@ -224,7 +229,7 @@ GameAction invalidTwoDiceAttack = new GameAction
 result = RuleValidator.Validate(
     attackState,
     invalidTwoDiceAttack,
-    game.Map);
+    game);
 
 
 Console.WriteLine(
@@ -256,7 +261,7 @@ GameAction threeDiceAttack = new GameAction
 result = RuleValidator.Validate(
     attackState,
     threeDiceAttack,
-    game.Map);
+    game);
 
 
 Console.WriteLine(
@@ -290,11 +295,7 @@ GameAction combatAction = new GameAction
 EngineRandom rng = new EngineRandom(42);
 
 
-CombatResult combatResult =
-    CombatResolver.Resolve(
-        combatState,
-        combatAction,
-        ref rng);
+CombatResult combatResult = CombatResolver.Resolve( combatState, combatAction, ref rng);
 
 
 Console.WriteLine(

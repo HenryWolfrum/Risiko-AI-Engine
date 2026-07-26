@@ -8,7 +8,6 @@ public unsafe struct GameState
 
     // --- Player Info ---
     public fixed byte PlayerTroopsToPlace[EngineConstants.MAX_PLAYERS];
-    public fixed bool IsPlayerAlive[EngineConstants.MAX_PLAYERS];
 
     // --- Cards & Deck Info ---
     public ulong CardDeckBitboard;
@@ -19,24 +18,8 @@ public unsafe struct GameState
     public ushort CurrentRound;
     public byte PlayerTurn;
     public GamePhase CurrentPhase;
-
-    // --- Phase: Conquer ---
-    public bool HasConqueredTerritoryThisTurn;
-
-    // --- Phase: Attack ---
-    public byte SelectedAttackerTerritory;
-    public byte SelectedDefenderTerritory;
-
-    // --- Phase: Fortify / Move ---
-    public byte SelectedFortifySource;
-    public byte SelectedFortifyTarget;
-
-    // --- Dice Info ---
-    public byte LastAttackerDiceCount;
-    public byte LastDefenderDiceCount;
-    public fixed byte LastAttackerDiceValues[EngineConstants.ATTACKER_DICE_COUNT];
-    public fixed byte LastDefenderDiceValues[EngineConstants.DEFENDER_DICE_COUNT];
-
+    
+    
     
     /// <summary>Gets the owner of a territory safely.</summary>
     public readonly byte GetTerritoryOwner(int index)
@@ -70,30 +53,47 @@ public unsafe struct GameState
         PlayerTroopsToPlace[player] = amount;
     }
    
+    /// <summary>Checks if a player holds a specific card (territory ID 0-41) in their hand.</summary>
+    public readonly bool PlayerHasCard(byte player, byte cardId)
+    {
+        if (cardId >= 42) return false;
+        
+        // Check if the bit at the card's position is set (1)
+        return (PlayerCardsBitboard[player] & (1UL << cardId)) != 0;
+    }
+
+    /// <summary>Adds a card to a player's hand by setting its corresponding bit.</summary>
+    public void AddCardToPlayer(byte player, byte cardId)
+    {
+        if (cardId < 42)
+        {
+            // Set the bit for the specified card ID
+            PlayerCardsBitboard[player] |= (1UL << cardId);
+        }
+    }
+
+    /// <summary>Removes a card from a player's hand by clearing its corresponding bit.</summary>
+    public void RemoveCardFromPlayer(byte player, byte cardId)
+    {
+        if (cardId < 42)
+        {
+            // Clear the bit for the specified card ID using a bitwise NOT mask
+            PlayerCardsBitboard[player] &= ~(1UL << cardId);
+        }
+    }
+    
+    
+    
     /// <summary>
     /// Creates a clean, zeroed GameState instance on the stack.
     /// </summary>
     public static GameState CreateEmpty()
     {
         GameState state = default;
-
-        state.SelectedAttackerTerritory = EngineConstants.NO_VALUE;
-        state.SelectedDefenderTerritory = EngineConstants.NO_VALUE;
-
-        state.SelectedFortifySource = EngineConstants.NO_VALUE;
-        state.SelectedFortifyTarget = EngineConstants.NO_VALUE;
-
-        state.LastAttackerDiceCount = EngineConstants.NO_VALUE;
-        state.LastDefenderDiceCount = EngineConstants.NO_VALUE;
-
+        
         state.CurrentRound = 1;
         state.CurrentPhase = GamePhase.Default;
-
-        for (int i = 0; i < EngineConstants.MAX_PLAYERS; i++)
-        {
-            state.IsPlayerAlive[i] = true;
-        }
-
+        
         return state;
     }
 }

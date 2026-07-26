@@ -1,20 +1,17 @@
 ﻿namespace RiskEngine.Mutation;
 
-public static unsafe class FortifyMutator
+public static class FortifyMutator
 {
-    // Moves troops between owned territories
-    public static void Apply(
-        ref GameState state,
-        in GameAction action)
+    public static void Apply(ref GameState state, in GameAction action)
     {
         byte source = action.SourceTerritory;
         byte target = action.TargetTerritory;
-        byte amount = action.TroopCount;
+        byte troops = action.TroopCount;
+        
+        //Source removes a count of troops
+        state.SetTerritoryTroops(source, (byte)(state.GetTerritoryTroops(source) - troops));
 
-        // Remove troops from source territory
-        state.TerritoryTroops[source] -= amount;
-
-        // Add troops to target territory
-        state.TerritoryTroops[target] += amount;
+        //Target adds a count of troops
+        state.SetTerritoryTroops(target, (byte)(state.GetTerritoryTroops(target) + troops));
     }
 }

@@ -5,7 +5,7 @@ namespace RiskEngine;
 public static class RuleValidator
 {
     //Check if action is legal in state context
-    public static ValidationResult Validate(in GameState state, in GameAction action, MapLayout map)
+    public static ValidationResult Validate(in GameState state, in GameAction action, GameLayout game)
     {
         ValidationResult phaseResult = IsActionAllowedInPhase(state.CurrentPhase, action.Type);
 
@@ -15,17 +15,17 @@ public static class RuleValidator
             return phaseResult;
         }
 
-        //Unknown action types are also invalid
+        //Check Action according to context rules
         switch (action.Type)
         {
             case ActionType.PlaceTroops:
                 return ReinforceRules.Validate(state, action);
 
             case ActionType.Attack:
-                return AttackRules.Validate(state, action,map);
+                return AttackRules.Validate(state, action,game.Map);
 
             case ActionType.Fortify:
-                return ValidationResult.Valid();
+                return FortifyRules.Validate(state, action, game.Map);
 
             case ActionType.TurnInCards:
                 return ValidationResult.Valid();
@@ -40,9 +40,7 @@ public static class RuleValidator
 
 
     //Action must be compatible with Phase
-    private static ValidationResult IsActionAllowedInPhase(
-        GamePhase phase,
-        ActionType action)
+    private static ValidationResult IsActionAllowedInPhase(GamePhase phase, ActionType action)
     {
         switch (phase)
         {

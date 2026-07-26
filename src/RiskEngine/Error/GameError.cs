@@ -16,6 +16,13 @@
     NotEnoughAttackTroops= 9,
     InvalidDiceCount= 10,
     InvalidTarget= 11,
+    
+    NoPathFound = 12,
+    
+    UnknownCard = 13,
+    CardNotOwned = 14,
+    InvalidCardSet= 15,
+    
 
     InternalError = 255
 }
