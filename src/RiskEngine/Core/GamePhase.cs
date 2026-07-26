@@ -3,10 +3,12 @@
 public enum GamePhase : byte
 {
     Default=0,
-    Reinforce = 1, 
-    Attack = 2,
-    Fortify = 3,
-    End = 4,
+    CardTurnIn = 1,
+    Reinforce = 2, 
+    Attack = 3,
+    Conquer = 4,
+    Fortify = 5,
+    End = 6,
     
     
     Error = byte.MaxValue

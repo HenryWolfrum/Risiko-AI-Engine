@@ -1,15 +1,16 @@
 ﻿namespace RiskEngine;
 
-
-//Abstract Scheme of a Risk based Map
+// Abstract Scheme of a Risk based Map
 public class MapLayout
 {
-    //static list arrays
+    // Static list arrays
     public readonly string[] TerritoryNames;
     public readonly byte[][] Adjacencies;
     public readonly byte[] TerritoryToContinent;
     public readonly Continent[] Continents;
-    
+
+    // Precalculated Bitmasks for O(1) continent control checks
+    public readonly ulong[] ContinentMasks;
 
     public MapLayout(string[] territoryNames, byte[][] adjacencies, byte[] territoryToContinentMap, Continent[] continents)
     {
@@ -17,10 +18,17 @@ public class MapLayout
         Adjacencies = adjacencies;
         TerritoryToContinent = territoryToContinentMap;
         Continents = continents;
+
+        // Precalculate bitmasks for each continent
+        ContinentMasks = new ulong[continents.Length];
+        for (int i = 0; i < territoryToContinentMap.Length; i++)
+        {
+            byte continentId = territoryToContinentMap[i];
+            ContinentMasks[continentId] |= (1UL << i);
+        }
     }
 
-
-    //Low Level check for Neighbors
+    // Low Level check for Neighbors
     public bool AreNeighbors(byte territoryA, byte territoryB)
     {
         byte[] neighbors = Adjacencies[territoryA];
@@ -35,7 +43,6 @@ public class MapLayout
 
         return false;
     }
-
 
     public Continent GetContinentOfTerritory(byte territoryId)
     {

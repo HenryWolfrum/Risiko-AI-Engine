@@ -14,9 +14,9 @@ public static class TurnInCardsRules
 
         //Does player own the cards
         byte player = state.PlayerTurn;
-        if (!state.PlayerHasCard(player, action.Card1) ||
-            !state.PlayerHasCard(player, action.Card2) ||
-            !state.PlayerHasCard(player, action.Card3))
+        if (!GameStateHelper.PlayerHasCard(state,player, action.Card1) ||
+            !GameStateHelper.PlayerHasCard(state,player, action.Card2) ||
+            !GameStateHelper.PlayerHasCard(state,player, action.Card3))
         {
             return ValidationResult.Invalid(GameError.CardNotOwned);
         }

@@ -9,9 +9,9 @@ public static class FortifyMutator
         byte troops = action.TroopCount;
         
         //Source removes a count of troops
-        state.SetTerritoryTroops(source, (byte)(state.GetTerritoryTroops(source) - troops));
+        GameStateHelper.SetTerritoryTroops(ref state,source, (byte)(GameStateHelper.GetTerritoryTroops(state,source) - troops));
 
         //Target adds a count of troops
-        state.SetTerritoryTroops(target, (byte)(state.GetTerritoryTroops(target) + troops));
+        GameStateHelper.SetTerritoryTroops(ref state,target, (byte)(GameStateHelper.GetTerritoryTroops(state,target) + troops));
     }
 }

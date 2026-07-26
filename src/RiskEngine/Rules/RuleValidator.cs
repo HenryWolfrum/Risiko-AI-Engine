@@ -18,7 +18,7 @@ public static class RuleValidator
         //Check Action according to context rules
         switch (action.Type)
         {
-            case ActionType.PlaceTroops:
+            case ActionType.Reinforce:
                 return ReinforceRules.Validate(state, action);
 
             case ActionType.Attack:
@@ -46,7 +46,7 @@ public static class RuleValidator
         {
             case GamePhase.Reinforce:
 
-                if (action == ActionType.PlaceTroops)
+                if (action == ActionType.Reinforce)
                     return ValidationResult.Valid();
 
                 if (action == ActionType.TurnInCards)

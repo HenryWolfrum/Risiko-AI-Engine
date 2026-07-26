@@ -14,7 +14,7 @@ public static class ReinforceRules
         }
 
         //Owner not equal to action Executor
-        if (state.GetTerritoryOwner(action.SourceTerritory) != player)
+        if (GameStateHelper.GetTerritoryOwner(state,action.SourceTerritory) != player)
         {
             return ValidationResult.Invalid(GameError.TerritoryNotOwned);
         }
@@ -26,7 +26,7 @@ public static class ReinforceRules
         }
 
         //More Troops to place than accessible
-        if (action.TroopCount > state.GetPlayerTroopsToPlace(player))
+        if (action.TroopCount > GameStateHelper.GetPlayerTroopsToPlace(state,player))
         {
             return ValidationResult.Invalid(GameError.NotEnoughTroops);
         }

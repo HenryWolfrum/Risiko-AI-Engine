@@ -1,4 +1,6 @@
 ﻿namespace RiskEngine.Validation;
+using System.Runtime.CompilerServices;
+
 
 public static class AttackRules
 {
@@ -8,106 +10,47 @@ public static class AttackRules
         byte target = action.TargetTerritory;
         byte player = state.PlayerTurn;
 
-
         // Territory range check
         if (source >= EngineConstants.DEFAULT_TERRITORY_COUNT || target >= EngineConstants.DEFAULT_TERRITORY_COUNT)
-        {
             return ValidationResult.Invalid(GameError.InvalidTerritory);
-        }
 
-
-        // Source must belong to player
-        if (state.GetTerritoryOwner(source) != player)
-        {
+        // Source must belong to attacker
+        if (GameStateHelper.GetTerritoryOwner(in state, source) != player)
             return ValidationResult.Invalid(GameError.TerritoryNotOwned);
-        }
-
 
         // Target must belong to enemy
-        if (state.GetTerritoryOwner(target) == player)
-        {
+        if (GameStateHelper.GetTerritoryOwner(in state, target) == player)
             return ValidationResult.Invalid(GameError.InvalidTarget);
-        }
-
 
         // Territories must be connected
         if (!map.AreNeighbors(source, target))
-        {
             return ValidationResult.Invalid(GameError.TerritoriesNotAdjacent);
-        }
 
+        byte attackerTroops = GameStateHelper.GetTerritoryTroops(in state, source);
 
-        byte attackerTroops = state.GetTerritoryTroops(source);
-
-        byte defenderTroops = state.GetTerritoryTroops(target);
-
-
-        // Need at least 2 troops to attack
+        // Need at least 2 troops to attack (1 must stay behind)
         if (attackerTroops < 2)
-        {
             return ValidationResult.Invalid(GameError.NotEnoughTroops);
-        }
 
-
-        // Validate defender choice first
-        if (!IsValidDefenderDice(defenderTroops, action.ChosenDefenderDiceCount))
-        {
+        // Attacker dice validation (Max 3, but at most attackerTroops - 1)
+        byte maxAttackerDice = (byte)Math.Min(3, attackerTroops - 1);
+        if (action.ChosenAttackerDiceCount == 0 || action.ChosenAttackerDiceCount > maxAttackerDice)
             return ValidationResult.Invalid(GameError.InvalidDiceCount);
-        }
-
-
-        // Validate attacker response
-        if (!IsValidAttackerDice(attackerTroops, action.ChosenDefenderDiceCount, action.ChosenAttackerDiceCount))
-        {
-            return ValidationResult.Invalid(GameError.InvalidDiceCount);
-        }
-        
-      
-
 
         return ValidationResult.Valid();
     }
 
-
-
-    private static bool IsValidDefenderDice(byte troops, byte dice)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsValidDefenderDice(in GameState state, byte targetTerritory, byte defenderDice)
     {
-        if (dice == 0)
-            return false;
-
-
-        byte maxDice = troops >= 2 ? (byte)2 : (byte)1;
-
-
-        return dice <= maxDice;
+        if (defenderDice == 0) return false;
+        return defenderDice <= GetMaxDefenderDice(in state, targetTerritory);
     }
 
-
-
-    private static bool IsValidAttackerDice(byte troops, byte defenderDice, byte attackerDice)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte GetMaxDefenderDice(in GameState state, byte targetTerritory)
     {
-        if (troops < 2)
-            return false;
-
-        if (attackerDice == 0)
-            return false;
-
-
-        byte maxDice;
-
-
-        // Two troops depend on defender choice
-        if (troops == 2)
-        {
-            maxDice = defenderDice == 1 ? (byte)2 : (byte)1;
-        }
-        // Three or more troops allow maximum attack
-        else
-        {
-            maxDice = 3;
-        }
-
-
-        return attackerDice <= maxDice;
+        byte defenderTroops = GameStateHelper.GetTerritoryTroops(in state, targetTerritory);
+        return defenderTroops >= 2 ? (byte)2 : (byte)1;
     }
 }

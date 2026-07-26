@@ -21,7 +21,7 @@ public static class FortifyRules
         }
 
         //Source or Target not owned
-        if (state.GetTerritoryOwner(source) != player || state.GetTerritoryOwner(target) != player)
+        if (GameStateHelper.GetTerritoryOwner(state,source) != player || GameStateHelper.GetTerritoryOwner(state,target) != player)
         {
             return ValidationResult.Invalid(GameError.TerritoryNotOwned);
         }
@@ -32,7 +32,7 @@ public static class FortifyRules
             return ValidationResult.Invalid(GameError.InvalidAction);
         }
 
-        byte troops = state.GetTerritoryTroops(source);
+        byte troops = GameStateHelper.GetTerritoryTroops(state,source);
 
         //Move more troops than possible
         if (action.TroopCount >= troops)

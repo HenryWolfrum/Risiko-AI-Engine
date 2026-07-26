@@ -12,30 +12,37 @@ public static class GameStateMutator
             //Attack
             case ActionType.Attack:
             {
-                CombatResult result = CombatResolver.Resolve(state, action, ref rng);
+                CombatResult result = CombatResolver.Resolve(ref state, in action, ref rng);
                 
-                AttackMutator.Apply(ref state, action, result);
+                AttackMutator.Apply(ref state, in action, ref result);
+                break;
+            }
+            
+            //Conquer
+            case ActionType.Conquer:
+            {
+                ConquerMutator.Apply(ref state, in action);
                 break;
             }
 
             //Reinforce
-            case ActionType.PlaceTroops:
+            case ActionType.Reinforce:
             {
-                ReinforceMutator.Apply(ref state, action);
+                ReinforceMutator.Apply(ref state, in action);
                 break;
             }
 
             //Fortify
             case ActionType.Fortify:
             {
-                FortifyMutator.Apply(ref state, action);
+                FortifyMutator.Apply(ref state, in action);
                 break;
             }
 
             //Turn In Cards
             case ActionType.TurnInCards:
             {
-                CardTurnInMutator.Apply(ref state, action);
+                CardTurnInMutator.Apply(ref state, in action);
                 break;
             }
         }

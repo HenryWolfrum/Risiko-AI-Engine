@@ -5,7 +5,7 @@ public static unsafe class MapTraverser
     public static bool HasPath(GameState state, MapLayout map, byte source, byte target, byte player)
     {
         //Source or Target do not belong to player
-        if (state.GetTerritoryOwner(source) != player || state.GetTerritoryOwner(target) != player)
+        if (GameStateHelper.GetTerritoryOwner(state,source) != player || GameStateHelper.GetTerritoryOwner(state,target) != player)
         {
             return false;
         }
@@ -46,7 +46,7 @@ public static unsafe class MapTraverser
                 }
 
                 // owned neighbors added to queue
-                if (state.GetTerritoryOwner(neighbor) == player)
+                if (GameStateHelper.GetTerritoryOwner(state,neighbor) == player)
                 {
                     visited[neighbor] = 1;
                     queue[tail++] = neighbor;

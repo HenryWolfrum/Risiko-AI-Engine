@@ -22,5 +22,8 @@ public static class EngineConstants
     public const byte NO_VALUE = byte.MaxValue;
 
     public const byte MIN_TROOPS_PER_TURN = 3;
-    
+
+    public const byte CARD_TERRITORY_BONUS_TROOPS = 2;
+    public const byte MIN_REINFORCEMENT_TROOPS = 3;
+
 }

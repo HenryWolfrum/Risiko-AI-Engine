@@ -1,307 +1,153 @@
-﻿using RiskEngine;
+﻿using System;
+using System.Diagnostics;
+using RiskEngine;
 using RiskEngine.Validation;
 using RiskEngine.Resolution;
 
-Console.WriteLine("=== VALIDATOR TEST ===");
+Console.WriteLine("========================================");
+Console.WriteLine("   RISK ENGINE BENCHMARK & STRESS TEST  ");
+Console.WriteLine("========================================");
 
 unsafe
 {
-    Console.WriteLine(sizeof(GameState));
-
+    Console.WriteLine($"[MEMORY] GameState Size: {sizeof(GameState)} Bytes");
+    Console.WriteLine($"[MEMORY] GameAction Size: {sizeof(GameAction)} Bytes");
 }
 
 GameLayout game = RiskMapFactory.CreateStandardRiskMap();
 
-GameState state = GameInitializer.CreateInitialState(game, 123);
+// ==========================================
+// --- TEST 1: ECHTER KAMPF & EROBERUNG -----
+// ==========================================
+Console.WriteLine("\n=== 1. SINGLE MATCH TEST ===");
 
-
-// Eigenes Gebiet suchen
-byte ownTerritory = 255;
-
-for (byte i = 0; i < game.Map.TerritoryNames.Length; i++)
+IRiskPlayer[] testPlayers = new IRiskPlayer[game.Config.PlayerCount];
+for (int i = 0; i < testPlayers.Length; i++)
 {
-    if (state.GetTerritoryOwner(i) == state.PlayerTurn)
-    {
-        ownTerritory = i;
-        break;
-    }
+    testPlayers[i] = new SimpleStrategyBot();
 }
 
+int singleMatchSeed = 42;
+GameState testState = GameRunner.PlayGame(game, testPlayers, singleMatchSeed);
 
+Console.WriteLine($"Match beendet nach {testState.CurrentRound} Runden.");
+Console.WriteLine($"Verbleibende aktive Spieler: {GameStateHelper.GetActivePlayerCount(in testState)} / {game.Config.PlayerCount}");
 
-Console.WriteLine("\n=== ATTACK RULES TEST ===");
+// ==========================================
+// --- TEST 2: HIGH-SPEED BENCHMARK ---------
+// ==========================================
+Console.WriteLine("\n=== 2. BENCHMARK: 1.000 MATCHES ===");
 
-GameState attackState =
-    GameInitializer.CreateInitialState(game, 123);
+int benchmarkMatches = 1_000;
 
-attackState.CurrentPhase = GamePhase.Attack;
-
-
-// Suche gültiges Angriffspaar
-byte attackerTerritory = 255;
-byte defenderTerritory = 255;
-
-for (byte i = 0; i < game.Map.TerritoryNames.Length; i++)
+// Warmup
+for (int i = 0; i < 10; i++)
 {
-    if (attackState.GetTerritoryOwner(i) != attackState.PlayerTurn)
-        continue;
+    GameRunner.PlayGame(game, testPlayers, i);
+}
 
-    for (byte j = 0; j < game.Map.TerritoryNames.Length; j++)
+GC.Collect();
+GC.WaitForPendingFinalizers();
+GC.Collect();
+
+long memoryBefore = GC.GetAllocatedBytesForCurrentThread();
+Stopwatch stopwatch = Stopwatch.StartNew();
+
+for (int i = 0; i < benchmarkMatches; i++)
+{
+    GameRunner.PlayGame(game, testPlayers, i);
+}
+
+stopwatch.Stop();
+long memoryAfter = GC.GetAllocatedBytesForCurrentThread();
+
+double totalSeconds = stopwatch.Elapsed.TotalSeconds;
+double matchesPerSecond = benchmarkMatches / totalSeconds;
+long totalAllocatedBytes = memoryAfter - memoryBefore;
+
+Console.WriteLine($"----------------------------------------");
+Console.WriteLine($"Gesamtzeit:         {stopwatch.ElapsedMilliseconds} ms ({totalSeconds:F3} s)");
+Console.WriteLine($"Durchsatz:          {matchesPerSecond:N0} Matches / Sekunde");
+Console.WriteLine($"Allokierte Bytes:   {totalAllocatedBytes} Bytes");
+Console.WriteLine($"----------------------------------------");
+
+if (totalAllocatedBytes == 0)
+{
+    Console.WriteLine(">>> RESULTAT: PERFECT ZERO ALLOCATION IN GAME LOOP! <<<");
+}
+
+// ==========================================
+// --- SIMPLER TEST BOT ---------------------
+// ==========================================
+public class SimpleStrategyBot : IRiskPlayer
+{
+    public GameAction DecideAction(in GameState state, GamePhase phase, GameLayout layout)
     {
-        if (attackState.GetTerritoryOwner(j) == attackState.PlayerTurn)
-            continue;
+        byte player = state.PlayerTurn;
 
-        if (game.Map.AreNeighbors(i, j))
+        switch (phase)
         {
-            attackerTerritory = i;
-            defenderTerritory = j;
-            break;
+            case GamePhase.Reinforce:
+            {
+                byte target = GameStateHelper.GetFirstTerritoryOwnedBy(in state, player);
+                byte troops = GameStateHelper.GetPlayerTroopsToPlace(in state, player);
+
+                return new GameAction
+                {
+                    Type = ActionType.Reinforce,
+                    TargetTerritory = target,
+                    TroopCount = troops
+                };
+            }
+
+            case GamePhase.Attack:
+            {
+                // Greift das erste verfügbare feindliche Nachbargebiet an
+                for (byte i = 0; i < EngineConstants.DEFAULT_TERRITORY_COUNT; i++)
+                {
+                    if (GameStateHelper.GetTerritoryOwner(in state, i) != player) continue;
+                    byte troops = GameStateHelper.GetTerritoryTroops(in state, i);
+                    if (troops <= 1) continue;
+
+                    byte[] neighbors = layout.Map.Adjacencies[i];
+                    for (int n = 0; n < neighbors.Length; n++)
+                    {
+                        byte neighborId = neighbors[n];
+                        if (GameStateHelper.GetTerritoryOwner(in state, neighborId) != player)
+                        {
+                            byte diceCount = (byte)Math.Min(3, troops - 1);
+                            return new GameAction
+                            {
+                                Type = ActionType.Attack,
+                                SourceTerritory = i,
+                                TargetTerritory = neighborId,
+                                ChosenAttackerDiceCount = diceCount
+                            };
+                        }
+                    }
+                }
+
+                return new GameAction { Type = ActionType.SkipPhase };
+            }
+
+            case GamePhase.Conquer:
+            {
+                return new GameAction
+                {
+                    Type = ActionType.Conquer,
+                    ConquerTroopCount = 255
+                };
+            }
+
+            case GamePhase.Fortify:
+            case GamePhase.CardTurnIn:
+            default:
+                return new GameAction { Type = ActionType.SkipPhase };
         }
     }
 
-    if (attackerTerritory != 255)
-        break;
-}
-
-
-// Truppen für gültigen Angriff vorbereiten
-attackState.SetTerritoryTroops(
-    attackerTerritory,
-    5);
-
-
-GameAction attackAction = new GameAction
-{
-    Type = ActionType.Attack,
-    SourceTerritory = attackerTerritory,
-    TargetTerritory = defenderTerritory,
-    ChosenAttackerDiceCount = 3,
-    ChosenDefenderDiceCount = 2
-};
-
-
-Console.WriteLine(
-    attackState.GetTerritoryTroops(attackerTerritory));
-
-ValidationResult result =
-    RuleValidator.Validate(
-        attackState,
-        attackAction,
-        game);
-
-
-Console.WriteLine(
-    $"Valid attack: {result.IsValid}, Error: {result.Error}");
-
-Console.WriteLine(
-    $"From {attackerTerritory} -> {defenderTerritory}");
-
-
-Console.WriteLine("\n=== ATTACK INVALID TESTS ===");
-
-
-// 1. Angriff auf eigenes Gebiet
-GameAction ownTerritoryAttack = new GameAction
-{
-    Type = ActionType.Attack,
-    SourceTerritory = attackerTerritory,
-    TargetTerritory = attackerTerritory,
-    ChosenAttackerDiceCount = 3,
-    ChosenDefenderDiceCount = 2
-};
-
-
-result = RuleValidator.Validate(
-    attackState,
-    ownTerritoryAttack,
-    game);
-
-
-Console.WriteLine(
-    $"Own territory attack: {result.IsValid}, Error: {result.Error}");
-
-
-
-// 2. Nicht benachbartes gegnerisches Gebiet suchen
-byte nonAdjacentEnemy = 255;
-
-for (byte i = 0; i < game.Map.TerritoryNames.Length; i++)
-{
-    if (attackState.GetTerritoryOwner(i) != attackState.PlayerTurn &&
-        !game.Map.AreNeighbors(attackerTerritory, i))
+    public byte DecideDefenderDice(in GameState state, in GameAction attackAction)
     {
-        nonAdjacentEnemy = i;
-        break;
+        return AttackRules.GetMaxDefenderDice(in state, attackAction.TargetTerritory);
     }
 }
-
-
-GameAction nonAdjacentAttack = new GameAction
-{
-    Type = ActionType.Attack,
-    SourceTerritory = attackerTerritory,
-    TargetTerritory = nonAdjacentEnemy,
-    ChosenAttackerDiceCount = 3,
-    ChosenDefenderDiceCount = 2
-};
-
-
-result = RuleValidator.Validate(
-    attackState,
-    nonAdjacentAttack,
-    game);
-
-
-Console.WriteLine(
-    $"Non adjacent attack: {result.IsValid}, Error: {result.Error}");
-
-
-
-// 3. Zu wenig Truppen
-attackState.SetTerritoryTroops(
-    attackerTerritory,
-    1);
-
-
-GameAction weakAttack = new GameAction
-{
-    Type = ActionType.Attack,
-    SourceTerritory = attackerTerritory,
-    TargetTerritory = defenderTerritory,
-    ChosenAttackerDiceCount = 1,
-    ChosenDefenderDiceCount = 1
-};
-
-
-result = RuleValidator.Validate(
-    attackState,
-    weakAttack,
-    game);
-
-
-Console.WriteLine(
-    $"One troop attack: {result.IsValid}, Error: {result.Error}");
-
-
-
-Console.WriteLine("\n=== DICE RULE TESTS ===");
-
-
-// Angreifer mit 2 Truppen
-attackState.SetTerritoryTroops(
-    attackerTerritory,
-    2);
-
-
-// Verteidiger 1 Würfel -> Angreifer darf 2 Würfel
-GameAction twoDiceAttack = new GameAction
-{
-    Type = ActionType.Attack,
-    SourceTerritory = attackerTerritory,
-    TargetTerritory = defenderTerritory,
-    ChosenAttackerDiceCount = 2,
-    ChosenDefenderDiceCount = 1
-};
-
-
-result = RuleValidator.Validate(
-    attackState,
-    twoDiceAttack,
-    game);
-
-
-Console.WriteLine(
-    $"2 attacker dice vs 1 defender die: {result.IsValid}, Error: {result.Error}");
-
-
-
-// Verteidiger 2 Würfel -> Angreifer darf nur 1 Würfel
-GameAction invalidTwoDiceAttack = new GameAction
-{
-    Type = ActionType.Attack,
-    SourceTerritory = attackerTerritory,
-    TargetTerritory = defenderTerritory,
-    ChosenAttackerDiceCount = 2,
-    ChosenDefenderDiceCount = 2
-};
-
-
-result = RuleValidator.Validate(
-    attackState,
-    invalidTwoDiceAttack,
-    game);
-
-
-Console.WriteLine(
-    $"2 attacker dice vs 2 defender dice: {result.IsValid}, Error: {result.Error}");
-
-
-
-// 5 Angreifertruppen -> 3 Würfel erlaubt
-attackState.SetTerritoryTroops(
-    attackerTerritory,
-    5);
-
-attackState.SetTerritoryTroops(
-    defenderTerritory,
-    2);
-
-
-GameAction threeDiceAttack = new GameAction
-{
-    Type = ActionType.Attack,
-    SourceTerritory = attackerTerritory,
-    TargetTerritory = defenderTerritory,
-    ChosenAttackerDiceCount = 3,
-    ChosenDefenderDiceCount = 2
-};
-
-
-
-result = RuleValidator.Validate(
-    attackState,
-    threeDiceAttack,
-    game);
-
-
-Console.WriteLine(
-    $"3 attacker dice vs 2 defender dice: {result.IsValid}, Error: {result.Error}");
-
-
-Console.WriteLine("\n=== COMBAT RESOLVER TEST ===");
-
-GameState combatState =
-    GameInitializer.CreateInitialState(game, 123);
-
-combatState.SetTerritoryTroops(
-    attackerTerritory,
-    5);
-
-combatState.SetTerritoryTroops(
-    defenderTerritory,
-    2);
-
-
-GameAction combatAction = new GameAction
-{
-    Type = ActionType.Attack,
-    SourceTerritory = attackerTerritory,
-    TargetTerritory = defenderTerritory,
-    ChosenAttackerDiceCount = 3,
-    ChosenDefenderDiceCount = 2
-};
-
-
-EngineRandom rng = new EngineRandom(42);
-
-
-CombatResult combatResult = CombatResolver.Resolve( combatState, combatAction, ref rng);
-
-
-Console.WriteLine(
-    $"Attacker losses: {combatResult.AttackerLosses}");
-
-Console.WriteLine(
-    $"Defender losses: {combatResult.DefenderLosses}");
-    
-    

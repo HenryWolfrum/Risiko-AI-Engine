@@ -1,37 +1,57 @@
 namespace RiskEngine.Mutation;
 
-public static  class CardTurnInMutator
+using System.Runtime.CompilerServices;
+
+public static class CardTurnInMutator
 {
     // Trades three cards for reinforcement troops
     public static void Apply(ref GameState state, in GameAction action)
     {
         byte player = state.PlayerTurn;
 
-        // Remove cards from player's hand
-        state.RemoveCardFromPlayer(player,action.Card1);
-        state.RemoveCardFromPlayer(player,action.Card2);
-        state.RemoveCardFromPlayer(player,action.Card3);
+        // 1. Remove cards from player's hand (fixed typo: Card3 instead of duplicate Card1)
+        GameStateHelper.RemoveCardFromPlayer(ref state, player, action.Card1);
+        GameStateHelper.RemoveCardFromPlayer(ref state, player, action.Card2);
+        GameStateHelper.RemoveCardFromPlayer(ref state, player, action.Card3);
 
-        // Increase traded set counter
+        // 2. Increase traded set counter
         state.CardSetsTradedCount++;
 
-        // Add reinforcement bonus
-        state.SetPlayerTroopsToPlace(player,(byte)(state.GetPlayerTroopsToPlace(player) + CalculateBonus(state.CardSetsTradedCount)));
-    }
-    
+        // 3. Add base reinforcement bonus from card trade to player's placement pool
+        byte baseBonus = CalculateBonus(state.CardSetsTradedCount);
+        byte currentTroopsToPlace = GameStateHelper.GetPlayerTroopsToPlace(in state, player);
+        GameStateHelper.SetPlayerTroopsToPlace(ref state, player, (byte)(currentTroopsToPlace + baseBonus));
 
-    // Calculates reinforcement bonus
+        // 4. Check for territory ownership bonus (+2 troops directly onto the owned territory)
+        ApplyTerritoryCardBonusIfOwned(ref state, player, action.Card1);
+        ApplyTerritoryCardBonusIfOwned(ref state, player, action.Card2);
+        ApplyTerritoryCardBonusIfOwned(ref state, player, action.Card3);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void ApplyTerritoryCardBonusIfOwned(ref GameState state, byte player, byte cardTerritoryId)
+    {
+        // If the card matches a territory currently owned by the player, add +2 troops directly to that territory
+        if (GameStateHelper.GetTerritoryOwner(in state, cardTerritoryId) == player)
+        {
+            byte currentTroops = GameStateHelper.GetTerritoryTroops(in state, cardTerritoryId);
+            GameStateHelper.SetTerritoryTroops(ref state, cardTerritoryId, (byte)(currentTroops + EngineConstants.CARD_TERRITORY_BONUS_TROOPS));
+        }
+    }
+
+    // Calculates reinforcement bonus based on set count
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static byte CalculateBonus(byte tradedSets)
     {
-        if (tradedSets == 1)
-            return 4;
-
-        if (tradedSets == 2)
-            return 6;
-
-        if (tradedSets == 3)
-            return 8;
-
-        return (byte)(10 + (tradedSets - 4) * 5);
+        return tradedSets switch
+        {
+            1 => 4,
+            2 => 6,
+            3 => 8,
+            4 => 10,
+            5 => 12,
+            6 => 15,
+            _ => (byte)(15 + (tradedSets - 6) * 5)
+        };
     }
 }
