@@ -7,9 +7,7 @@ public sealed class GameLayout
         //Configuration Validation check
         if (mapLayout.TerritoryNames.Length != engineConfig.TerritoryCount ||
             deckLayout.TerritoryToType.Length - 2 != engineConfig.TerritoryCount)
-            throw new ArgumentException(
-                $"LAYOUT MISMATCH: Config expects {engineConfig.TerritoryCount} Territories, " +
-                $"Map has {mapLayout.TerritoryNames.Length}, Deck has {deckLayout.TerritoryToType.Length}.");
+            throw new ArgumentException($"LAYOUT MISMATCH: Config expects {engineConfig.TerritoryCount} Territories, " + $"Map has {mapLayout.TerritoryNames.Length}, Deck has {deckLayout.TerritoryToType.Length}.");
 
 
         Map = mapLayout;
