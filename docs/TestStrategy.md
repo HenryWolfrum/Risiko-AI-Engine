@@ -206,14 +206,15 @@ The identifier is used for:
 
 | Component | Status |
 |---|---|
-| GameInitializer | Covered |
-| GameStateHelper | Covered |
-| CombatResolver | Covered |
-| AttackRules | Covered |
-| Fortify Rules | Planned |
-| Reinforcement Rules | Planned |
-| Conquer Logic | Planned |
-| Card Rules | Planned |
+| GameInitializer | Completed |
+| GameStateHelper | Completed |
+| CombatResolver | Completed |
+| Attack Rules | Completed |
+| Reinforce Rules | Completed |
+| Reinforce Mutator | Completed |
+| Conquer | Planned |
+| Fortify | Planned |
+| Cards | Planned |
 | GameRunner | Planned |
 | Layout Validation | Planned |
 ---
