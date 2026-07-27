@@ -154,4 +154,51 @@ public sealed class TestLayoutBuilder
             InitializeAdjacencyList();
         }
     }
+    
+    
+    
+    /// <summary>
+    /// Creates a small deterministic Risk-like test map.
+    ///
+    /// Topology:
+    ///
+    ///          0
+    ///        /   \
+    ///       1 --- 2
+    ///       |     |
+    ///       3 --- 4
+    ///        \   /
+    ///          5
+    ///
+    /// Connections:
+    /// 0: 1,2
+    /// 1: 0,2,3
+    /// 2: 0,1,4
+    /// 3: 1,4,5
+    /// 4: 2,3,5
+    /// 5: 3,4
+    ///
+    /// Purpose:
+    /// - General engine tests
+    /// - Attack and fortification scenarios
+    /// - Deterministic initialization tests
+    ///
+    /// This map intentionally does not represent the real Risk map.
+    /// It only provides the minimum topology required for rule testing.
+    /// </summary>
+    public static TestLayoutBuilder CreateSmallRiskLayout(byte playerCount = 2)
+    {
+        return Create()
+            .WithTerritories(6)
+            .WithPlayerCount(playerCount)
+            .Connect(0, 1)
+            .Connect(0, 2)
+            .Connect(1, 2)
+            .Connect(1, 3)
+            .Connect(2, 4)
+            .Connect(3, 4)
+            .Connect(3, 5)
+            .Connect(4, 5);
+
+    }
 }
