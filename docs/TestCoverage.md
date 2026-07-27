@@ -72,7 +72,7 @@ This layer is critical for:
 | CONQUER-001 | Planned | Planned |
 
 
-### Reinforcement
+### Reinforcement Rules
 
 | Test ID | Description |
 |---|---|
@@ -81,6 +81,15 @@ This layer is critical for:
 | REINFORCE-003 | Zero troop placement is rejected |
 | REINFORCE-004 | Reinforcement pool limits placement |
 | REINFORCE-005 | Invalid territory ids are rejected |
+
+### Reinforcement Mutation
+
+| Test ID | Description |
+|---|---|
+| MUTATE-REINFORCE-001 | Reinforcement adds troops to target territory |
+| MUTATE-REINFORCE-002 | Reinforcement decreases player troop pool |
+| MUTATE-REINFORCE-003 | Other territories remain unchanged |
+| MUTATE-REINFORCE-004 | Multiple reinforcements accumulate correctly |
 
 
 ### Fortify
