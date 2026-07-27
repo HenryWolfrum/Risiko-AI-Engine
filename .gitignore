@@ -1,13 +1,50 @@
-[Bb]in/
-[Ob]j/
-
-.vs/
+# ==========================================
+# .NET / C# Build Outputs & Cache
+# ==========================================
+**/[Bb]in/
+**/[Oo]bj/
+**/[Bb]uild/
 *.user
+*.userosscache
+*.sln.docstates
+
+# ==========================================
+# IDEs & Editors
+# ==========================================
+# Visual Studio
+.vs/
 *.suo
+*.user
+*.sln.docstates
 
-.vscode/
-
-.NETCore/
-
+# JetBrains Rider / ReSharper
 .idea/
-.obj/
+*.sln.iml
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# ==========================================
+# OS-Generated Files
+# ==========================================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ==========================================
+# Test & Coverage Outputs
+# ==========================================
+TestResults/
+*.coverage
+*.coveragexml
