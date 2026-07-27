@@ -12,7 +12,7 @@ public static class AttackRules
         var player = state.PlayerTurn;
 
         // Territory range check
-        if (source >= map.TerritoryNames.Length || target >= map.TerritoryNames.Length)
+        if (source >= map.TerritoryCount || target >= map.TerritoryCount)
             return ValidationResult.Invalid(GameError.InvalidTerritory);
 
         // Source must belong to attacker

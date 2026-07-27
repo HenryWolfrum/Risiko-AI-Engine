@@ -34,7 +34,7 @@ public static class RuleValidator
         // Validate action according to its specific rule set
         return action.Type switch
         {
-            ActionType.Reinforce => ReinforceRules.Validate(in state, in action),
+            ActionType.Reinforce => ReinforceRules.Validate(in state, in action,game.Map),
             
             ActionType.Attack => AttackRules.Validate(in state, in action, game.Map),
 

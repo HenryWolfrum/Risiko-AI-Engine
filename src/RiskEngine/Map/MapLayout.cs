@@ -13,6 +13,8 @@ public class MapLayout
     // Static list arrays
     public readonly string[] TerritoryNames;
     public readonly byte[] TerritoryToContinent;
+    
+    public byte TerritoryCount { get; }
 
     public MapLayout(string[] territoryNames, byte[][] adjacencies, byte[] territoryToContinentMap,
         Continent[] continents)
@@ -22,8 +24,11 @@ public class MapLayout
         TerritoryToContinent = territoryToContinentMap;
         Continents = continents;
 
+        TerritoryCount = (byte)territoryNames.Length;
+
         // Precalculate bitmasks for each continent
         ContinentMasks = new ulong[continents.Length];
+
         for (var i = 0; i < territoryToContinentMap.Length; i++)
         {
             var continentId = territoryToContinentMap[i];

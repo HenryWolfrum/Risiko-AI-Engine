@@ -2,13 +2,13 @@
 
 public static class ReinforceRules
 {
-    public static ValidationResult Validate(in GameState state, in GameAction action)
+    public static ValidationResult Validate(in GameState state, in GameAction action, MapLayout map)
     {
         var player = state.PlayerTurn;
 
 
         //Territory out of Range
-        if (action.SourceTerritory >= EngineConstants.DEFAULT_TERRITORY_COUNT)
+        if (action.SourceTerritory >= map.TerritoryCount)
             return ValidationResult.Invalid(GameError.InvalidTerritory);
 
         //Owner not equal to action Executor
