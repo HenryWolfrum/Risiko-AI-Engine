@@ -202,23 +202,20 @@ The identifier is used for:
 
 ---
 
-# Coverage Status
+## Coverage Status
 
 | Component | Status |
 |---|---|
-| Test Infrastructure | Implemented |
-| GameInitializer | Implemented |
-| GameStateHelper | Planned |
+| GameInitializer | Covered |
+| GameStateHelper | Covered |
 | CombatResolver | Planned |
 | Attack Rules | Planned |
 | Conquer | Planned |
 | Reinforcement | Planned |
 | Fortify | Planned |
-| Cards | Planned |
+| Cards | Partial |
 | GameRunner | Planned |
 | Layout Validation | Planned |
-
-
 ---
 
 # Detailed Test Documentation

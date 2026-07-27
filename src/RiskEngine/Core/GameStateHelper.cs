@@ -60,17 +60,16 @@ public static unsafe class GameStateHelper
     }
 
     /// <summary>
-    ///     Finds the territory ID (0-indexed) of the first territory owned by the specified player.
-    ///     Uses hardware TrailingZeroCount (TZCNT) for O(1) performance.
+    /// Finds the first territory ID owned by the specified player.
+    /// Returns NO_VALUE if the player owns no territories.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte GetFirstTerritoryOwnedBy(in GameState state, byte player)
     {
         var playerTerritoriesBitboard = GetPlayerTerritoriesBitboard(in state, player);
 
-        // Safety check: returns 0 if player owns no territories (e.g. eliminated)
         if (playerTerritoriesBitboard == 0UL)
-            return 0;
+            return EngineConstants.NO_VALUE;
 
         return (byte)BitOperations.TrailingZeroCount(playerTerritoriesBitboard);
     }
@@ -255,8 +254,13 @@ public static unsafe class GameStateHelper
         state.CurrentRound = 1;
         state.CurrentPhase = GamePhase.Default;
 
-        // Set bit to 1 for all active players
         state.PlayersAliveBitboard = (byte)((1 << playerCount) - 1);
+
+        for (var i = 0; i < EngineConstants.DEFAULT_TERRITORY_COUNT; i++)
+        {
+            state.TerritoryOwners[i] = EngineConstants.NO_VALUE;
+            state.TerritoryTroops[i] = 0;
+        }
 
         return state;
     }
