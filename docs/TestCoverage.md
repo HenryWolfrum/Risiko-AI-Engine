@@ -13,21 +13,33 @@
 
 ### GameStateHelper
 
+The GameStateHelper layer provides the central access and mutation interface
+for the GameState structure.
+
+These tests guarantee that state handling remains deterministic and consistent.
+This layer is critical for:
+
+- game simulations
+- replay systems
+- AI search algorithms
+- large scale bot evaluation
+
+
 | Test ID | Description | Status |
 |---|---|---|
-| STATE-001 | Reads and writes territory ownership correctly | Covered |
-| STATE-002 | Reads and writes territory troop values correctly | Covered |
-| STATE-003 | Handles player reinforcement troop storage correctly | Covered |
-| STATE-004 | Counts territories owned by a player correctly | Covered |
-| STATE-005 | Creates correct player territory bitboards | Covered |
-| STATE-006 | Handles players without territories correctly | Covered |
-| STATE-007 | Empty states initialize territories with NO_VALUE ownership | Covered |
-| STATE-008 | Creates correct territory ownership bitboards | Covered |
+| STATE-001 | Stores and retrieves territory ownership correctly | Covered |
+| STATE-002 | Stores and retrieves territory troop values correctly | Covered |
+| STATE-003 | Tracks player alive state through bitboard operations | Covered |
+| STATE-004 | Counts owned territories correctly | Covered |
+| STATE-005 | Stores player reinforcement troops correctly | Covered |
+| STATE-006 | Stores and queries player cards through bitboards | Covered |
+| STATE-007 | Empty GameState initializes territories with NO_VALUE ownership | Covered |
+| STATE-008 | Creates correct player territory bitboards | Covered |
 | STATE-009 | Returns zero owned territories for players without territories | Covered |
 | STATE-010 | Returns the first owned territory correctly | Covered |
 | STATE-011 | Returns NO_VALUE when no territory exists | Covered |
-| STATE-012 | Tracks player alive state and elimination correctly | Covered |
-| STATE-013 | Maintains card bitboard operations correctly | Covered |
+| STATE-012 | Tracks player elimination and active player count correctly | Covered |
+| STATE-013 | Adds, removes and counts player cards correctly | Covered |
 
 
 ### CombatResolver

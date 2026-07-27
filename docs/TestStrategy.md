@@ -255,3 +255,15 @@ These properties are required for:
 - Elo ranking
 - MCTS experiments
 - reinforcement learning environments
+## State Invariants
+
+The GameState layer follows explicit invariants.
+
+Important rules:
+
+- Unassigned territories use `EngineConstants.NO_VALUE`
+- Missing territory references must never resolve to valid territory IDs
+- Player IDs and missing values must remain distinguishable
+- Empty states must not accidentally assign ownership
+
+These invariants prevent ambiguous states and are required for reliable AI simulations.
