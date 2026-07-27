@@ -10,12 +10,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("RiskEngine")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("RiskEngine.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+92afe4db68a9984d73ee5019fb77e2d2ae87ce67")]
-[assembly: System.Reflection.AssemblyProductAttribute("RiskEngine")]
-[assembly: System.Reflection.AssemblyTitleAttribute("RiskEngine")]
+[assembly: System.Reflection.AssemblyProductAttribute("RiskEngine.Tests")]
+[assembly: System.Reflection.AssemblyTitleAttribute("RiskEngine.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Von der MSBuild WriteCodeFragment-Klasse generiert.

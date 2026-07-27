@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\hwwol\\RiderProjects\\Risiko-AI-Engine\\src\\RiskEngine\\RiskEngine.csproj": {}
+    "C:\\Users\\Henry Wolfrum\\risiko-ai-engine\\src\\RiskEngine\\RiskEngine.csproj": {}
   },
   "projects": {
-    "C:\\Users\\hwwol\\RiderProjects\\Risiko-AI-Engine\\src\\RiskEngine\\RiskEngine.csproj": {
+    "C:\\Users\\Henry Wolfrum\\risiko-ai-engine\\src\\RiskEngine\\RiskEngine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\hwwol\\RiderProjects\\Risiko-AI-Engine\\src\\RiskEngine\\RiskEngine.csproj",
+        "projectUniqueName": "C:\\Users\\Henry Wolfrum\\risiko-ai-engine\\src\\RiskEngine\\RiskEngine.csproj",
         "projectName": "RiskEngine",
-        "projectPath": "C:\\Users\\hwwol\\RiderProjects\\Risiko-AI-Engine\\src\\RiskEngine\\RiskEngine.csproj",
-        "packagesPath": "C:\\Users\\hwwol\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\hwwol\\RiderProjects\\Risiko-AI-Engine\\src\\RiskEngine\\obj\\",
+        "projectPath": "C:\\Users\\Henry Wolfrum\\risiko-ai-engine\\src\\RiskEngine\\RiskEngine.csproj",
+        "packagesPath": "C:\\Users\\Henry Wolfrum\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Henry Wolfrum\\risiko-ai-engine\\src\\RiskEngine\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\hwwol\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Henry Wolfrum\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -59,7 +65,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.316/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.313/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
