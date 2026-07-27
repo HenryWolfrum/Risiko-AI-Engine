@@ -209,11 +209,11 @@ The identifier is used for:
 | GameInitializer | Covered |
 | GameStateHelper | Covered |
 | CombatResolver | Covered |
-| Attack Rules | Planned |
-| Conquer | Planned |
-| Reinforcement | Planned |
-| Fortify | Planned |
-| Cards | Planned |
+| AttackRules | Covered |
+| Fortify Rules | Planned |
+| Reinforcement Rules | Planned |
+| Conquer Logic | Planned |
+| Card Rules | Planned |
 | GameRunner | Planned |
 | Layout Validation | Planned |
 ---

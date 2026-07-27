@@ -55,10 +55,17 @@ This layer is critical for:
 
 ### Attack Rules
 
-| Test ID | Description | Status |
-|---|---|---|
-| ATTACK-001 | Planned | Planned |
+## AttackRules Coverage
 
+| Test ID    | Description |
+|------------|---|
+| ATTACK-001 | Valid adjacent attack is accepted |
+| ATTACK-002 | Source territory must belong to active player |
+| ATTACK-003 | Cannot attack own territory |
+| ATTACK-004 | Non adjacent territories are rejected |
+| ATTACK-005 | Territory needs minimum troops to attack |
+| ATTACK-006 | Invalid attacker dice count is rejected |
+| ATTACK-007 | Defender dice limit depends on troops |
 
 ### Conquer
 
