@@ -53,8 +53,6 @@ This layer is critical for:
 | COMBAT-005 | Resolver respects selected dice counts | Covered |
 
 
-### Attack Rules
-
 ## AttackRules Coverage
 
 | Test ID    | Description |
@@ -76,9 +74,13 @@ This layer is critical for:
 
 ### Reinforcement
 
-| Test ID | Description | Status |
-|---|---|---|
-| REINFORCE-001 | Planned | Planned |
+| Test ID | Description |
+|---|---|
+| REINFORCE-001 | Player can reinforce owned territory |
+| REINFORCE-002 | Enemy territories cannot be reinforced |
+| REINFORCE-003 | Zero troop placement is rejected |
+| REINFORCE-004 | Reinforcement pool limits placement |
+| REINFORCE-005 | Invalid territory ids are rejected |
 
 
 ### Fortify
