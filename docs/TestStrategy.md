@@ -208,12 +208,12 @@ The identifier is used for:
 |---|---|
 | GameInitializer | Covered |
 | GameStateHelper | Covered |
-| CombatResolver | Planned |
+| CombatResolver | Covered |
 | Attack Rules | Planned |
 | Conquer | Planned |
 | Reinforcement | Planned |
 | Fortify | Planned |
-| Cards | Partial |
+| Cards | Planned |
 | GameRunner | Planned |
 | Layout Validation | Planned |
 ---

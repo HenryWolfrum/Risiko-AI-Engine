@@ -42,11 +42,15 @@ This layer is critical for:
 | STATE-013 | Adds, removes and counts player cards correctly | Covered |
 
 
-### CombatResolver
+## CombatResolver Coverage
 
 | Test ID | Description | Status |
 |---|---|---|
-| COMBAT-001 | Planned | Planned |
+| COMBAT-001 | Single dice combat resolves correctly | Covered |
+| COMBAT-002 | Equal dice rolls cause attacker losses according to Risk rules | Covered |
+| COMBAT-003 | Multiple dice comparisons resolve correctly | Covered |
+| COMBAT-004 | Same seed produces identical combat results | Covered |
+| COMBAT-005 | Resolver respects selected dice counts | Covered |
 
 
 ### Attack Rules
