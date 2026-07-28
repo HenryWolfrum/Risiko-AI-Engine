@@ -9,7 +9,7 @@ public static class FortifyRules
         var player = state.PlayerTurn;
 
         //Source or Target out of Range
-        if (source >= EngineConstants.DEFAULT_TERRITORY_COUNT || target >= EngineConstants.DEFAULT_TERRITORY_COUNT)
+        if (source >= map.TerritoryCount || target >= map.TerritoryCount)
             return ValidationResult.Invalid(GameError.InvalidTerritory);
 
         //Source is equal to Target

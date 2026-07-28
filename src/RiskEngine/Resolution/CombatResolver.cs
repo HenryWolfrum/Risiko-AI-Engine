@@ -10,8 +10,8 @@ public static class CombatResolver
         var defenderDiceCount = action.ChosenDefenderDiceCount;
 
         // Allocate dice on the stack
-        Span<byte> attackerDice = stackalloc byte[EngineConstants.ATTACKER_DICE_COUNT];
-        Span<byte> defenderDice = stackalloc byte[EngineConstants.DEFENDER_DICE_COUNT];
+        Span<byte> attackerDice = stackalloc byte[EngineConstants.MAX_ATTACKER_DICE];
+        Span<byte> defenderDice = stackalloc byte[EngineConstants.MAX_DEFENDER_DICE];
 
         // Roll dice
         RollDice(attackerDice, attackerDiceCount, ref rng);

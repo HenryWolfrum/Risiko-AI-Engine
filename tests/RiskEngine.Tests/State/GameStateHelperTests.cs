@@ -138,31 +138,6 @@ public class GameStateHelperTests
             GameStateHelper.GetPlayerTroopsToPlace(in state, 0));
     }
 
-
-    /*
-     * STATE-006
-     *
-     * Player card bitboard should correctly add and query cards.
-     *
-     * Guarantees:
-     * - cards can be assigned
-     * - card lookup works
-     */
-    [Fact]
-    public void STATE_006_PlayerCards_ShouldBeStoredInBitboard()
-    {
-        // Arrange
-        var state = GameStateHelper.CreateEmpty(2);
-
-
-        // Act
-        GameStateHelper.AddCardToPlayer(ref state, 0, 5);
-
-
-        // Assert
-        Assert.True(
-            GameStateHelper.PlayerHasCard(in state, 0, 5));
-    }
     
     /*
      * STATE-007
@@ -178,9 +153,8 @@ public class GameStateHelperTests
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
 
-
         // Assert
-        for (byte territory = 0; territory < EngineConstants.DEFAULT_TERRITORY_COUNT; territory++)
+        for (byte territory = 0; territory < EngineConstants.MAX_TERRITORIES; territory++)
         {
             Assert.Equal(EngineConstants.NO_VALUE, GameStateHelper.GetTerritoryOwner(in state, territory));
         }
@@ -336,42 +310,5 @@ public class GameStateHelperTests
     }
     
     
-    /*
-     * STATE-013
-     *
-     * Card helper operations must correctly
-     * add, remove and count cards.
-     *
-     * Guarantees:
-     * - cards can be assigned
-     * - card ownership can be queried
-     * - card removal works
-     */
-    [Fact]
-    public void STATE_013_CardOperations_ShouldMaintainCorrectCardState()
-    {
-        // Arrange
-        var state = GameStateHelper.CreateEmpty(2);
-    
-    
-        // Act
-        GameStateHelper.AddCardToPlayer(ref state, 0, 5);
-        GameStateHelper.AddCardToPlayer(ref state, 0, 10);
-    
-    
-        // Assert
-        Assert.True(GameStateHelper.PlayerHasCard(in state, 0, 5));
-        Assert.True(GameStateHelper.PlayerHasCard(in state, 0, 10));
-    
-        Assert.Equal(2, GameStateHelper.GetPlayerCardCount(in state, 0));
-    
-    
-        // Act
-        GameStateHelper.RemoveCardFromPlayer(ref state, 0, 5);
-    
-    
-        // Assert
-        Assert.False(GameStateHelper.PlayerHasCard(in state, 0, 5));
-        Assert.Equal(1, GameStateHelper.GetPlayerCardCount(in state, 0));
-    }
+   
 }

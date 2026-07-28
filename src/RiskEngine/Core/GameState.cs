@@ -3,8 +3,8 @@
 public unsafe struct GameState
 {
     // --- Territory Info ---
-    public fixed byte TerritoryOwners[EngineConstants.DEFAULT_TERRITORY_COUNT];
-    public fixed byte TerritoryTroops[EngineConstants.DEFAULT_TERRITORY_COUNT];
+    public fixed byte TerritoryOwners[EngineConstants.MAX_TERRITORIES];
+    public fixed byte TerritoryTroops[EngineConstants.MAX_TERRITORIES];
 
     // --- Player Info ---
     public fixed byte PlayerTroopsToPlace[EngineConstants.MAX_PLAYERS];

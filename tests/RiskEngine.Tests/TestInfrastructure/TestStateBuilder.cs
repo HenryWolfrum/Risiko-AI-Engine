@@ -10,21 +10,25 @@ using RiskEngine;
 /// </summary>
 public sealed class TestStateBuilder
 {
+    private readonly GameLayout _layout;
     private GameState _state;
 
 
-    private TestStateBuilder(byte playerCount)
+    private TestStateBuilder(GameLayout layout)
     {
-        _state = GameStateHelper.CreateEmpty(playerCount);
+        _layout = layout;
+        _state = GameStateHelper.CreateEmpty(
+            layout.Config.PlayerCount,
+            layout.Map.TerritoryCount);
     }
 
 
     /// <summary>
     /// Creates a new builder with an empty initialized game state.
     /// </summary>
-    public static TestStateBuilder Create(byte playerCount = 2)
+    public static TestStateBuilder Create(GameLayout layout)
     {
-        return new TestStateBuilder(playerCount);
+        return new TestStateBuilder(layout);
     }
 
 
@@ -56,7 +60,6 @@ public sealed class TestStateBuilder
         ValidateTerritoryId(territoryId);
 
         GameStateHelper.SetTerritoryOwner(ref _state, territoryId, owner);
-
         GameStateHelper.SetTerritoryTroops(ref _state, territoryId, troops);
 
         return this;
@@ -79,7 +82,11 @@ public sealed class TestStateBuilder
     /// </summary>
     public TestStateBuilder WithCard(byte player, byte cardId)
     {
-        GameStateHelper.AddCardToPlayer(ref _state, player, cardId);
+        CardHelper.AddCardToPlayer(
+            ref _state,
+            player,
+            cardId,
+            _layout.Deck);
 
         return this;
     }
@@ -92,7 +99,11 @@ public sealed class TestStateBuilder
     {
         foreach (var cardId in cardIds)
         {
-            GameStateHelper.AddCardToPlayer(ref _state, player, cardId);
+            CardHelper.AddCardToPlayer(
+                ref _state,
+                player,
+                cardId,
+                _layout.Deck);
         }
 
         return this;
@@ -133,13 +144,15 @@ public sealed class TestStateBuilder
 
 
     /// <summary>
-    /// Ensures the territory index is valid before accessing fixed arrays.
+    /// Ensures the territory index is valid before accessing the fixed arrays.
     /// </summary>
-    private static void ValidateTerritoryId(int territoryId)
+    private void ValidateTerritoryId(int territoryId)
     {
-        if (territoryId < 0 || territoryId >= EngineConstants.DEFAULT_TERRITORY_COUNT)
+        if (territoryId < 0 || territoryId >= _layout.Map.TerritoryCount)
         {
-            throw new ArgumentOutOfRangeException(nameof(territoryId), "Territory ID is outside the valid range.");
+            throw new ArgumentOutOfRangeException(
+                nameof(territoryId),
+                $"Territory ID must be between 0 and {_layout.Map.TerritoryCount - 1}.");
         }
     }
 }

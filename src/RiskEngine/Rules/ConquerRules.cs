@@ -8,7 +8,7 @@ public static class ConquerRules
     /// <summary>
     /// Validates troop movement after a successful attack.
     /// </summary>
-    public static ValidationResult Validate(in GameState state, in GameAction action)
+    public static ValidationResult Validate(in GameState state, in GameAction action,MapLayout map)
     {
         var source = action.SourceTerritory;
         var target = action.TargetTerritory;
@@ -16,7 +16,7 @@ public static class ConquerRules
 
 
         // Territory range check
-        if (source >= EngineConstants.DEFAULT_TERRITORY_COUNT || target >= EngineConstants.DEFAULT_TERRITORY_COUNT)
+        if (source >= map.TerritoryCount || target >= map.TerritoryCount)
         {
             return ValidationResult.Invalid(GameError.InvalidTerritory);
         }

@@ -2,19 +2,17 @@ namespace RiskEngine.Rules;
 
 public static class TurnInCardsRules
 {
-    public static ValidationResult Validate(in GameState state, in GameAction action, in DeckLayout deck)
+    public static ValidationResult Validate(in GameState state, in GameAction action,DeckLayout deck, MapLayout map)
     {
         // Cards out of Range
-        if (action.Card1 >= EngineConstants.DEFAULT_TERRITORY_COUNT ||
-            action.Card2 >= EngineConstants.DEFAULT_TERRITORY_COUNT ||
-            action.Card3 >= EngineConstants.DEFAULT_TERRITORY_COUNT)
+        if (action.Card1 >= map.TerritoryCount || action.Card2 >= map.TerritoryCount ||action.Card3 >= map.TerritoryCount)
             return ValidationResult.Invalid(GameError.UnknownCard);
 
         //Does player own the cards
         var player = state.PlayerTurn;
-        if (!GameStateHelper.PlayerHasCard(in state, player, action.Card1) ||
-            !GameStateHelper.PlayerHasCard(in state, player, action.Card2) ||
-            !GameStateHelper.PlayerHasCard(in state, player, action.Card3))
+        if (!CardHelper.PlayerHasCard(in state, player, action.Card1,deck) ||
+            !CardHelper.PlayerHasCard(in state, player, action.Card2,deck) ||
+            !CardHelper.PlayerHasCard(in state, player, action.Card3,deck))
             return ValidationResult.Invalid(GameError.CardNotOwned);
 
         //Get Card Types

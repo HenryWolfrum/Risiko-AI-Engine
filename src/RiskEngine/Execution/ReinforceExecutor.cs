@@ -51,13 +51,13 @@ public static class ReinforceExecutor
             if (validation.IsValid)
             {
                 // Apply valid reinforcement placement
-                GameStateMutator.Apply(ref state, in action, ref rng);
+                GameStateMutator.Apply(ref state, in action, ref rng,layout);
             }
             else
             {
                 // Invalid action:
                 // Use fallback to guarantee valid state progression
-                ApplyReinforceFallback(ref state, ref rng);
+                ApplyReinforceFallback(ref state, ref rng,layout);
 
                 return;
             }
@@ -68,7 +68,7 @@ public static class ReinforceExecutor
         // Handle remaining troops if the player did not place everything
         if (GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn) > 0)
         {
-            ApplyReinforceFallback(ref state, ref rng);
+            ApplyReinforceFallback(ref state, ref rng,layout);
         }
     }
 
@@ -77,7 +77,7 @@ public static class ReinforceExecutor
     /// Places all remaining reinforcement troops on the first owned territory.
     /// Used as a safety mechanism for invalid player behaviour.
     /// </summary>
-    private static void ApplyReinforceFallback(ref GameState state, ref EngineRandom rng)
+    private static void ApplyReinforceFallback(ref GameState state, ref EngineRandom rng,GameLayout layout)
     {
         // Select a guaranteed owned territory
         var fallbackTerritory = GameStateHelper.GetFirstTerritoryOwnedBy(in state, state.PlayerTurn);
@@ -96,6 +96,6 @@ public static class ReinforceExecutor
 
 
         // Apply fallback placement
-        GameStateMutator.Apply(ref state, in fallbackAction, ref rng);
+        GameStateMutator.Apply(ref state, in fallbackAction, ref rng,layout);
     }
 }

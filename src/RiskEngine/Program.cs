@@ -170,7 +170,7 @@ public class SimpleStrategyBot : IRiskPlayer
             case GamePhase.Attack:
             {
                 for (byte territory = 0;
-                     territory < EngineConstants.DEFAULT_TERRITORY_COUNT;
+                     territory < EngineConstants.MAX_TERRITORIES;
                      territory++)
                 {
                     if (GameStateHelper.GetTerritoryOwner(in state, territory) != player)

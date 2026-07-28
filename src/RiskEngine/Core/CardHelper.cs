@@ -3,15 +3,133 @@ using System.Runtime.CompilerServices;
 
 namespace RiskEngine;
 
-public static class CardHelper
+public static unsafe class CardHelper
 {
+    
+    // ==========================================
+    // --- CARDS -------------------------------
+    // ==========================================
+
+    /// <summary>
+    /// Returns every card that is currently still in the deck.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ulong GetAvailableCards(in GameState state, DeckLayout deck)
+    {
+        ulong allCards = deck.AllCardsMask;
+
+        ulong ownedCards = 0;
+
+        for (byte player = 0; player < EngineConstants.MAX_PLAYERS; player++)
+        {
+            ownedCards |= state.PlayerCardsBitboard[player];
+        }
+
+        return allCards & ~ownedCards;
+    }
+
+    /// <summary>
+    /// Draws one random remaining card.
+    /// </summary>
+    public static void GiveBonusCard(
+        ref GameState state,
+        byte player,
+        ref EngineRandom rng,
+        DeckLayout deck)
+    {
+        ulong available = GetAvailableCards(in state, deck);
+
+        if (available == 0)
+            return;
+
+        int cardCount = BitOperations.PopCount(available);
+        int index = rng.Next(0, cardCount);
+
+        for (int i = 0; i < index; i++)
+        {
+            available &= available - 1;
+        }
+
+        int cardId = BitOperations.TrailingZeroCount(available);
+
+        state.PlayerCardsBitboard[player] |= 1UL << cardId;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void EliminateAndTransferCards(
+        ref GameState state,
+        byte attacker,
+        byte defender)
+    {
+        state.PlayerCardsBitboard[attacker] |= state.PlayerCardsBitboard[defender];
+        state.PlayerCardsBitboard[defender] = 0;
+        GameStateHelper.EliminatePlayer(ref state, defender);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static  ulong GetPlayerCardsBitboard(
+        in GameState state,
+        byte player)
+    {
+        return state.PlayerCardsBitboard[player];
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool PlayerHasCard(
+        in GameState state,
+        byte player,
+        byte cardId,
+        DeckLayout deck)
+    {
+        if (cardId >= deck.CardCount)
+            return false;
+
+        return (state.PlayerCardsBitboard[player] & (1UL << cardId)) != 0;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddCardToPlayer(
+        ref GameState state,
+        byte player,
+        byte cardId,
+        DeckLayout deck)
+    {
+        if (cardId >= deck.CardCount)
+            return;
+
+        state.PlayerCardsBitboard[player] |= 1UL << cardId;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void RemoveCardFromPlayer(
+        ref GameState state,
+        byte player,
+        byte cardId,
+        DeckLayout deck)
+    {
+        if (cardId >= deck.CardCount)
+            return;
+
+        state.PlayerCardsBitboard[player] &= ~(1UL << cardId);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetPlayerCardCount(
+        in GameState state,
+        byte player)
+    {
+        return BitOperations.PopCount(state.PlayerCardsBitboard[player]);
+    }
+
+    
+    
     /// <summary>
     ///     Checks if a player holds at least one valid card set that can be turned in.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasValidSet(in GameState state, byte player, DeckLayout deckLayout)
     {
-        var hand = GameStateHelper.GetPlayerCardsBitboard(in state, player);
+        var hand = GetPlayerCardsBitboard(in state, player);
 
         // Early exit 1: Impossible to form a set with less than 3 cards
         if (BitOperations.PopCount(hand) < 3)
@@ -41,7 +159,7 @@ public static class CardHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static GameAction FindFirstValidSet(in GameState state, byte player, DeckLayout deckLayout)
     {
-        var hand = GameStateHelper.GetPlayerCardsBitboard(in state, player);
+        var hand = GetPlayerCardsBitboard(in state, player);
 
         var infantry = hand & deckLayout.InfantryMask;
         var cavalry = hand & deckLayout.CavalryMask;

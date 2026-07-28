@@ -57,7 +57,7 @@ public static class FortifyExecutor
 
 
             // Apply troop movement
-            GameStateMutator.Apply(ref state, in action, ref rng);
+            GameStateMutator.Apply(ref state, in action, ref rng,layout);
 
 
             moveCounter++;

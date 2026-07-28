@@ -23,7 +23,7 @@ public static class AttackExecutor
 
 
         // Continue attacking while at least one legal attack exists.
-        while (GameStateHelper.CanPlayerAttack(in state, state.PlayerTurn, layout.Map))
+        while (AttackHelper.CanPlayerAttack(in state, state.PlayerTurn, layout.Map))
         {
             var attackerPlayer = players[state.PlayerTurn];
 
@@ -73,7 +73,7 @@ public static class AttackExecutor
 
 
             // Resolve combat and apply losses.
-            GameStateMutator.Apply(ref state, in attackAction, ref rng);
+            GameStateMutator.Apply(ref state, in attackAction, ref rng,layout);
 
 
             // Territory is conquered when defender troops reach zero.
@@ -97,7 +97,7 @@ public static class AttackExecutor
         // Award one territory card after successful conquest.
         if (conqueredTerritoryThisTurn)
         {
-            GameStateHelper.GiveBonusCard(ref state, state.PlayerTurn, ref rng);
+            CardHelper.GiveBonusCard(ref state, state.PlayerTurn, ref rng,layout.Deck);
         }
     }
 }

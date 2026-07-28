@@ -30,7 +30,7 @@ public static class CardTurnInExecutor
     /// </summary>
     private static void ExecuteMandatoryTradeIn(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng)
     {
-        while (GameStateHelper.GetPlayerCardCount(in state, state.PlayerTurn) >= EngineConstants.FORCE_TRADE_CARD_COUNT)
+        while (CardHelper.GetPlayerCardCount(in state, state.PlayerTurn) >= EngineConstants.FORCE_TRADE_CARD_COUNT)
         {
             // Ask player which card set should be exchanged.
             var action = player.DecideAction(in state, GamePhase.CardTurnIn, layout);
@@ -43,7 +43,7 @@ public static class CardTurnInExecutor
             if (validation.IsValid)
             {
                 // Apply valid trade.
-                GameStateMutator.Apply(ref state, in action, ref rng);
+                GameStateMutator.Apply(ref state, in action, ref rng,layout);
             }
             else
             {
@@ -51,7 +51,7 @@ public static class CardTurnInExecutor
                 // Use the first available legal card combination.
                 var fallbackAction = CardHelper.FindFirstValidSet(in state, state.PlayerTurn, layout.Deck);
                 
-                GameStateMutator.Apply(ref state, in fallbackAction, ref rng);
+                GameStateMutator.Apply(ref state, in fallbackAction, ref rng,layout);
             }
         }
     }
@@ -86,6 +86,6 @@ public static class CardTurnInExecutor
         }
         
         // Apply valid voluntary trade.
-        GameStateMutator.Apply(ref state, in action, ref rng);
+        GameStateMutator.Apply(ref state, in action, ref rng,layout);
     }
 }

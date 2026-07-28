@@ -12,10 +12,10 @@ public static unsafe class MapTraverser
         if (source == target) return true;
 
         //visited stack array
-        var visited = stackalloc byte[EngineConstants.DEFAULT_TERRITORY_COUNT];
+        var visited = stackalloc byte[map.TerritoryCount];
 
         // BFS Queue on stack
-        var queue = stackalloc byte[EngineConstants.DEFAULT_TERRITORY_COUNT];
+        var queue = stackalloc byte[map.TerritoryCount];
         var head = 0;
         var tail = 0;
 

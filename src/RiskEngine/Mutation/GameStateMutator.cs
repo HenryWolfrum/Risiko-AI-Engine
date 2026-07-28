@@ -12,7 +12,7 @@ public static class GameStateMutator
     /// Applies an action and updates the game state.
     /// Validation must happen before calling this method.
     /// </summary>
-    public static void Apply(ref GameState state, in GameAction action, ref EngineRandom rng)
+    public static void Apply(ref GameState state, in GameAction action, ref EngineRandom rng,GameLayout layout)
     {
         switch (action.Type)
         {
@@ -53,7 +53,7 @@ public static class GameStateMutator
             case ActionType.TurnInCards:
             {
                 // Exchange a valid card set for reinforcements.
-                CardTurnInMutator.Apply(ref state, in action); 
+                CardTurnInMutator.Apply(ref state, in action,layout.Deck); 
                 break;
             }
 

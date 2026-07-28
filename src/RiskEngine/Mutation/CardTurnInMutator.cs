@@ -5,14 +5,14 @@ namespace RiskEngine.Mutation;
 public static class CardTurnInMutator
 {
     // Trades three cards for reinforcement troops
-    public static void Apply(ref GameState state, in GameAction action)
+    public static void Apply(ref GameState state, in GameAction action,DeckLayout deck)
     {
         var player = state.PlayerTurn;
 
         // 1. Remove cards from player's hand (fixed typo: Card3 instead of duplicate Card1)
-        GameStateHelper.RemoveCardFromPlayer(ref state, player, action.Card1);
-        GameStateHelper.RemoveCardFromPlayer(ref state, player, action.Card2);
-        GameStateHelper.RemoveCardFromPlayer(ref state, player, action.Card3);
+        CardHelper.RemoveCardFromPlayer(ref state, player, action.Card1,deck);
+        CardHelper.RemoveCardFromPlayer(ref state, player, action.Card2,deck);
+        CardHelper.RemoveCardFromPlayer(ref state, player, action.Card3,deck);
 
         // 2. Increase traded set counter
         state.CardSetsTradedCount++;

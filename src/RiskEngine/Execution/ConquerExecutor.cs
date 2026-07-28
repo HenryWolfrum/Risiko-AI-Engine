@@ -43,7 +43,7 @@ public static class ConquerExecutor
         }
         
         // Apply troop movement and ownership transfer.
-        GameStateMutator.Apply(ref state, in conquerAction, ref rng);
+        GameStateMutator.Apply(ref state, in conquerAction, ref rng,layout);
 
 
         // Check whether defender lost their final territory.
@@ -83,6 +83,6 @@ public static class ConquerExecutor
         var attackerId = state.PlayerTurn;
         
         // Transfer cards and remove defender from active players.
-        GameStateHelper.EliminateAndTransferCards(ref state, attackerId, defenderId);
+        CardHelper.EliminateAndTransferCards(ref state, attackerId, defenderId);
     }
 }

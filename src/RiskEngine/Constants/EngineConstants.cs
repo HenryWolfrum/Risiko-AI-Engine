@@ -1,28 +1,63 @@
 ﻿namespace RiskEngine;
 
+/// <summary>
+/// Global engine limits and default values.
+/// </summary>
 public static class EngineConstants
 {
-    public const byte MAX_PLAYERS = 6;
+    // ---------------------------------------------------------------------
+    // Engine Limits
+    // ---------------------------------------------------------------------
+
+    /// <summary>
+    /// Minimum supported player count.
+    /// </summary>
     public const byte MIN_PLAYERS = 2;
+
+    /// <summary>
+    /// Maximum supported player count.
+    /// </summary>
+    public const byte MAX_PLAYERS = 6;
+
+    /// <summary>
+    /// Maximum supported territory count.
+    /// Limited by the internal ulong bitboards.
+    /// </summary>
+    public const byte MAX_TERRITORIES = 64;
+
+
+    // ---------------------------------------------------------------------
+    // Default Configuration
+    // ---------------------------------------------------------------------
+
     public const byte DEFAULT_PLAYERS = 4;
 
-    public const byte DEFAULT_TERRITORY_COUNT = 42;
-    public const byte DEFAULT_CONTINENT_COUNT = 6;
+    public const ushort DEFAULT_MAX_ROUNDS = 1000;
 
-    public const byte ATTACKER_DICE_COUNT = 3;
-    public const byte DEFENDER_DICE_COUNT = 2;
 
-    public const ushort MAX_ROUNDS = 1000;
+    // ---------------------------------------------------------------------
+    // Combat Rules
+    // ---------------------------------------------------------------------
 
-    public const byte MISSION_COUNT = 12;
-    public const byte CARD_COUNT = 44;
+    public const byte MAX_ATTACKER_DICE = 3;
+
+    public const byte MAX_DEFENDER_DICE = 2;
+
+
+    // ---------------------------------------------------------------------
+    // Reinforcement Rules
+    // ---------------------------------------------------------------------
+
+    public const byte MIN_REINFORCEMENT_TROOPS = 3;
+
+    public const byte CARD_TERRITORY_BONUS_TROOPS = 2;
 
     public const byte FORCE_TRADE_CARD_COUNT = 5;
 
+
+    // ---------------------------------------------------------------------
+    // Misc
+    // ---------------------------------------------------------------------
+
     public const byte NO_VALUE = byte.MaxValue;
-
-    public const byte MIN_TROOPS_PER_TURN = 3;
-
-    public const byte CARD_TERRITORY_BONUS_TROOPS = 2;
-    public const byte MIN_REINFORCEMENT_TROOPS = 3;
 }
