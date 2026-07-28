@@ -153,6 +153,51 @@ public sealed class TestLayoutBuilder
             InitializeAdjacencyList();
         }
     }
+    
+    
+    /// <summary>
+    /// Adds a one-way connection.
+    /// Useful for testing invalid directed maps.
+    /// </summary>
+    public TestLayoutBuilder ConnectOneWay(byte source, byte target)
+    {
+        EnsureAdjacencyInitialized();
+
+        _adjacencies[source].Add(target);
+
+        return this;
+    }
+    
+    /// <summary>
+    /// Removes an existing undirected connection.
+    /// </summary>
+    public TestLayoutBuilder Disconnect(byte territoryA, byte territoryB)
+    {
+        EnsureAdjacencyInitialized();
+
+        _adjacencies[territoryA].Remove(territoryB);
+        _adjacencies[territoryB].Remove(territoryA);
+
+        return this;
+    }
+    
+    /// <summary>
+    /// Removes every connection from a territory.
+    /// Useful for creating disconnected maps.
+    /// </summary>
+    public TestLayoutBuilder Isolate(byte territory)
+    {
+        EnsureAdjacencyInitialized();
+
+        foreach (var neighbour in _adjacencies[territory].ToArray())
+        {
+            _adjacencies[neighbour].Remove(territory);
+        }
+
+        _adjacencies[territory].Clear();
+
+        return this;
+    }
 
     /// <summary>
     /// Creates a deterministic six-territory Risk-like test map.
