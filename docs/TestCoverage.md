@@ -91,7 +91,6 @@
 | REINFORCE-006 | Accepts spending all remaining reinforcement troops | Covered |
 | REINFORCE-007 | Produces deterministic validation results for identical inputs | Covered |
 
-### Reinforcement Mutation
 
 ## ReinforceMutator
 
@@ -118,7 +117,18 @@
 | FORTIFY-008 | Rejects fortification when the source territory is not owned by the active player | Covered |
 | FORTIFY-009 | Rejects fortification when the target territory is not owned by the active player | Covered |
 
-### ConquerRules
+## FortifyMutator
+
+| Test ID | Description | Status |
+|---|---|---|
+| MUTATE-FORTIFY-001 | Removes troops from the source territory during fortification | Covered |
+| MUTATE-FORTIFY-002 | Adds troops to the target territory during fortification | Covered |
+| MUTATE-FORTIFY-003 | Moves troops between the source and target territories | Covered |
+| MUTATE-FORTIFY-004 | Preserves the total troop count during fortification | Covered |
+| MUTATE-FORTIFY-005 | Modifies only the participating territories during fortification | Covered |
+| MUTATE-FORTIFY-006 | Moves exactly one troop during fortification | Covered |
+
+## ConquerRules
 
 | Test ID | Description | Status |
 |---|---|---|
@@ -132,7 +142,7 @@
 | CONQUER-008 | Rejects troop movement exceeding the maximum movable troops | Covered |
 | CONQUER-009 | Accepts moving the maximum legal number of troops after conquering | Covered |
 
-### TurnInCardsRules
+## TurnInCardsRules
 
 | Test ID | Description | Status |
 |---|---|---|
@@ -143,7 +153,7 @@
 | TURNIN-005 | Rejects invalid card combinations consisting of two equal card types and one different card type without a Joker | Covered |
 
 
-### RuleValidator
+## RuleValidator
 
 | Test ID | Description | Status |
 |---|---|---|
