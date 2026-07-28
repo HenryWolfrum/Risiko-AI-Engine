@@ -142,6 +142,18 @@
 | CONQUER-008 | Rejects troop movement exceeding the maximum movable troops | Covered |
 | CONQUER-009 | Accepts moving the maximum legal number of troops after conquering | Covered |
 
+## ConquerMutator
+
+| Test ID | Description | Status |
+|---|---|---|
+| MUTATE-CONQUER-001 | Removes moved troops from the source territory during conquest | Covered |
+| MUTATE-CONQUER-002 | Transfers ownership of the conquered territory to the active player | Covered |
+| MUTATE-CONQUER-003 | Places the moved troops onto the conquered territory | Covered |
+| MUTATE-CONQUER-004 | Updates both the source and target territories during conquest | Covered |
+| MUTATE-CONQUER-005 | Modifies only the participating territories during conquest | Covered |
+
+
+
 ## TurnInCardsRules
 
 | Test ID | Description | Status |
