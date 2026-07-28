@@ -2,25 +2,33 @@
 
 public sealed class GameLayout
 {
-    public GameLayout(MapLayout mapLayout, DeckLayout deckLayout, EngineConfig engineConfig)
+    public GameLayout(MapLayout map, DeckLayout deck, EngineConfig config)
     {
-        //Configuration Validation check
-        if (mapLayout.TerritoryNames.Length != engineConfig.TerritoryCount ||
-            deckLayout.TerritoryToType.Length - 2 != engineConfig.TerritoryCount)
-            throw new ArgumentException($"LAYOUT MISMATCH: Config expects {engineConfig.TerritoryCount} Territories, " + $"Map has {mapLayout.TerritoryNames.Length}, Deck has {deckLayout.TerritoryToType.Length}.");
+        var result = GameLayoutValidator.Validate(map, deck, config);
 
+        if (!result.IsValid)
+        {
+            throw new ArgumentException(
+                $"Invalid GameLayout: {result.Error}", nameof(map));
+        }
 
-        Map = mapLayout;
-        Deck = deckLayout;
-        Config = engineConfig;
+        Map = map;
+        Deck = deck;
+        Config = config;
     }
 
-    //Topology
+    /// <summary>
+    /// Immutable map topology.
+    /// </summary>
     public MapLayout Map { get; }
 
-    //Territory -> CardType Mapping
+    /// <summary>
+    /// Immutable territory card layout.
+    /// </summary>
     public DeckLayout Deck { get; }
 
-    //PlayerCount, TerritoryCount, ...
+    /// <summary>
+    /// Immutable engine configuration.
+    /// </summary>
     public EngineConfig Config { get; }
 }

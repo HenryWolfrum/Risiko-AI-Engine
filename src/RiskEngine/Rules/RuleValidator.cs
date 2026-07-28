@@ -44,7 +44,7 @@ public static class RuleValidator
 
            ActionType.Conquer => ConquerRules.Validate(in state, in action,game.Map),
             
-            _ => ValidationResult.Invalid(GameError.InvalidAction)
+            _ => ValidationResult.Invalid(EngineError.InvalidAction)
         };
     }
 
@@ -61,7 +61,7 @@ public static class RuleValidator
             {
                 ActionType.TurnInCards => ValidationResult.Valid(),
 
-                _ => ValidationResult.Invalid(GameError.ActionNotAllowedInPhase)
+                _ => ValidationResult.Invalid(EngineError.ActionNotAllowedInPhase)
             },
 
 
@@ -70,7 +70,7 @@ public static class RuleValidator
             {
                 ActionType.Reinforce => ValidationResult.Valid(),
 
-                _ => ValidationResult.Invalid(GameError.ActionNotAllowedInPhase)
+                _ => ValidationResult.Invalid(EngineError.ActionNotAllowedInPhase)
             },
 
 
@@ -83,7 +83,7 @@ public static class RuleValidator
 
                 ActionType.EndTurn => ValidationResult.Valid(),
 
-                _ => ValidationResult.Invalid(GameError.ActionNotAllowedInPhase)
+                _ => ValidationResult.Invalid(EngineError.ActionNotAllowedInPhase)
             },
 
 
@@ -92,7 +92,7 @@ public static class RuleValidator
             { 
                 ActionType.Conquer => ValidationResult.Valid(),
 
-                _ => ValidationResult.Invalid(GameError.ActionNotAllowedInPhase)
+                _ => ValidationResult.Invalid(EngineError.ActionNotAllowedInPhase)
             },
 
 
@@ -105,10 +105,10 @@ public static class RuleValidator
 
                 ActionType.EndTurn => ValidationResult.Valid(),
 
-                _ => ValidationResult.Invalid(GameError.ActionNotAllowedInPhase)
+                _ => ValidationResult.Invalid(EngineError.ActionNotAllowedInPhase)
             },
             
-            _ => ValidationResult.Invalid(GameError.ActionNotAllowedInPhase)
+            _ => ValidationResult.Invalid(EngineError.ActionNotAllowedInPhase)
         };
     }
 }

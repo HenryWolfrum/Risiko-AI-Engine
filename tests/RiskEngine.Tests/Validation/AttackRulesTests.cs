@@ -55,7 +55,7 @@ public class AttackRulesTests
 
         // Assert
         Assert.True(result.IsValid);
-        Assert.Equal(GameError.None, result.Error);
+        Assert.Equal(EngineError.None, result.Error);
     }
 
 
@@ -96,7 +96,7 @@ public class AttackRulesTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(GameError.TerritoryNotOwned, result.Error);
+        Assert.Equal(EngineError.TerritoryNotOwned, result.Error);
     }
 
 
@@ -140,7 +140,7 @@ public class AttackRulesTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(GameError.InvalidTarget, result.Error);
+        Assert.Equal(EngineError.InvalidTarget, result.Error);
     }
 
 
@@ -184,7 +184,7 @@ public class AttackRulesTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(GameError.TerritoriesNotAdjacent, result.Error);
+        Assert.Equal(EngineError.TerritoriesNotAdjacent, result.Error);
     }
 
 
@@ -228,7 +228,7 @@ public class AttackRulesTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(GameError.NotEnoughTroops, result.Error);
+        Assert.Equal(EngineError.NotEnoughTroops, result.Error);
     }
 
 
@@ -272,7 +272,7 @@ public class AttackRulesTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(GameError.InvalidDiceCount, result.Error);
+        Assert.Equal(EngineError.InvalidDiceCount, result.Error);
     }
 
 

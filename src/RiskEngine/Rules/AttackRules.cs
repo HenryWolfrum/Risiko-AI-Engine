@@ -13,30 +13,30 @@ public static class AttackRules
 
         // Territory range check
         if (source >= map.TerritoryCount || target >= map.TerritoryCount)
-            return ValidationResult.Invalid(GameError.InvalidTerritory);
+            return ValidationResult.Invalid(EngineError.InvalidTerritory);
 
         // Source must belong to attacker
         if (GameStateHelper.GetTerritoryOwner(in state, source) != player)
-            return ValidationResult.Invalid(GameError.TerritoryNotOwned);
+            return ValidationResult.Invalid(EngineError.TerritoryNotOwned);
 
         // Target must belong to enemy
         if (GameStateHelper.GetTerritoryOwner(in state, target) == player)
-            return ValidationResult.Invalid(GameError.InvalidTarget);
+            return ValidationResult.Invalid(EngineError.InvalidTarget);
 
         // Territories must be connected
         if (!map.AreNeighbors(source, target))
-            return ValidationResult.Invalid(GameError.TerritoriesNotAdjacent);
+            return ValidationResult.Invalid(EngineError.TerritoriesNotAdjacent);
 
         var attackerTroops = GameStateHelper.GetTerritoryTroops(in state, source);
 
         // Need at least 2 troops to attack (1 must stay behind)
         if (attackerTroops < 2)
-            return ValidationResult.Invalid(GameError.NotEnoughTroops);
+            return ValidationResult.Invalid(EngineError.NotEnoughTroops);
 
         // Attacker dice validation (Max 3, but at most attackerTroops - 1)
         var maxAttackerDice = (byte)Math.Min(3, attackerTroops - 1);
         if (action.ChosenAttackerDiceCount == 0 || action.ChosenAttackerDiceCount > maxAttackerDice)
-            return ValidationResult.Invalid(GameError.InvalidDiceCount);
+            return ValidationResult.Invalid(EngineError.InvalidDiceCount);
 
         return ValidationResult.Valid();
     }

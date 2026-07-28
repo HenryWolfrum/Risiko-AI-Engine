@@ -44,7 +44,7 @@ public class ReinforceRulesTests
 
         // Assert
         Assert.True(result.IsValid);
-        Assert.Equal(GameError.None, result.Error);
+        Assert.Equal(EngineError.None, result.Error);
     }
 
 
@@ -83,7 +83,7 @@ public class ReinforceRulesTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(GameError.TerritoryNotOwned, result.Error);
+        Assert.Equal(EngineError.TerritoryNotOwned, result.Error);
     }
 
 
@@ -121,7 +121,7 @@ public class ReinforceRulesTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(GameError.InvalidTroopCount, result.Error);
+        Assert.Equal(EngineError.InvalidTroopCount, result.Error);
     }
 
 
@@ -160,7 +160,7 @@ public class ReinforceRulesTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(GameError.NotEnoughTroops, result.Error);
+        Assert.Equal(EngineError.NotEnoughTroops, result.Error);
     }
 
 
@@ -194,6 +194,6 @@ public class ReinforceRulesTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(GameError.InvalidTerritory, result.Error);
+        Assert.Equal(EngineError.InvalidTerritory, result.Error);
     }
 }

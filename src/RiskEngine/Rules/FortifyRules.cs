@@ -10,27 +10,27 @@ public static class FortifyRules
 
         //Source or Target out of Range
         if (source >= map.TerritoryCount || target >= map.TerritoryCount)
-            return ValidationResult.Invalid(GameError.InvalidTerritory);
+            return ValidationResult.Invalid(EngineError.InvalidTerritory);
 
         //Source is equal to Target
-        if (source == target) return ValidationResult.Invalid(GameError.InvalidTarget);
+        if (source == target) return ValidationResult.Invalid(EngineError.InvalidTarget);
 
         //Source or Target not owned
         if (GameStateHelper.GetTerritoryOwner(state, source) != player ||
             GameStateHelper.GetTerritoryOwner(state, target) != player)
-            return ValidationResult.Invalid(GameError.TerritoryNotOwned);
+            return ValidationResult.Invalid(EngineError.TerritoryNotOwned);
 
         //Has only zero troops to move
-        if (action.TroopCount == 0) return ValidationResult.Invalid(GameError.InvalidAction);
+        if (action.TroopCount == 0) return ValidationResult.Invalid(EngineError.InvalidAction);
 
         var troops = GameStateHelper.GetTerritoryTroops(state, source);
 
         //Move more troops than possible
-        if (action.TroopCount >= troops) return ValidationResult.Invalid(GameError.NotEnoughTroops);
+        if (action.TroopCount >= troops) return ValidationResult.Invalid(EngineError.NotEnoughTroops);
 
         //No existing path
         if (!MapTraverser.HasPath(state, map, source, target, player))
-            return ValidationResult.Invalid(GameError.NoPathFound);
+            return ValidationResult.Invalid(EngineError.NoPathFound);
 
         return ValidationResult.Valid();
     }

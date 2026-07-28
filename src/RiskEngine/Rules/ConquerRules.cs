@@ -18,14 +18,14 @@ public static class ConquerRules
         // Territory range check
         if (source >= map.TerritoryCount || target >= map.TerritoryCount)
         {
-            return ValidationResult.Invalid(GameError.InvalidTerritory);
+            return ValidationResult.Invalid(EngineError.InvalidTerritory);
         }
 
 
         // Source territory must belong to the attacker
         if (GameStateHelper.GetTerritoryOwner(in state, source) != player)
         {
-            return ValidationResult.Invalid(GameError.TerritoryNotOwned);
+            return ValidationResult.Invalid(EngineError.TerritoryNotOwned);
         }
 
 
@@ -33,7 +33,7 @@ public static class ConquerRules
         // The defender must have no troops left.
         if (GameStateHelper.GetTerritoryTroops(in state, target) != 0)
         {
-            return ValidationResult.Invalid(GameError.InvalidTarget);
+            return ValidationResult.Invalid(EngineError.InvalidTarget);
         }
 
 
@@ -43,14 +43,14 @@ public static class ConquerRules
 
         if (sourceTroops <= 1)
         {
-            return ValidationResult.Invalid(GameError.NotEnoughTroops);
+            return ValidationResult.Invalid(EngineError.NotEnoughTroops);
         }
 
 
         // At least one troop must move into the conquered territory.
         if (action.ConquerTroopCount == 0)
         {
-            return ValidationResult.Invalid(GameError.InvalidTroopCount);
+            return ValidationResult.Invalid(EngineError.InvalidTroopCount);
         }
 
 
@@ -61,7 +61,7 @@ public static class ConquerRules
 
         if (action.ConquerTroopCount > maxMoveable)
         {
-            return ValidationResult.Invalid(GameError.InvalidTroopCount);
+            return ValidationResult.Invalid(EngineError.InvalidTroopCount);
         }
 
 

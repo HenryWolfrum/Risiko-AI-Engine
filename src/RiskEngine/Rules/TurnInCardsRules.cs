@@ -6,14 +6,14 @@ public static class TurnInCardsRules
     {
         // Cards out of Range
         if (action.Card1 >= map.TerritoryCount || action.Card2 >= map.TerritoryCount ||action.Card3 >= map.TerritoryCount)
-            return ValidationResult.Invalid(GameError.UnknownCard);
+            return ValidationResult.Invalid(EngineError.UnknownCard);
 
         //Does player own the cards
         var player = state.PlayerTurn;
         if (!CardHelper.PlayerHasCard(in state, player, action.Card1,deck) ||
             !CardHelper.PlayerHasCard(in state, player, action.Card2,deck) ||
             !CardHelper.PlayerHasCard(in state, player, action.Card3,deck))
-            return ValidationResult.Invalid(GameError.CardNotOwned);
+            return ValidationResult.Invalid(EngineError.CardNotOwned);
 
         //Get Card Types
         var cardType1 = deck.TerritoryToType[action.Card1];
@@ -31,6 +31,6 @@ public static class TurnInCardsRules
         if (cardType1 != cardType2 && cardType1 != cardType3 && cardType2 != cardType3) return ValidationResult.Valid();
 
         //Invalid Card Set
-        return ValidationResult.Invalid(GameError.InvalidCardSet);
+        return ValidationResult.Invalid(EngineError.InvalidCardSet);
     }
 }

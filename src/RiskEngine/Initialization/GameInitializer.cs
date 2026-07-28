@@ -5,7 +5,7 @@ public static class GameInitializer
     public static unsafe GameState CreateInitialState(GameLayout layout, ref EngineRandom rng)
     {
         // 1. Get Params
-        int territoryCount = layout.Config.TerritoryCount;
+        int territoryCount = layout.Map.TerritoryCount;
         var playerCount = layout.Config.PlayerCount;
 
         // 2. Reserve Memory Span for Territories

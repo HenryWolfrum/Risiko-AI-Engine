@@ -4,10 +4,10 @@ public readonly struct ValidationResult
 {
     public bool IsValid { get; }
 
-    public GameError Error { get; }
+    public EngineError Error { get; }
 
 
-    private ValidationResult(bool isValid, GameError error)
+    private ValidationResult(bool isValid, EngineError error)
     {
         IsValid = isValid;
         Error = error;
@@ -17,11 +17,11 @@ public readonly struct ValidationResult
     //Full valid request
     public static ValidationResult Valid()
     {
-        return new ValidationResult(true, GameError.None);
+        return new ValidationResult(true, EngineError.None);
     }
 
 
-    public static ValidationResult Invalid(GameError error)
+    public static ValidationResult Invalid(EngineError error)
     {
         return new ValidationResult(false, error);
     }

@@ -33,7 +33,7 @@ public class GameInitializerTests
 
 
         // Assert
-        for (byte territory = 0; territory < layout.Config.TerritoryCount; territory++)
+        for (byte territory = 0; territory < layout.Map.TerritoryCount; territory++)
         {
             var owner = GameStateHelper.GetTerritoryOwner(in state, territory);
             var troops = GameStateHelper.GetTerritoryTroops(in state, territory);
@@ -103,7 +103,7 @@ public class GameInitializerTests
 
 
         // Assert
-        for (byte territory = 0; territory < layout.Config.TerritoryCount; territory++)
+        for (byte territory = 0; territory < layout.Map.TerritoryCount; territory++)
         {
             Assert.Equal(GameStateHelper.GetTerritoryOwner(in state1, territory), GameStateHelper.GetTerritoryOwner(in state2, territory));
 

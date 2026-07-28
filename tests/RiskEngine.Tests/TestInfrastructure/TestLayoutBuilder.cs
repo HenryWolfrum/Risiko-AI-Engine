@@ -117,7 +117,7 @@ public sealed class TestLayoutBuilder
 
         for (int i = 0; i < _territoryCount; i++)
         {
-            cardTypes[i] = CardType.Infantry;
+            cardTypes[i] = (CardType)(i % 3);
         }
 
         cardTypes[^2] = CardType.Joker;
@@ -127,22 +127,13 @@ public sealed class TestLayoutBuilder
         // Layout
         // -----------------------
 
-        var map = new MapLayout(
-            territoryNames,
-            adjacencyArray,
-            territoryToContinent,
-            continents);
+        var map = new MapLayout(territoryNames, adjacencyArray, territoryToContinent, continents);
 
         var deck = new DeckLayout(cardTypes);
 
-        var config = new EngineConfig(
-            playerCount: _playerCount,
-            territoryCount: (byte)_territoryCount);
+        var config = new EngineConfig(playerCount: _playerCount);
 
-        return new GameLayout(
-            map,
-            deck,
-            config);
+        return new GameLayout(map, deck, config);
     }
 
     private void InitializeAdjacencyList()

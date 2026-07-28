@@ -32,8 +32,9 @@ public static class EngineConstants
 
     public const byte DEFAULT_PLAYERS = 4;
 
-    public const ushort DEFAULT_MAX_ROUNDS = 1000;
+    public const ushort MAX_ROUNDS = 1000;
 
+    public const byte JOKER_COUNT = 2;
 
     // ---------------------------------------------------------------------
     // Combat Rules

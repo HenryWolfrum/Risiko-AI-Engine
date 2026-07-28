@@ -16,8 +16,7 @@ public class MapLayout
     
     public byte TerritoryCount { get; }
 
-    public MapLayout(string[] territoryNames, byte[][] adjacencies, byte[] territoryToContinentMap,
-        Continent[] continents)
+    public MapLayout(string[] territoryNames, byte[][] adjacencies, byte[] territoryToContinentMap, Continent[] continents)
     {
         TerritoryNames = territoryNames;
         Adjacencies = adjacencies;
