@@ -65,6 +65,20 @@
 | ATTACK-010 | Accepts attacks using the maximum legal attacker dice count | Covered |
 
 
+## AttackMutator
+
+| Test ID | Description | Status |
+|---|---|---|
+| MUTATE-ATTACK-001 | Applies attacker troop losses to the source territory | Covered |
+| MUTATE-ATTACK-002 | Applies defender troop losses to the target territory | Covered |
+| MUTATE-ATTACK-003 | Sets defender troop count to zero when losses equal the remaining troops | Covered |
+| MUTATE-ATTACK-004 | Prevents defender troop count underflow when losses exceed the remaining troops | Covered |
+| MUTATE-ATTACK-005 | Modifies only the participating territories during combat mutation | Covered |
+| MUTATE-ATTACK-006 | Does not modify territory ownership during combat mutation | Covered |
+| MUTATE-ATTACK-007 | Leaves troop counts unchanged when no combat losses occur | Covered |
+| MUTATE-ATTACK-008 | Applies attacker and defender troop losses in a single combat mutation | Covered |
+
+
 ## ReinforceRules
 
 | Test ID | Description | Status |
