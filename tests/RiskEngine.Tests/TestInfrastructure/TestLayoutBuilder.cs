@@ -65,9 +65,10 @@ public sealed class TestLayoutBuilder
     }
 
     /// <summary>
-    /// Builds the final GameLayout.
+    /// Builds only the MapLayout without validating the complete GameLayout.
+    /// Useful for validator and traverser tests that intentionally use invalid maps.
     /// </summary>
-    public GameLayout Build()
+    public MapLayout BuildMap()
     {
         EnsureAdjacencyInitialized();
 
@@ -99,7 +100,7 @@ public sealed class TestLayoutBuilder
 
         var territoryToContinent = new byte[_territoryCount];
 
-        var continents = new Continent[]
+        var continents = new[]
         {
             new Continent(
                 id: 0,
@@ -108,11 +109,17 @@ public sealed class TestLayoutBuilder
                 territoryCount: (byte)_territoryCount)
         };
 
-        // -----------------------
-        // Deck
-        // -----------------------
-
-        // One territory card per territory plus two jokers.
+        return new MapLayout(
+            territoryNames,
+            adjacencyArray,
+            territoryToContinent,
+            continents);
+    }
+    /// <summary>
+    /// Builds only the DeckLayout.
+    /// </summary>
+    public DeckLayout BuildDeck()
+    {
         var cardTypes = new CardType[_territoryCount + 2];
 
         for (int i = 0; i < _territoryCount; i++)
@@ -123,17 +130,25 @@ public sealed class TestLayoutBuilder
         cardTypes[^2] = CardType.Joker;
         cardTypes[^1] = CardType.Joker;
 
-        // -----------------------
-        // Layout
-        // -----------------------
-
-        var map = new MapLayout(territoryNames, adjacencyArray, territoryToContinent, continents);
-
-        var deck = new DeckLayout(cardTypes);
-
-        var config = new EngineConfig(playerCount: _playerCount);
-
-        return new GameLayout(map, deck, config);
+        return new DeckLayout(cardTypes);
+    }
+    /// <summary>
+    /// Builds only the EngineConfig.
+    /// </summary>
+    public EngineConfig BuildConfig()
+    {
+        return new EngineConfig(playerCount: _playerCount);
+    }
+    
+    /// <summary>
+    /// Builds the final GameLayout.
+    /// </summary>
+    public GameLayout Build()
+    {
+        return new GameLayout(
+            BuildMap(),
+            BuildDeck(),
+            BuildConfig());
     }
 
     private void InitializeAdjacencyList()

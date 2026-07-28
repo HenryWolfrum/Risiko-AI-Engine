@@ -187,3 +187,13 @@
 | VALIDATOR-005 | Forwards valid attack actions to `AttackRules` and returns the underlying validation result unchanged | Covered |
 
 
+## MapTraverser
+
+| Test ID | Description | Status |
+|---|---|---|
+| PATH-001 | Finds a direct path between two adjacent territories owned by the same player | Covered |
+| PATH-002 | Finds an indirect path through multiple connected territories owned by the same player | Covered |
+| PATH-003 | Returns no path when no owned connection exists between source and target | Covered |
+| PATH-004 | Rejects path search when the source territory is not owned by the requested player | Covered |
+| PATH-005 | Rejects path search when the target territory is not owned by the requested player | Covered |
+| PATH-006 | Returns a valid path when source and target territory are identical | Covered |
