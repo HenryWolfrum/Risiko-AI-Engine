@@ -142,5 +142,76 @@ public class GameInitializerTests
         {
             Assert.True(GameStateHelper.IsPlayerAlive(in state, player), $"Player {player} should be alive");
         }
+        
+        Assert.Equal(playerCount, GameStateHelper.GetActivePlayerCount(in state));
+    }
+    
+    /*
+     * INIT-005
+     *
+     * Every territory must be assigned exactly once.
+     *
+     * Guarantees:
+     * - no territory is left unassigned
+     * - territory ownership is complete
+     */
+    [Fact]
+    public void INIT_005_GameInitializer_ShouldAssignEveryTerritory()
+    {
+        // Arrange
+        var layout = TestLayoutBuilder
+                .CreateSmallRiskLayout(playerCount: 4)
+                .Build();
+
+        var rng = new EngineRandom(seed: 42);
+
+        // Act
+        var state = GameInitializer.CreateInitialState(layout, ref rng);
+
+        // Assert
+        int ownedTerritories = 0;
+
+        for (byte player = 0; player < layout.Config.PlayerCount; player++)
+        {
+            ownedTerritories += GameStateHelper.GetOwnedTerritoryCount(in state, player);
+        }
+
+        Assert.Equal(layout.Map.TerritoryCount, ownedTerritories);
+    }
+    
+    /*
+     * INIT-006
+     *
+     * The total number of starting troops must equal
+     * the number of territories.
+     *
+     * Guarantees:
+     * - every territory starts with one troop
+     * - total troop count is correct
+     */
+    [Fact]
+    public void INIT_006_GameInitializer_ShouldAssignCorrectTotalTroops()
+    {
+        // Arrange
+        var layout =
+            TestLayoutBuilder
+                .CreateSmallRiskLayout(playerCount: 3)
+                .Build();
+
+        var rng = new EngineRandom(seed: 7);
+
+        // Act
+        var state = GameInitializer.CreateInitialState(layout, ref rng);
+
+        // Assert
+        int troopCount = 0;
+
+        for (byte territory = 0; territory < layout.Map.TerritoryCount; territory++)
+        {
+            troopCount +=
+                GameStateHelper.GetTerritoryTroops(in state, territory);
+        }
+
+        Assert.Equal(layout.Map.TerritoryCount, troopCount);
     }
 }

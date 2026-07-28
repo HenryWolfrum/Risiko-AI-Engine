@@ -196,4 +196,74 @@ public class ReinforceRulesTests
         Assert.False(result.IsValid);
         Assert.Equal(EngineError.InvalidTerritory, result.Error);
     }
+    
+    /*
+     * REINFORCE-006
+     *
+     * A player should be able to place
+     * all remaining reinforcement troops.
+     *
+     * Guarantees:
+     * - exact reinforcement pool may be spent
+     */
+    [Fact]
+    public void REINFORCE_006_ShouldAcceptUsingAllRemainingTroops()
+    {
+        // Arrange
+        var layout = TestLayoutBuilder.CreateSmallRiskLayout()
+            .Build();
+
+        var state = GameStateHelper.CreateEmpty(layout.Config.PlayerCount);
+
+        GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
+        GameStateHelper.SetPlayerTroopsToPlace(ref state, 0, 5);
+
+        var action = new GameAction
+        {
+            SourceTerritory = 0,
+            TroopCount = 5
+        };
+
+        // Act
+        var result = ReinforceRules.Validate(in state, in action, layout.Map);
+
+        // Assert
+        Assert.True(result.IsValid);
+    }
+    
+    /*
+     * REINFORCE-007
+     *
+     * Reinforcement validation should be
+     * deterministic for identical inputs.
+     *
+     * Guarantees:
+     * - validation has no hidden state
+     */
+    [Fact]
+    public void REINFORCE_007_ShouldBeDeterministic()
+    {
+        // Arrange
+        var layout = TestLayoutBuilder.CreateSmallRiskLayout()
+            .Build();
+
+        var state = GameStateHelper.CreateEmpty(layout.Config.PlayerCount);
+
+        GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
+        GameStateHelper.SetPlayerTroopsToPlace(ref state, 0, 3);
+
+        var action = new GameAction
+        {
+            SourceTerritory = 0,
+            TroopCount = 2
+        };
+
+        // Act
+        var result1 = ReinforceRules.Validate(in state, in action, layout.Map);
+        var result2 = ReinforceRules.Validate(in state, in action, layout.Map);
+
+        // Assert
+        Assert.Equal(result1.IsValid, result2.IsValid);
+        Assert.Equal(result1.Error, result2.Error);
+    }
 }

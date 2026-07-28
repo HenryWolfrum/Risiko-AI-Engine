@@ -306,4 +306,85 @@ public class AttackRulesTests
         Assert.Equal(1, oneTroopMax);
         Assert.Equal(2, manyTroopsMax);
     }
+    
+    
+    /*
+     * ATTACK-009
+     *
+     * Source and target territory
+     * must not be identical.
+     *
+     * Guarantees:
+     * - self attacks are rejected
+     */
+    [Fact]
+    public void ATTACK_009_SameSourceAndTarget_ShouldBeRejected()
+    {
+        // Arrange
+        var layout = TestLayoutBuilder
+            .CreateSmallRiskLayout()
+            .Build();
+
+        var state = GameStateHelper.CreateEmpty(2);
+
+        state.PlayerTurn = 0;
+
+        GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 0, 5);
+
+        var action = new GameAction
+        {
+            SourceTerritory = 0,
+            TargetTerritory = 0,
+            ChosenAttackerDiceCount = 1
+        };
+
+        // Act
+        var result = AttackRules.Validate(in state, in action, layout.Map);
+
+        // Assert
+        Assert.False(result.IsValid);
+    }
+    
+    /*
+     * ATTACK-010
+     *
+     * Maximum legal attacker dice
+     * should be accepted.
+     *
+     * Guarantees:
+     * - highest valid attacker dice count
+     *   passes validation
+     */
+    [Fact]
+    public void ATTACK_010_MaximumLegalDice_ShouldBeAccepted()
+    {
+        // Arrange
+        var layout = TestLayoutBuilder
+            .CreateSmallRiskLayout()
+            .Build();
+
+        var state = GameStateHelper.CreateEmpty(2);
+
+        state.PlayerTurn = 0;
+
+        GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
+        GameStateHelper.SetTerritoryOwner(ref state, 1, 1);
+
+        GameStateHelper.SetTerritoryTroops(ref state, 0, 4);
+        GameStateHelper.SetTerritoryTroops(ref state, 1, 2);
+
+        var action = new GameAction
+        {
+            SourceTerritory = 0,
+            TargetTerritory = 1,
+            ChosenAttackerDiceCount = 3
+        };
+
+        // Act
+        var result = AttackRules.Validate(in state, in action, layout.Map);
+
+        // Assert
+        Assert.True(result.IsValid);
+    }
 }

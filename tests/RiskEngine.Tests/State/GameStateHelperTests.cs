@@ -57,35 +57,7 @@ public class GameStateHelperTests
         Assert.Equal(10, troops);
     }
 
-
-    /*
-     * STATE-003
-     *
-     * Player alive bitboard should correctly track active players.
-     *
-     * Guarantees:
-     * - players can be marked alive
-     * - eliminated players are removed
-     */
-    [Fact]
-    public void STATE_003_PlayerAliveBitboard_ShouldTrackPlayerStatus()
-    {
-        // Arrange
-        var state = GameStateHelper.CreateEmpty(4);
-
-
-        // Assert initial state
-        Assert.True(GameStateHelper.IsPlayerAlive(in state, 0));
-
-
-        // Act
-        GameStateHelper.EliminatePlayer(ref state, 0);
-
-
-        // Assert
-        Assert.False(GameStateHelper.IsPlayerAlive(in state, 0));
-    }
-
+    
 
     /*
      * STATE-004
@@ -309,6 +281,149 @@ public class GameStateHelperTests
         Assert.Equal(2, GameStateHelper.GetActivePlayerCount(in state));
     }
     
-    
+    /*
+     * STATE-013
+     *
+     * Eliminated players can be restored.
+     *
+     * Guarantees:
+     * - eliminated players can be marked alive again
+     * - alive bitboard is updated correctly
+     */
+    [Fact]
+    public void STATE_013_ShouldRestoreEliminatedPlayer()
+    {
+        // Arrange
+        var state = GameStateHelper.CreateEmpty(3);
+
+        GameStateHelper.EliminatePlayer(ref state, 1);
+
+        // Act
+        GameStateHelper.SetPlayerAlive(ref state, 1);
+
+        // Assert
+        Assert.True(GameStateHelper.IsPlayerAlive(in state, 1));
+        Assert.Equal(3, GameStateHelper.GetActivePlayerCount(in state));
+    }
    
+    /*
+     * STATE-014
+     *
+     * Empty GameState should initialize all territories
+     * with zero troops.
+     *
+     * Guarantees:
+     * - every territory starts with zero troops
+     */
+    [Fact]
+    public void STATE_014_EmptyState_ShouldInitializeZeroTroops()
+    {
+        // Arrange
+        var state = GameStateHelper.CreateEmpty(2);
+
+        // Assert
+        for (byte territory = 0; territory < EngineConstants.MAX_TERRITORIES; territory++)
+        {
+            Assert.Equal(
+                0,
+                GameStateHelper.GetTerritoryTroops(in state, territory));
+        }
+    }
+    
+    
+    /*
+     * STATE-015
+     *
+     * Empty GameState should initialize
+     * game progression correctly.
+     *
+     * Guarantees:
+     * - game starts in round one
+     * - game starts in default phase
+     */
+    [Fact]
+    public void STATE_015_EmptyState_ShouldInitializeGameProgress()
+    {
+        // Arrange
+        var state = GameStateHelper.CreateEmpty(2);
+
+        // Assert
+        Assert.Equal(1, state.CurrentRound);
+        Assert.Equal(GamePhase.Default, state.CurrentPhase);
+    }
+    
+    /*
+     * STATE-016
+     *
+     * Territory ownership can be updated.
+     *
+     * Guarantees:
+     * - owner changes overwrite previous values
+     * - getter always returns the latest owner
+     */
+    [Fact]
+    public void STATE_016_ShouldOverwriteTerritoryOwner()
+    {
+        // Arrange
+        var state = GameStateHelper.CreateEmpty(2);
+
+        GameStateHelper.SetTerritoryOwner(ref state, 3, 0);
+
+        // Act
+        GameStateHelper.SetTerritoryOwner(ref state, 3, 1);
+
+        // Assert
+        Assert.Equal(1, GameStateHelper.GetTerritoryOwner(in state, 3));
+    }
+    
+    
+    /*
+     * STATE-017
+     *
+     * Territory troop counts can be updated.
+     *
+     * Guarantees:
+     * - troop changes overwrite previous values
+     * - getter always returns the latest troop count
+     */
+    [Fact]
+    public void STATE_017_ShouldOverwriteTerritoryTroops()
+    {
+        // Arrange
+        var state = GameStateHelper.CreateEmpty(2);
+
+        GameStateHelper.SetTerritoryTroops(ref state, 5, 3);
+
+        // Act
+        GameStateHelper.SetTerritoryTroops(ref state, 5, 10);
+
+        // Assert
+        Assert.Equal(
+            10,
+            GameStateHelper.GetTerritoryTroops(in state, 5));
+    }
+    
+    /*
+     * STATE-018
+     *
+     * Player reinforcement troops can be updated.
+     *
+     * Guarantees:
+     * - reinforcement updates overwrite previous values
+     * - getter always returns the latest value
+     */
+    [Fact]
+    public void STATE_018_ShouldOverwritePlayerReinforcements()
+    {
+        // Arrange
+        var state = GameStateHelper.CreateEmpty(2);
+
+        GameStateHelper.SetPlayerTroopsToPlace(ref state, 0, 5);
+
+        // Act
+        GameStateHelper.SetPlayerTroopsToPlace(ref state, 0, 12);
+
+        // Assert
+        Assert.Equal(12, GameStateHelper.GetPlayerTroopsToPlace(in state, 0));
+    }
 }

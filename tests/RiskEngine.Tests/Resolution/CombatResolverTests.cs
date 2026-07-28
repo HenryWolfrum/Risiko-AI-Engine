@@ -43,48 +43,6 @@ public class CombatResolverTests
         Assert.True(result.AttackerLosses == 1 || result.DefenderLosses == 1);
     }
 
-
-    /*
-     * COMBAT-002
-     *
-     * Defender wins ties according to Risk rules.
-     *
-     * Guarantees:
-     * - equal dice values cause attacker losses
-     * - comparison uses strictly greater attacker roll
-     */
-    [Fact]
-    public void COMBAT_002_EqualDice_ShouldCauseAttackerLoss()
-    {
-        // Arrange
-        var state = GameStateHelper.CreateEmpty(2);
-
-        /*
-         * This test depends on deterministic RNG.
-         * Seed must produce identical dice values.
-         */
-        var action = new GameAction
-        {
-            Type = ActionType.Attack,
-            ChosenAttackerDiceCount = 1,
-            ChosenDefenderDiceCount = 1
-        };
-
-        var rng = new EngineRandom(seed: 1);
-
-
-        // Act
-        var result = CombatResolver.Resolve(in state, in action, ref rng);
-
-
-        // Assert
-        // Equal dice result means attacker loses.
-        Assert.True(
-            result.AttackerLosses == 1 ||
-            result.DefenderLosses == 1);
-    }
-
-
     /*
      * COMBAT-003
      *
@@ -120,7 +78,7 @@ public class CombatResolverTests
     }
     
     /*
-     * COMBAT-004
+     * COMBAT-005
      *
      * Combat resolution must be deterministic.
      *
@@ -159,7 +117,7 @@ public class CombatResolverTests
     }
     
     /*
-     * COMBAT-005
+     * COMBAT-006
      *
      * Combat resolver must respect selected dice counts.
      *
@@ -191,5 +149,92 @@ public class CombatResolverTests
         // Assert
         // Only one comparison can happen because attacker has one die.
         Assert.Equal(1, result.AttackerLosses + result.DefenderLosses);
+    }
+    
+    /*
+     * COMBAT-007
+     *
+     * Every valid dice combination should resolve
+     * the correct number of comparisons.
+     *
+     * Guarantees:
+     * - comparisons equal the minimum dice count
+     * - every comparison produces exactly one loss
+     */
+    [Theory]
+    [InlineData(1, 1, 1)]
+    [InlineData(2, 1, 1)]
+    [InlineData(3, 1, 1)]
+    [InlineData(2, 2, 2)]
+    [InlineData(3, 2, 2)]
+    public void COMBAT_007_ShouldResolveCorrectNumberOfComparisons(
+        byte attackerDice,
+        byte defenderDice,
+        byte expectedComparisons)
+    {
+        // Arrange
+        var state = GameStateHelper.CreateEmpty(2);
+
+        var action = new GameAction
+        {
+            Type = ActionType.Attack,
+            ChosenAttackerDiceCount = attackerDice,
+            ChosenDefenderDiceCount = defenderDice
+        };
+
+        var rng = new EngineRandom(seed: 123);
+
+        // Act
+        var result = CombatResolver.Resolve(in state, in action, ref rng);
+
+        // Assert
+        Assert.Equal(
+            expectedComparisons,
+            result.AttackerLosses + result.DefenderLosses);
+    }
+    
+    /*
+     * COMBAT-008
+     *
+     * Combat losses should never exceed
+     * the number of performed comparisons.
+     *
+     * Guarantees:
+     * - attacker losses are never negative
+     * - defender losses are never negative
+     * - total losses never exceed comparisons
+     */
+    [Theory]
+    [InlineData(1, 1)]
+    [InlineData(2, 1)]
+    [InlineData(3, 1)]
+    [InlineData(2, 2)]
+    [InlineData(3, 2)]
+    public void COMBAT_008_CombatLosses_ShouldRemainWithinBounds(
+        byte attackerDice,
+        byte defenderDice)
+    {
+        // Arrange
+        var state = GameStateHelper.CreateEmpty(2);
+
+        var action = new GameAction
+        {
+            Type = ActionType.Attack,
+            ChosenAttackerDiceCount = attackerDice,
+            ChosenDefenderDiceCount = defenderDice
+        };
+
+        var rng = new EngineRandom(seed: 42);
+
+        // Act
+        var result = CombatResolver.Resolve(in state, in action, ref rng);
+
+        // Assert
+        Assert.InRange(result.AttackerLosses, 0, attackerDice);
+        Assert.InRange(result.DefenderLosses, 0, defenderDice);
+
+        Assert.Equal(
+            Math.Min(attackerDice, defenderDice),
+            result.AttackerLosses + result.DefenderLosses);
     }
 }

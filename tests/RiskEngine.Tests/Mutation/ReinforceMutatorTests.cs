@@ -159,4 +159,68 @@ public class ReinforceMutatorTests
         // Assert
         Assert.Equal(9, GameStateHelper.GetTerritoryTroops(in state, 0));
     }
+    
+    /*
+     * MUTATE-REINFORCE-005
+     *
+     * Reinforcement should work even if
+     * the territory initially contains no troops.
+     *
+     * Guarantees:
+     * - reinforcement initializes troop count correctly
+     */
+    [Fact]
+    public void MUTATE_REINFORCE_005_ShouldReinforceEmptyTerritory()
+    {
+        // Arrange
+        var state = GameStateHelper.CreateEmpty(2);
+
+        GameStateHelper.SetTerritoryTroops(ref state, 0, 0);
+
+        var action = new GameAction
+        {
+            TargetTerritory = 0,
+            TroopCount = 4
+        };
+
+        // Act
+        ReinforceMutator.Apply(ref state, in action);
+
+        // Assert
+        Assert.Equal(4, GameStateHelper.GetTerritoryTroops(in state, 0));
+    }
+    
+    
+    /*
+     * MUTATE-REINFORCE-006
+     *
+     * Reinforcement should only reduce
+     * the active player's reinforcement pool.
+     *
+     * Guarantees:
+     * - other players remain unchanged
+     */
+    [Fact]
+    public void MUTATE_REINFORCE_006_ShouldNotModifyOtherPlayerTroopPools()
+    {
+        // Arrange
+        var state = GameStateHelper.CreateEmpty(2);
+
+        GameStateHelper.SetPlayerTroopsToPlace(ref state, 0, 10);
+        GameStateHelper.SetPlayerTroopsToPlace(ref state, 1, 7);
+
+        var action = new GameAction
+        {
+            TargetTerritory = 0,
+            TroopCount = 4
+        };
+
+        // Act
+        ReinforceMutator.Apply(ref state, in action);
+
+        // Assert
+        Assert.Equal(6, GameStateHelper.GetPlayerTroopsToPlace(in state, 0));
+
+        Assert.Equal(7, GameStateHelper.GetPlayerTroopsToPlace(in state, 1));
+    }
 }
