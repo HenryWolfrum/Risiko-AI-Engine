@@ -164,6 +164,17 @@
 | TURNIN-004 | Rejects card sets containing cards not owned by the active player | Covered |
 | TURNIN-005 | Rejects invalid card combinations consisting of two equal card types and one different card type without a Joker | Covered |
 
+## CardTurnInMutator
+
+| Test ID | Description | Status |
+|---|---|---|
+| MUTATE-TURNIN-001 | Removes all traded cards from the active player's hand | Covered |
+| MUTATE-TURNIN-002 | Increases the traded card set counter | Covered |
+| MUTATE-TURNIN-003 | Awards the correct reinforcement bonus for the first traded set | Covered |
+| MUTATE-TURNIN-004 | Adds the reinforcement bonus to the player's existing reinforcement troop pool | Covered |
+| MUTATE-TURNIN-005 | Awards the territory ownership bonus for owned territory cards | Covered |
+| MUTATE-TURNIN-006 | Does not award the territory ownership bonus for territories not owned by the active player | Covered |
+
 
 ## RuleValidator
 
