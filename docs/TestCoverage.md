@@ -127,3 +127,16 @@
 | TURNIN-003 | Rejects card ids outside the deck | Covered |
 | TURNIN-004 | Rejects card sets containing cards not owned by the active player | Covered |
 | TURNIN-005 | Rejects invalid card combinations consisting of two equal card types and one different card type without a Joker | Covered |
+
+
+### RuleValidator
+
+| Test ID | Description | Status |
+|---|---|---|
+| VALIDATOR-001 | Accepts reinforcement actions during the Reinforce phase and forwards them to `ReinforceRules` | Covered |
+| VALIDATOR-002 | Rejects reinforcement actions outside the Reinforce phase before rule validation | Covered |
+| VALIDATOR-003 | Accepts `SkipPhase` during the Attack phase without additional rule validation | Covered |
+| VALIDATOR-004 | Accepts `EndTurn` during the Attack phase without additional rule validation | Covered |
+| VALIDATOR-005 | Forwards valid attack actions to `AttackRules` and returns the underlying validation result unchanged | Covered |
+
+
