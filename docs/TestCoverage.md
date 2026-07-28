@@ -104,23 +104,17 @@
 | FORTIFY-008 | Rejects fortification when the source territory is not owned by the active player | Covered |
 | FORTIFY-009 | Rejects fortification when the target territory is not owned by the active player | Covered |
 
-
-### Cards
-
-| Test ID | Description | Status |
-|---|---|---|
-| CARD-001 | Planned | Planned |
-
-
-### GameRunner
+### ConquerRules
 
 | Test ID | Description | Status |
 |---|---|---|
-| GAME-001 | Planned | Planned |
+| CONQUER-001 | Accepts valid troop movement after conquering a territory | Covered |
+| CONQUER-002 | Rejects invalid source territory ids | Covered |
+| CONQUER-003 | Rejects invalid target territory ids | Covered |
+| CONQUER-004 | Rejects troop movement when the source territory is not owned by the active player | Covered |
+| CONQUER-005 | Rejects troop movement when the target territory has not been conquered yet | Covered |
+| CONQUER-006 | Rejects troop movement when only one troop remains in the source territory | Covered |
+| CONQUER-007 | Rejects troop movement of zero troops | Covered |
+| CONQUER-008 | Rejects troop movement exceeding the maximum movable troops | Covered |
+| CONQUER-009 | Accepts moving the maximum legal number of troops after conquering | Covered |
 
-
-### Layout Validation
-
-| Test ID | Description | Status |
-|---|---|---|
-| LAYOUT-001 | Planned | Planned |
