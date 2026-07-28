@@ -118,3 +118,12 @@
 | CONQUER-008 | Rejects troop movement exceeding the maximum movable troops | Covered |
 | CONQUER-009 | Accepts moving the maximum legal number of troops after conquering | Covered |
 
+### TurnInCardsRules
+
+| Test ID | Description | Status |
+|---|---|---|
+| TURNIN-001 | Accepts a valid card set consisting of one Infantry, one Cavalry and one Artillery card | Covered |
+| TURNIN-002 | Accepts any valid card set containing a Joker | Covered |
+| TURNIN-003 | Rejects card ids outside the deck | Covered |
+| TURNIN-004 | Rejects card sets containing cards not owned by the active player | Covered |
+| TURNIN-005 | Rejects invalid card combinations consisting of two equal card types and one different card type without a Joker | Covered |

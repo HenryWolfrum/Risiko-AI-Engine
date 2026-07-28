@@ -40,7 +40,7 @@ public static class RuleValidator
 
             ActionType.Fortify => FortifyRules.Validate(in state, in action, game.Map),
 
-            ActionType.TurnInCards => TurnInCardsRules.Validate(in state, in action, game.Deck,game.Map),
+            ActionType.TurnInCards => TurnInCardsRules.Validate(in state, in action, game.Deck),
 
            ActionType.Conquer => ConquerRules.Validate(in state, in action,game.Map),
             

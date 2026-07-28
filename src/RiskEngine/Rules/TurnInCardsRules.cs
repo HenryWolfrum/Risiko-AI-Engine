@@ -2,10 +2,10 @@ namespace RiskEngine.Rules;
 
 public static class TurnInCardsRules
 {
-    public static ValidationResult Validate(in GameState state, in GameAction action,DeckLayout deck, MapLayout map)
+    public static ValidationResult Validate(in GameState state, in GameAction action,DeckLayout deck)
     {
         // Cards out of Range
-        if (action.Card1 >= map.TerritoryCount || action.Card2 >= map.TerritoryCount ||action.Card3 >= map.TerritoryCount)
+        if (action.Card1 >= deck.CardCount || action.Card2 >= deck.CardCount ||action.Card3 >= deck.CardCount)
             return ValidationResult.Invalid(EngineError.UnknownCard);
 
         //Does player own the cards
