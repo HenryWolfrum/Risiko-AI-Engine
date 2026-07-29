@@ -108,6 +108,7 @@ public static class GameInitializer
                 state.PlayerMissions[p] = layout.Missions.FallbackMissionId;
             }
         }
+        
       
 
         return state;

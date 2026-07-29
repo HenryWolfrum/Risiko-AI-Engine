@@ -14,7 +14,7 @@ public static class MissionEvaluator
         byte missionId = MissionHelper.GetPlayerMission(in state, playerIndex);
         ref readonly var mission = ref layout.Missions[missionId];
 
-        return mission.Type switch
+        bool isFulfilled = mission.Type switch
         {
             MissionType.WorldDomination => CheckWorldDomination(in state, in layout, playerIndex),
             MissionType.ConquerTerritories => CheckTerritories(in state, in layout, playerIndex, in mission),
@@ -22,6 +22,9 @@ public static class MissionEvaluator
             MissionType.EliminatePlayer => CheckElimination(in state, in layout, playerIndex, in mission),
             _ => false
         };
+
+    
+        return isFulfilled;
     }
 
     /// <summary>
