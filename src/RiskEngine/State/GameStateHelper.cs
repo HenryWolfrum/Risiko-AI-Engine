@@ -21,6 +21,22 @@ public static unsafe class GameStateHelper
         state.TerritoryOwners[territoryId] = owner;
     }
 
+    // ==========================================
+    // --- MISSION GETTERS & SETTERS ------------
+    // ==========================================
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte GetPlayerMission(in GameState state, byte player)
+    {
+        return state.PlayerMissions[player];
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SetPlayerMission(ref GameState state, byte player, byte missionId)
+    {
+        state.PlayerMissions[player] = missionId;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte GetTerritoryTroops(in GameState state, int territoryId)
     {
@@ -37,11 +53,11 @@ public static unsafe class GameStateHelper
     /// Creates a bitboard containing every territory owned by the player.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ulong GetPlayerTerritoriesBitboard(in GameState state, byte player)
+    public static ulong GetPlayerTerritoriesBitboard(in GameState state, byte player, byte territoryCount = EngineConstants.MAX_TERRITORIES)
     {
         ulong mask = 0;
 
-        for (int i = 0; i < EngineConstants.MAX_TERRITORIES; i++)
+        for (int i = 0; i < territoryCount; i++)
         {
             if (state.TerritoryOwners[i] == player)
             {
@@ -53,15 +69,15 @@ public static unsafe class GameStateHelper
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetOwnedTerritoryCount(in GameState state, byte player)
+    public static int GetOwnedTerritoryCount(in GameState state, byte player,byte territoryCount=EngineConstants.MAX_TERRITORIES)
     {
-        return BitOperations.PopCount(GetPlayerTerritoriesBitboard(in state, player));
+        return BitOperations.PopCount(GetPlayerTerritoriesBitboard(in state, player,territoryCount));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte GetFirstTerritoryOwnedBy(in GameState state, byte player)
     {
-        ulong territories = GetPlayerTerritoriesBitboard(in state, player);
+        ulong territories = GetPlayerTerritoriesBitboard(in state,player);
 
         if (territories == 0)
             return EngineConstants.NO_VALUE;

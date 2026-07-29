@@ -67,6 +67,17 @@ public sealed class TestStateBuilder
 
 
     /// <summary>
+    /// Assigns a mission (by catalog index) to a player.
+    /// </summary>
+    public TestStateBuilder WithPlayerMission(byte player, byte missionId)
+    {
+        GameStateHelper.SetPlayerMission(ref _state, player, missionId);
+
+        return this;
+    }
+
+
+    /// <summary>
     /// Sets the number of reinforcement troops waiting to be placed.
     /// </summary>
     public TestStateBuilder WithTroopsToPlace(byte player, byte troops)
