@@ -14,8 +14,11 @@ public static class ActionGenerator
             GamePhase.CardTurnIn => CardTurnInActionGenerator.Generate(in state, layout, actions),
 
             GamePhase.Reinforce => ReinforcementActionGenerator.Generate(in state, actions),
-            // Add further action generators here:
-            // GamePhase.Attack => AttackActionGenerator.Generate(...),
+            
+            GamePhase.Attack => AttackActionGenerator.Generate(in state, layout, actions),
+            
+            
+            
             GamePhase.Fortify => FortifyActionGenerator.Generate(in state,layout, actions),
 
             _ => throw new ArgumentOutOfRangeException(nameof(state.CurrentPhase), state.CurrentPhase, "Unsupported game phase for action generation.")
