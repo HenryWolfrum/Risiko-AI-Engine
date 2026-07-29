@@ -34,7 +34,7 @@ public static class FortifyExecutor
         while (moveCounter < maxFortifyMoves)
         {
             // Ask player for a fortification action
-            var action = player.DecideAction(in state, GamePhase.Fortify, layout);
+            var action = player.DecideAction(in state, layout);
 
 
             // Player chooses to end fortification phase

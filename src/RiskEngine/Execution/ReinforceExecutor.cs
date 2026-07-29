@@ -41,7 +41,7 @@ public static class ReinforceExecutor
 
 
             // Ask player where to place troops
-            var action = player.DecideAction(in state, GamePhase.Reinforce, layout);
+            var action = player.DecideAction(in state, layout);
 
 
             // Validate reinforcement action

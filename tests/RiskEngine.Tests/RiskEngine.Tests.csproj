@@ -22,4 +22,8 @@
     <ProjectReference Include="..\..\src\RiskEngine\RiskEngine.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Mission\" />
+  </ItemGroup>
+
 </Project>

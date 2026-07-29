@@ -137,15 +137,13 @@ Console.WriteLine("----------------------------------------");
 
 public class SimpleStrategyBot : IRiskPlayer
 {
-    public GameAction DecideAction(
-        in GameState state,
-        GamePhase phase,
+    public GameAction DecideAction(in GameState state,
         GameLayout layout)
     {
         var player = state.PlayerTurn;
 
 
-        switch (phase)
+        switch (state.CurrentPhase)
         {
             case GamePhase.Reinforce:
             {

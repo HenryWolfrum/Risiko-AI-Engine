@@ -121,6 +121,21 @@ public static unsafe class CardHelper
         return BitOperations.PopCount(state.PlayerCardsBitboard[player]);
     }
 
+    public static int ExtractCardIds(ulong bitboard, Span<byte> buffer)
+    {
+        int count = 0;
+
+        while (bitboard != 0)
+        {
+            int id = BitOperations.TrailingZeroCount(bitboard);
+
+            buffer[count++] = (byte)id;
+
+            bitboard &= bitboard - 1;
+        }
+
+        return count;
+    }
     
     
     /// <summary>

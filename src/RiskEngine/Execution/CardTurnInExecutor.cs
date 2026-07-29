@@ -33,7 +33,7 @@ public static class CardTurnInExecutor
         while (CardHelper.GetPlayerCardCount(in state, state.PlayerTurn) >= EngineConstants.FORCE_TRADE_CARD_COUNT)
         {
             // Ask player which card set should be exchanged.
-            var action = player.DecideAction(in state, GamePhase.CardTurnIn, layout);
+            var action = player.DecideAction(in state, layout);
 
 
             // Validate action through the central validation system.
@@ -69,7 +69,7 @@ public static class CardTurnInExecutor
         }
         
         // Ask player whether a voluntary trade should happen.
-        var action = player.DecideAction(in state, GamePhase.CardTurnIn, layout);
+        var action = player.DecideAction(in state, layout);
         
         // Only trade actions are relevant here.
         if (action.Type != ActionType.TurnInCards)

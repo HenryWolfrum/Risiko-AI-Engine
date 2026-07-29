@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace RiskEngine.State.Rules;
 
 public static class TurnInCardsRules
@@ -20,17 +22,33 @@ public static class TurnInCardsRules
         var cardType2 = deck.TerritoryToType[action.Card2];
         var cardType3 = deck.TerritoryToType[action.Card3];
 
-        //At least one Joker is valid set
-        if (cardType1 == CardType.Joker || cardType2 == CardType.Joker || cardType3 == CardType.Joker)
-            return ValidationResult.Valid();
+        //Check if deck is valid
+        if (!IsValidSet(cardType1,cardType2,cardType3))
+        {
+            return ValidationResult.Invalid(EngineError.InvalidCardSet);
+        }
+        
+        return ValidationResult.Valid();
+    }
+    
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsValidSet(
+        CardType type1,
+        CardType type2,
+        CardType type3)
+    {
+        if (type1 == CardType.Joker ||
+            type2 == CardType.Joker ||
+            type3 == CardType.Joker)
+            return true;
 
-        //Three of a kind
-        if (cardType1 == cardType2 && cardType2 == cardType3) return ValidationResult.Valid();
+        if (type1 == type2 &&
+            type2 == type3)
+            return true;
 
-        //All different
-        if (cardType1 != cardType2 && cardType1 != cardType3 && cardType2 != cardType3) return ValidationResult.Valid();
-
-        //Invalid Card Set
-        return ValidationResult.Invalid(EngineError.InvalidCardSet);
+        return type1 != type2 &&
+               type1 != type3 &&
+               type2 != type3;
     }
 }

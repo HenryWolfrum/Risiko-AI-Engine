@@ -35,7 +35,7 @@ public static class AttackExecutor
 
 
             // Ask attacker for the next attack decision.
-            var attackAction = attackerPlayer.DecideAction(in state, GamePhase.Attack, layout);
+            var attackAction = attackerPlayer.DecideAction(in state, layout);
 
 
             // Player ends attack phase voluntarily.
@@ -64,7 +64,7 @@ public static class AttackExecutor
 
 
             // Ask defender how many dice should be used.
-            var defenderDice = defenderPlayer.DecideAction(in state, state.CurrentPhase,layout).ChosenDefenderDiceCount;
+            var defenderDice = defenderPlayer.DecideAction(in state,layout).ChosenDefenderDiceCount;
 
 
             // Safety fallback for invalid defender behaviour.

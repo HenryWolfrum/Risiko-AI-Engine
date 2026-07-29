@@ -21,7 +21,7 @@ public static class ConquerExecutor
 
         // Ask attacker how many troops should move
         // into the conquered territory.
-        var conquerAction = attacker.DecideAction(in state, GamePhase.Conquer, layout);
+        var conquerAction = attacker.DecideAction(in state, layout);
 
 
         // Ensure source and target are always the conquered
