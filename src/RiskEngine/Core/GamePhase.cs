@@ -1,4 +1,4 @@
-﻿namespace RiskEngine;
+﻿namespace RiskEngine.State;
 
 public enum GamePhase : byte
 {

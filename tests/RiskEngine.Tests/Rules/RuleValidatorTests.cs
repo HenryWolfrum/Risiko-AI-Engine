@@ -1,6 +1,6 @@
-using RiskEngine.Tests.Helpers;
+using RiskEngine.State.Tests.Helpers;
 
-namespace RiskEngine.Tests.Validation;
+namespace RiskEngine.State.Tests.Validation;
 
 public class RuleValidatorTests
 {

@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.Validation;
+﻿namespace RiskEngine.State.Validation;
 
 public static class ReinforceRules
 {

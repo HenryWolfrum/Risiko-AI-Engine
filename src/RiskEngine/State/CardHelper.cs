@@ -1,7 +1,7 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace RiskEngine;
+namespace RiskEngine.State;
 
 public static unsafe class CardHelper
 {

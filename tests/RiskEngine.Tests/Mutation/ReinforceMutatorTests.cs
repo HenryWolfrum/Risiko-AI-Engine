@@ -1,7 +1,9 @@
-﻿namespace RiskEngine.Tests.Mutation;
+﻿using RiskEngine.State.Mutation;
 
-using RiskEngine;
-using RiskEngine.Mutation;
+namespace RiskEngine.State.Tests.Mutation;
+
+using RiskEngine.State;
+using RiskEngine.State.Mutation;
 using Xunit;
 
 public class ReinforceMutatorTests

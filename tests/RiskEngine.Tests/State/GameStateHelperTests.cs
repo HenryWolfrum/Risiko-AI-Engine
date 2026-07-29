@@ -1,6 +1,6 @@
-﻿namespace RiskEngine.Tests.State;
+﻿namespace RiskEngine.State.Tests.State;
 
-using RiskEngine;
+using RiskEngine.State;
 using Xunit;
 
 public class GameStateHelperTests

@@ -1,4 +1,4 @@
-﻿namespace RiskEngine;
+﻿namespace RiskEngine.State;
 
 /// <summary>
 /// Global engine limits and default values.

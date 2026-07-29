@@ -1,7 +1,7 @@
-using RiskEngine.Mutation;
-using RiskEngine.Tests.Helpers;
+using RiskEngine.State.Mutation;
+using RiskEngine.State.Tests.Helpers;
 
-namespace RiskEngine.Tests.Mutation;
+namespace RiskEngine.State.Tests.Mutation;
 
 public class CardTurnInMutatorTests
 {

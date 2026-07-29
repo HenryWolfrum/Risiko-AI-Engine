@@ -1,8 +1,8 @@
-﻿using RiskEngine.Resolution;
+﻿using RiskEngine.State.Resolution;
 
-namespace RiskEngine.Tests.Resolution;
+namespace RiskEngine.State.Tests.Resolution;
 
-using RiskEngine;
+using RiskEngine.State;
 using Xunit;
 
 public class CombatResolverTests

@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.Resolution;
+﻿namespace RiskEngine.State.Resolution;
 
 public static class CombatResolver
 {

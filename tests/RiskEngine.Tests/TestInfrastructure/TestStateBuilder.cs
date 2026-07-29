@@ -1,6 +1,6 @@
-﻿namespace RiskEngine.Tests.TestInfrastructure;
+﻿namespace RiskEngine.State.Tests.TestInfrastructure;
 
-using RiskEngine;
+using RiskEngine.State;
 
 /// <summary>
 /// Fluent builder for creating deterministic GameState instances in unit tests.

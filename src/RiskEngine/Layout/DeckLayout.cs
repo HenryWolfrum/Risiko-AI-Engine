@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-using RiskEngine;
+using RiskEngine.State;
 
 public class DeckLayout
 {

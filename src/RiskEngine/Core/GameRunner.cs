@@ -1,4 +1,4 @@
-namespace RiskEngine;
+namespace RiskEngine.State;
 
 /// <summary>
 /// Main game loop controller.

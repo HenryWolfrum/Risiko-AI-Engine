@@ -1,4 +1,4 @@
-using RiskEngine;
+using RiskEngine.State;
 
 public static class FortifyRules
 {

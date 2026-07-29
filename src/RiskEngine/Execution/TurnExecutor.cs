@@ -1,4 +1,4 @@
-namespace RiskEngine.Execution;
+namespace RiskEngine.State.Execution;
 
 /// <summary>
 /// Executes the complete turn sequence for a single player.

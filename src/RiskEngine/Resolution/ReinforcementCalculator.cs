@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace RiskEngine;
+namespace RiskEngine.State;
 
 public static class ReinforcementCalculator
 {

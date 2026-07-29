@@ -1,4 +1,4 @@
-namespace RiskEngine.Tests.Mutation;
+namespace RiskEngine.State.Tests.Mutation;
 
 public class AttackMutatorTests
 {

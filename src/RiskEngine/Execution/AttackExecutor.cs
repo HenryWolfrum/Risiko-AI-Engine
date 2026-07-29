@@ -1,7 +1,7 @@
-using RiskEngine.Mutation;
-using RiskEngine.Validation;
+using RiskEngine.State.Mutation;
+using RiskEngine.State.Validation;
 
-namespace RiskEngine.Execution;
+namespace RiskEngine.State.Execution;
 
 /// <summary>
 /// Executes the attack phase of a player's turn.

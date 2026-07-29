@@ -1,4 +1,4 @@
-namespace RiskEngine.Rules;
+namespace RiskEngine.State.Rules;
 
 /// <summary>
 /// Contains validation rules for conquering a territory.

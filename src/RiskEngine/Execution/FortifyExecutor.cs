@@ -1,6 +1,6 @@
-using RiskEngine.Mutation;
+using RiskEngine.State.Mutation;
 
-namespace RiskEngine.Execution;
+namespace RiskEngine.State.Execution;
 
 /// <summary>
 /// Executes the fortification phase of a player's turn.

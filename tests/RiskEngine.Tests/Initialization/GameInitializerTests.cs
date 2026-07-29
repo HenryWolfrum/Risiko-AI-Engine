@@ -1,7 +1,9 @@
-﻿namespace RiskEngine.Tests.Initialization;
+﻿using RiskEngine.State.Tests.Helpers;
 
-using RiskEngine;
-using RiskEngine.Tests.Helpers;
+namespace RiskEngine.State.Tests.Initialization;
+
+using RiskEngine.State;
+using RiskEngine.State.Tests.Helpers;
 using Xunit;
 
 public class GameInitializerTests

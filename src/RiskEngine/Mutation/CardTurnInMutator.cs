@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace RiskEngine.Mutation;
+namespace RiskEngine.State.Mutation;
 
 public static class CardTurnInMutator
 {

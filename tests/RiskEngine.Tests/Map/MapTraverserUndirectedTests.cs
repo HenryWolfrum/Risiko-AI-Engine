@@ -1,6 +1,6 @@
-using RiskEngine.Tests.Helpers;
+using RiskEngine.State.Tests.Helpers;
 
-namespace RiskEngine.Tests.Map;
+namespace RiskEngine.State.Tests.Map;
 
 public class MapTraverserUndirectedTests
 {

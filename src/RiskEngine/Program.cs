@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using RiskEngine;
-using RiskEngine.Rules;
-using RiskEngine.Validation;
+using RiskEngine.State;
+using RiskEngine.State.Rules;
+using RiskEngine.State.Validation;
 
 Console.WriteLine("========================================");
 Console.WriteLine("   RISK ENGINE TEST & BENCHMARK");

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace RiskEngine;
+namespace RiskEngine.State;
 
 // Deterministic, 100% Zero-Allocation RNG
 public struct EngineRandom

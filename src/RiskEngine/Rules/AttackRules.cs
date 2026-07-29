@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace RiskEngine.Validation;
+namespace RiskEngine.State.Validation;
 
 public static class AttackRules
 {

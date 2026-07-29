@@ -1,6 +1,6 @@
-using RiskEngine.Resolution;
+using RiskEngine.State.Resolution;
 
-namespace RiskEngine.Mutation;
+namespace RiskEngine.State.Mutation;
 
 /// <summary>
 /// Central mutation dispatcher.

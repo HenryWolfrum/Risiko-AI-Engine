@@ -1,4 +1,4 @@
-﻿namespace RiskEngine;
+﻿namespace RiskEngine.State;
 
 //Generic GameAction 
 public struct GameAction

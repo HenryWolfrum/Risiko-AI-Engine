@@ -1,4 +1,4 @@
-﻿namespace RiskEngine;
+﻿namespace RiskEngine.State;
 
 /// <summary>
 ///     Defines all discrete player action types in the Risk engine.

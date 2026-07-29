@@ -1,4 +1,4 @@
-namespace RiskEngine.Rules;
+namespace RiskEngine.State.Rules;
 
 public static class TurnInCardsRules
 {
