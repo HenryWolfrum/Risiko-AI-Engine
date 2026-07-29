@@ -8,8 +8,8 @@ public enum GamePhase : byte
     Attack = 3,
     Conquer = 4,
     Fortify = 5,
-    End = 6,
-    Terminated = 7,
+    End = 6,  //End of a Turn
+    Terminated = 7, //Game is decided
 
 
     Error = byte.MaxValue

@@ -64,7 +64,7 @@ public static class AttackExecutor
 
 
             // Ask defender how many dice should be used.
-            var defenderDice = defenderPlayer.DecideDefenderDice(in state, in attackAction);
+            var defenderDice = defenderPlayer.DecideAction(in state, state.CurrentPhase,layout).ChosenDefenderDiceCount;
 
 
             // Safety fallback for invalid defender behaviour.

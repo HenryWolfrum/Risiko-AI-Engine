@@ -44,7 +44,7 @@ public enum EngineError : byte
     InvalidCardSet = 82,
 
     // =========================================
-// Layout Errors (100-149)
+// Layout Errors (100-159)
 // =========================================
 
     InvalidLayout = 100,

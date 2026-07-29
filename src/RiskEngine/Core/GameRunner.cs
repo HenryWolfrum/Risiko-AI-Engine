@@ -27,8 +27,26 @@ public static class GameRunner
             // Skip eliminated players
             if (!GameStateHelper.IsPlayerAlive(in state, currentPlayer))
             {
-                AdvanceToNextTurn(ref state, layout.Config.PlayerCount);
+                // Only one player remains
+                if (GameStateHelper.GetActivePlayerCount(in state) <= 1)
+                {
+                    // Find last one standing
+                    byte winner = EngineConstants.NO_VALUE;
+                    for (byte p = 0; p < layout.Config.PlayerCount; p++)
+                    {
+                        if (GameStateHelper.IsPlayerAlive(in state, p))
+                        {
+                            winner = p;
+                            break;
+                        }
+                    }
 
+                    //Terminate Game
+                    GameStateHelper.Terminate(ref state, winner);
+                    return state;
+                }
+    
+                AdvanceToNextTurn(ref state, layout.Config.PlayerCount);
                 continue;
             }
 
