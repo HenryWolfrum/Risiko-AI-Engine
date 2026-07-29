@@ -2,7 +2,7 @@ namespace RiskEngine.State;
 
 public static unsafe class MapTraverser
 {
-    public static bool HasPath(GameState state, MapLayout map, byte source, byte target, byte player)
+    public static bool HasPath(in GameState state, MapLayout map, byte source, byte target, byte player)
     {
         //Source or Target do not belong to player
         if (GameStateHelper.GetTerritoryOwner(state, source) != player ||
