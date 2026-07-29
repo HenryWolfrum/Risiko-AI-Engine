@@ -30,9 +30,6 @@ public sealed class TestLayoutBuilder
     /// </summary>
     public TestLayoutBuilder WithTerritories(int count)
     {
-        if (count <= 0 || count > EngineConstants.MAX_TERRITORIES)
-            throw new ArgumentOutOfRangeException(nameof(count));
-
         _territoryCount = count;
         InitializeAdjacencyList();
 

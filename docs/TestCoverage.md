@@ -197,3 +197,9 @@
 | PATH-004 | Rejects path search when the source territory is not owned by the requested player | Covered |
 | PATH-005 | Rejects path search when the target territory is not owned by the requested player | Covered |
 | PATH-006 | Returns a valid path when source and target territory are identical | Covered |
+| CONN-001 | Confirms connectivity for a map where all territories are transitively connected | Covered |
+| CONN-002 | Rejects maps split into disconnected components (islands) | Covered |
+| CONN-003 | Confirms connectivity for a single-territory map | Covered |
+| CONN-004 | Rejects empty maps with zero territories | Covered |
+| CONN-005 | Rejects maps containing an isolated territory with no connections | Covered |
+| CONN-006 | Rejects directed graphs where territories are unreachable from starting territory 0 | Covered |
