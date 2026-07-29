@@ -64,8 +64,12 @@ public static class AttackExecutor
 
 
             // Ask defender how many dice should be used.
-            var defenderDice = defenderPlayer.DecideAction(in state,layout).ChosenDefenderDiceCount;
-
+            var defenderAction = defenderPlayer.DecideAction(in state, layout);
+            
+            // Fallback to max dice if the action type is wrong or invalid
+            byte defenderDice = (defenderAction.Type == ActionType.Defend) 
+                ? defenderAction.ChosenDefenderDiceCount 
+                : AttackRules.GetMaxDefenderDice(in state, attackAction.TargetTerritory);
 
             // Safety fallback for invalid defender behaviour.
             if (!AttackRules.IsValidDefenderDice(in state, attackAction.TargetTerritory, defenderDice))

@@ -78,6 +78,8 @@ public static class RuleValidator
             GamePhase.Attack => action switch
             {
                 ActionType.Attack => ValidationResult.Valid(),
+                
+                ActionType.Defend => ValidationResult.Valid(),
 
                 ActionType.SkipPhase => ValidationResult.Valid(),
 

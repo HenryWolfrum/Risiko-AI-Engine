@@ -11,12 +11,12 @@ public static class ActionGenerator
         return state.CurrentPhase switch
         {
             // Generate all possible card trade-in actions
-            GamePhase.CardTurnIn =>
-                CardTurnInActionGenerator.Generate(in state, state.PlayerTurn, layout, actions),
+            GamePhase.CardTurnIn => CardTurnInActionGenerator.Generate(in state, layout, actions),
 
+            GamePhase.Reinforce => ReinforcementActionGenerator.Generate(in state, actions),
             // Add further action generators here:
             // GamePhase.Attack => AttackActionGenerator.Generate(...),
-            // GamePhase.Fortify => FortifyActionGenerator.Generate(...),
+            GamePhase.Fortify => FortifyActionGenerator.Generate(in state,layout, actions),
 
             _ => throw new ArgumentOutOfRangeException(nameof(state.CurrentPhase), state.CurrentPhase, "Unsupported game phase for action generation.")
         };
