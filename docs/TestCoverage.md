@@ -203,3 +203,8 @@
 | CONN-004 | Rejects empty maps with zero territories | Covered |
 | CONN-005 | Rejects maps containing an isolated territory with no connections | Covered |
 | CONN-006 | Rejects directed graphs where territories are unreachable from starting territory 0 | Covered |
+| UNDIR-001 | Confirms an undirected graph when all adjacent territory links are symmetric | Covered |
+| UNDIR-002 | Rejects a graph containing a single one-way (directed) connection | Covered |
+| UNDIR-003 | Confirms an isolated single-territory map as undirected | Covered |
+| UNDIR-004 | Confirms an empty map with zero territories as undirected | Covered |
+| UNDIR-005 | Rejects a complex graph when a single reverse connection is missing | Covered |
