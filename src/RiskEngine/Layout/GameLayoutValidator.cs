@@ -1,8 +1,10 @@
+using RiskEngine.Mission;
+
 namespace RiskEngine.State;
 
 public static class GameLayoutValidator
 {
-    public static ValidationResult Validate(MapLayout map, DeckLayout deck, EngineConfig config)
+    public static ValidationResult Validate(MapLayout map, DeckLayout deck, EngineConfig config,MissionCatalog missions)
     {
         var result = ValidateConfig(config);
         if (!result.IsValid)
@@ -23,6 +25,9 @@ public static class GameLayoutValidator
         result = ValidateCrossLayout(map, deck);
         if (!result.IsValid)
             return result;
+        
+        result = ValidateMissions(missions, map, config);
+        if (!result.IsValid) return result;
 
         return ValidationResult.Valid();
     }
@@ -293,4 +298,76 @@ public static class GameLayoutValidator
 
         return ValidationResult.Valid();
     }
+    
+    
+    private static ValidationResult ValidateMissions(MissionCatalog missions, MapLayout map, EngineConfig config)
+{
+    // A game without missions is valid (Fallback to WorldDomination happens in GameInitializer)
+    if (missions.Count == 0)
+        return ValidationResult.Valid();
+
+    var ids = new HashSet<byte>();
+    
+    // Create a bitmask representing all valid continents (e.g. 6 Continents = 0b0011_1111)
+    ulong validContinentBits = (1UL << map.Continents.Length) - 1;
+
+    for (int i = 0; i < missions.Count; i++)
+    {
+        ref readonly var mission = ref missions[i];
+
+        // ----------------------------
+        // 1. Check uniqueness
+        // ----------------------------
+        if (!ids.Add(mission.Id))
+            return ValidationResult.Invalid(EngineError.DuplicateMissionId);
+
+        // ----------------------------
+        // 2. Validate Targets based on Type
+        // ----------------------------
+        switch (mission.Type)
+        {
+            case MissionType.WorldDomination:
+                // No parameters to validate
+                break;
+
+            case MissionType.ConquerTerritories:
+                if (mission.RequiredTerritories == 0 || mission.RequiredTerritories > map.TerritoryCount)
+                    return ValidationResult.Invalid(EngineError.InvalidMissionTerritoryTarget);
+                
+                // Optional: MinTroopsPerTerritory check (e.g. shouldn't be impossibly high)
+                break;
+
+            case MissionType.ConquerContinents:
+                if (mission.TargetContinentMask == 0)
+                    return ValidationResult.Invalid(EngineError.InvalidMissionContinent);
+
+                // Ensure the mission mask doesn't request bits for continents that don't exist
+                if ((mission.TargetContinentMask & ~validContinentBits) != 0)
+                    return ValidationResult.Invalid(EngineError.InvalidMissionContinent);
+                break;
+
+            case MissionType.EliminatePlayer:
+                // Note: The classic boardgame allows targetting yourself (resolved in Setup). 
+                // However, the target ID must not exceed the theoretical maximum player count.
+                if (mission.TargetPlayerId >= EngineConstants.MAX_PLAYERS)
+                    return ValidationResult.Invalid(EngineError.InvalidMissionPlayerTarget);
+                break;
+
+            default:
+                return ValidationResult.Invalid(EngineError.InvalidMissionType);
+        }
+    }
+
+    // ----------------------------
+    // 3. ID Sequentiality (Optional but recommended)
+    // ----------------------------
+    // Ensure IDs are 0 to Count-1 for direct array mapping
+    for (byte i = 0; i < missions.Count; i++)
+    {
+        if (!ids.Contains(i))
+            return ValidationResult.Invalid(EngineError.InvalidMissionIdSequence);
+    }
+
+    return ValidationResult.Valid();
+}
 }

@@ -9,6 +9,7 @@ public enum GamePhase : byte
     Conquer = 4,
     Fortify = 5,
     End = 6,
+    Terminated = 7,
 
 
     Error = byte.MaxValue

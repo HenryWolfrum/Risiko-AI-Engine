@@ -1,4 +1,6 @@
-﻿namespace RiskEngine.State;
+﻿using RiskEngine.Mission;
+
+namespace RiskEngine.State;
 
 public static class GameInitializer
 {
@@ -62,6 +64,51 @@ public static class GameInitializer
 
         // Reset troops to place for all players
         for (byte p = 0; p < playerCount; p++) state.PlayerTroopsToPlace[p] = 0;
+        
+        
+        // 10. Assign each player one unique mission with fallback safety
+        int missionCount = layout.Missions.Count;
+
+        if (missionCount >= playerCount)
+        {
+            Span<byte> missionIds = stackalloc byte[missionCount];
+            for (byte i = 0; i < missionCount; i++) missionIds[i] = i;
+
+            // Shuffle Mission Catalog deterministically
+            rng.Shuffle(missionIds);
+
+            for (byte p = 0; p < playerCount; p++)
+            {
+                byte missionId = missionIds[p];
+                var mission = layout.Missions[missionId];
+
+                // CHECK: Self-Elimination OR Non-Existent Player ID
+                if (mission.Type == MissionType.EliminatePlayer)
+                {
+                    bool isSelfElimination = mission.TargetPlayerId == p;
+                    bool isInvalidPlayerId = mission.TargetPlayerId >= playerCount;
+
+                    if (isSelfElimination || isInvalidPlayerId)
+                    {
+                        // Fallback: Convert to World Domination
+                        state.PlayerMissions[p] = layout.Missions.FallbackMissionId;
+                        continue;
+                    }
+                }
+
+                // Valid mission assigned
+                state.PlayerMissions[p] = missionId;
+            }
+        }
+        else
+        {
+            // General Fallback if catalog is too small
+            for (byte p = 0; p < playerCount; p++)
+            {
+                state.PlayerMissions[p] = layout.Missions.FallbackMissionId;
+            }
+        }
+      
 
         return state;
     }

@@ -8,6 +8,7 @@ public unsafe struct GameState
 
     // --- Player Info ---
     public fixed byte PlayerTroopsToPlace[EngineConstants.MAX_PLAYERS];
+    public fixed byte PlayerMissions[EngineConstants.MAX_PLAYERS];
 
     // --- Cards & Deck Info ---
     public fixed ulong PlayerCardsBitboard[EngineConstants.MAX_PLAYERS];
@@ -19,4 +20,7 @@ public unsafe struct GameState
     public GamePhase CurrentPhase;
 
     public byte PlayersAliveBitboard;
+    
+    
+    public byte WinnerId;
 }

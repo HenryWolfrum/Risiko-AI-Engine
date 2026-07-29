@@ -1,3 +1,5 @@
+using RiskEngine.Mission;
+
 namespace RiskEngine.State;
 
 /// <summary>
@@ -17,7 +19,7 @@ public static class GameRunner
 
 
         // Main game loop
-        while (state.CurrentRound <= layout.Config.MaxRounds)
+        while (state.CurrentRound <= layout.Config.MaxRounds && state.CurrentPhase!=GamePhase.Terminated)
         {
             var currentPlayer = state.PlayerTurn;
 
@@ -36,8 +38,9 @@ public static class GameRunner
 
 
             // Check victory condition
-            if (HasPlayerWon(in state, currentPlayer))
+            if (HasPlayerWon(in state, in layout, currentPlayer))
             {
+                GameStateHelper.Terminate(ref state, currentPlayer);
                 return state;
             }
 
@@ -48,6 +51,7 @@ public static class GameRunner
 
 
         // Return final state if maximum rounds are reached
+        GameStateHelper.Terminate(ref state, EngineConstants.NO_VALUE);
         return state;
     }
 
@@ -72,8 +76,8 @@ public static class GameRunner
     /// <summary>
     /// Checks whether only one active player remains.
     /// </summary>
-    private static bool HasPlayerWon(in GameState state, byte player)
+    private static bool HasPlayerWon(in GameState state,in GameLayout layout, byte player)
     {
-        return GameStateHelper.GetActivePlayerCount(in state) == 1 && GameStateHelper.IsPlayerAlive(in state, player);
+        return MissionEvaluator.IsFulfilled(state,layout,player);
     }
 }

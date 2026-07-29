@@ -1,4 +1,6 @@
-﻿namespace RiskEngine.State;
+﻿using RiskEngine.Mission;
+
+namespace RiskEngine.State;
 
 public static class RiskMapFactory
 {
@@ -171,11 +173,50 @@ public static class RiskMapFactory
             //Joker (2)
             CardType.Joker, CardType.Joker
         };
+        
+        
+        
+        
+        //Missionen
+        var missions = new MissionDefinition[]
+        {
+            // --- Player Elimination Missions (IDs 0 - 5) ---
+            new() { Id = 0, Type = MissionType.EliminatePlayer, TargetPlayerId = 0 }, // Eliminate Player 0
+            new() { Id = 1, Type = MissionType.EliminatePlayer, TargetPlayerId = 1 }, // Eliminate Player 1
+            new() { Id = 2, Type = MissionType.EliminatePlayer, TargetPlayerId = 2 }, // Eliminate Player 2
+            new() { Id = 3, Type = MissionType.EliminatePlayer, TargetPlayerId = 3 }, // Eliminate Player 3
+            new() { Id = 4, Type = MissionType.EliminatePlayer, TargetPlayerId = 4 }, // Eliminate Player 4
+            new() { Id = 5, Type = MissionType.EliminatePlayer, TargetPlayerId = 5 }, // Eliminate Player 5
+
+            // --- Territory Missions (IDs 6 - 7) ---
+            new() { Id = 6, Type = MissionType.ConquerTerritories, RequiredTerritories = 24, MinTroopsPerTerritory = 1 },
+            new() { Id = 7, Type = MissionType.ConquerTerritories, RequiredTerritories = 18, MinTroopsPerTerritory = 2 },
+
+            // --- Continent Missions (IDs 8 - 11) ---
+            // ID 8: North America (1) + Australia (32) = 33 (0x21)
+            new() { Id = 8, Type = MissionType.ConquerContinents, TargetContinentMask = (1 << 0) | (1 << 5) }, 
+
+            // ID 9: North America (1) + Africa (4) = 5 (0x05)
+            new() { Id = 9, Type = MissionType.ConquerContinents, TargetContinentMask = (1 << 0) | (1 << 2) }, 
+
+            // ID 10: Asia (16) + Africa (4) = 20 (0x14)
+            new() { Id = 10, Type = MissionType.ConquerContinents, TargetContinentMask = (1 << 4) | (1 << 2) }, 
+
+            // ID 11: Asia (16) + South America (2) = 18 (0x12)
+            new() { Id = 11, Type = MissionType.ConquerContinents, TargetContinentMask = (1 << 4) | (1 << 1) }, 
+
+            // ID 12: Europe (8) + Australia (32) = 40 (0x28)
+            new() { Id = 12, Type = MissionType.ConquerContinents, TargetContinentMask = (1 << 3) | (1 << 5)},
+        };
+
+        var missionCatalog = new MissionCatalog(missions,6); 
+       
+    
 
 
         var mapLayout = new MapLayout(territoryNames, adjacencies, territoryToContinent, continents);
         var deckLayout = new DeckLayout(territoryToType);
 
-        return new GameLayout(mapLayout, deckLayout, gameConfig);
+        return new GameLayout(mapLayout, deckLayout, gameConfig,missionCatalog);
     }
 }

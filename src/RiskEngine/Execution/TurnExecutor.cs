@@ -25,6 +25,12 @@ public static class TurnExecutor
 
         // 3. Attack phase
         AttackExecutor.Execute(ref state, players, layout, ref rng);
+        
+        // After Attack Game could already be decided
+        if (state.CurrentPhase == GamePhase.Terminated)
+        {
+            return;
+        }
 
 
         // 4. Fortification phase

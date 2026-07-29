@@ -113,6 +113,24 @@ public static unsafe class GameStateHelper
         return BitOperations.PopCount(state.PlayersAliveBitboard);
     }
     
+    
+    
+    // ==========================================
+    // --- WINNER ------------------------------
+    // ==========================================
+    
+    
+    /// <summary>
+    /// Safely terminates the game and registers the winning player.
+    /// Pass EngineConstants.NO_VALUE (255) if the game ended without a winner (e.g. max rounds reached).
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Terminate(ref GameState state, byte winnerId = EngineConstants.NO_VALUE)
+    {
+        state.WinnerId = winnerId;
+        state.CurrentPhase = GamePhase.Terminated;
+    }
+    
     // ==========================================
     // --- FACTORY ------------------------------
     // ==========================================

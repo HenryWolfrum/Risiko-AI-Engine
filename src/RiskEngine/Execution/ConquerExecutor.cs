@@ -1,3 +1,4 @@
+using RiskEngine.Mission;
 using RiskEngine.State.Mutation;
 
 namespace RiskEngine.State.Execution;
@@ -47,7 +48,7 @@ public static class ConquerExecutor
 
 
         // Check whether defender lost their final territory.
-        CheckPlayerElimination(ref state, defenderId);
+        CheckPlayerElimination(ref state, in layout,defenderId);
     }
 
 
@@ -72,7 +73,7 @@ public static class ConquerExecutor
     /// <summary>
     /// Removes eliminated players and transfers their cards.
     /// </summary>
-    private static void CheckPlayerElimination(ref GameState state, byte defenderId)
+    private static void CheckPlayerElimination(ref GameState state, in GameLayout layout, byte defenderId)
     {
         // Defender still owns territories.
         if (GameStateHelper.GetOwnedTerritoryCount(in state, defenderId) > 0)
@@ -84,5 +85,12 @@ public static class ConquerExecutor
         
         // Transfer cards and remove defender from active players.
         CardHelper.EliminateAndTransferCards(ref state, attackerId, defenderId);
+        
+        
+        // Immediate Event-Check: Did ANY player win due to this elimination?
+        if (MissionEvaluator.CheckEliminationWin(in state, in layout, defenderId, out byte winnerId))
+        {
+            GameStateHelper.Terminate(ref state, winnerId);
+        }
     }
 }

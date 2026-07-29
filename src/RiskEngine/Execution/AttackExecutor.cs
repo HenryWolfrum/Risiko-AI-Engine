@@ -25,6 +25,12 @@ public static class AttackExecutor
         // Continue attacking while at least one legal attack exists.
         while (AttackHelper.CanPlayerAttack(in state, state.PlayerTurn, layout.Map))
         {
+            // After Attack Game could already be decided
+            if (state.CurrentPhase == GamePhase.Terminated)
+            {
+                return;
+            }
+            
             var attackerPlayer = players[state.PlayerTurn];
 
 
@@ -68,8 +74,7 @@ public static class AttackExecutor
             }
 
 
-            attackAction.ChosenDefenderDiceCount =
-                defenderDice;
+            attackAction.ChosenDefenderDiceCount = defenderDice;
 
 
             // Resolve combat and apply losses.
@@ -95,7 +100,7 @@ public static class AttackExecutor
 
 
         // Award one territory card after successful conquest.
-        if (conqueredTerritoryThisTurn)
+        if (conqueredTerritoryThisTurn&&state.CurrentPhase != GamePhase.Terminated)
         {
             CardHelper.GiveBonusCard(ref state, state.PlayerTurn, ref rng,layout.Deck);
         }

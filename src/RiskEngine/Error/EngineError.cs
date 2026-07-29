@@ -79,6 +79,15 @@ public enum EngineError : byte
     InvalidJokerPosition = 143,
     InvalidCardTypeDistribution = 144,
     
+    
+    //Mission
+    DuplicateMissionId = 145,
+    InvalidMissionTerritoryTarget = 146,
+    InvalidMissionContinent = 147,
+    InvalidMissionPlayerTarget = 148,
+    InvalidMissionType = 149,
+    InvalidMissionIdSequence=150,
+    
     // =========================================
     // Internal
     // =========================================

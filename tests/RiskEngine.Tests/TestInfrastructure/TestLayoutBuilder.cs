@@ -1,4 +1,6 @@
-﻿namespace RiskEngine.State.Tests.Helpers;
+﻿using RiskEngine.Mission;
+
+namespace RiskEngine.State.Tests.Helpers;
 
 using RiskEngine.State;
 
@@ -136,6 +138,26 @@ public sealed class TestLayoutBuilder
     {
         return new EngineConfig(playerCount: _playerCount);
     }
+
+    /// <summary>
+    /// Builds a simple MissionCatalog for testing.
+    /// Assigns World Domination to all players by default.
+    /// </summary>
+    public MissionCatalog BuildMissionCatalog()
+    {
+        var missions = new MissionDefinition[_playerCount];
+
+        for (byte i = 0; i < _playerCount; i++)
+        {
+            missions[i]=(new MissionDefinition
+            {
+                Id = i,
+                Type = MissionType.WorldDomination
+            });
+        }
+
+        return new MissionCatalog(missions,0);
+    }
     
     /// <summary>
     /// Builds the final GameLayout.
@@ -145,7 +167,8 @@ public sealed class TestLayoutBuilder
         return new GameLayout(
             BuildMap(),
             BuildDeck(),
-            BuildConfig());
+            BuildConfig(),
+            BuildMissionCatalog());
     }
 
     private void InitializeAdjacencyList()
