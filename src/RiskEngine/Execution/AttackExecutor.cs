@@ -57,8 +57,17 @@ public static class AttackExecutor
 
 
             // Get defender.
-            var defenderPlayerId = GameStateHelper.GetTerritoryOwner(in state, attackAction.TargetTerritory);
+            var defenderTerritory = attackAction.TargetTerritory;
+            
+            //Im GameState als cache setzen
+            state.AttackerTerritory = attackAction.TargetTerritory;
+            state.DefenderTerritory = defenderTerritory;
+            
+            var defenderPlayerId = GameStateHelper.GetTerritoryOwner(in state, defenderTerritory);
 
+            //Im GameState als cache zurücksetzen
+            state.AttackerTerritory = EngineConstants.NO_VALUE;
+            state.DefenderTerritory = EngineConstants.NO_VALUE;
 
             var defenderPlayer = players[defenderPlayerId];
 

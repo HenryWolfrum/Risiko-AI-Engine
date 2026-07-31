@@ -48,7 +48,7 @@ public static class ConquerRules
 
 
         // At least one troop must move into the conquered territory.
-        if (action.ConquerTroopCount == 0)
+        if (action.TroopCount == 0)
         {
             return ValidationResult.Invalid(EngineError.InvalidTroopCount);
         }
@@ -59,7 +59,7 @@ public static class ConquerRules
         var maxMoveable = sourceTroops - 1;
 
 
-        if (action.ConquerTroopCount > maxMoveable)
+        if (action.TroopCount > maxMoveable)
         {
             return ValidationResult.Invalid(EngineError.InvalidTroopCount);
         }

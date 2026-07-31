@@ -10,7 +10,7 @@ public struct GameAction
     public byte Card2;
     public byte Card3;
 
-    //For placing Troops
+    //Reinforce Troops/Conquer
     public byte TroopCount;
 
     //For Attack/Fortify
@@ -20,6 +20,24 @@ public struct GameAction
     public byte SourceTerritory;
     public byte TargetTerritory;
 
-    //Conquer
-    public byte ConquerTroopCount;
+
+    public GameAction()
+    {
+        byte noValue = EngineConstants.NO_VALUE;
+        Type = ActionType.Default;
+        
+        Card1 = noValue;
+        Card2 = noValue;
+        Card3 = noValue;
+        
+        TroopCount = noValue;
+        
+        ChosenAttackerDiceCount = noValue;
+        ChosenDefenderDiceCount = noValue;
+        
+        SourceTerritory = noValue;
+        TargetTerritory = noValue;
+    }
+
+
 }

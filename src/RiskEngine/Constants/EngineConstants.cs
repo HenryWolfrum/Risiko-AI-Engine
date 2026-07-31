@@ -56,6 +56,9 @@ public static class EngineConstants
     public const byte FORCE_TRADE_CARD_COUNT = 5;
 
 
+    public const int DECISION_BUFFER_SIZE = 2048;
+    
+    
     // ---------------------------------------------------------------------
     // Misc
     // ---------------------------------------------------------------------

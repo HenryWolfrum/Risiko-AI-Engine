@@ -27,7 +27,7 @@ public class ConquerMutatorTests
         {
             SourceTerritory = 0,
             TargetTerritory = 1,
-            ConquerTroopCount = 3
+            TroopCount = 3
         };
 
         // Act
@@ -61,7 +61,7 @@ public class ConquerMutatorTests
         {
             SourceTerritory = 0,
             TargetTerritory = 1,
-            ConquerTroopCount = 3
+            TroopCount = 3
         };
 
         // Act
@@ -93,7 +93,7 @@ public class ConquerMutatorTests
         {
             SourceTerritory = 0,
             TargetTerritory = 1,
-            ConquerTroopCount = 4
+            TroopCount = 4
         };
 
         // Act
@@ -127,7 +127,7 @@ public class ConquerMutatorTests
         {
             SourceTerritory = 0,
             TargetTerritory = 1,
-            ConquerTroopCount = 4
+            TroopCount = 4
         };
 
         // Act
@@ -163,7 +163,7 @@ public class ConquerMutatorTests
         {
             SourceTerritory = 0,
             TargetTerritory = 1,
-            ConquerTroopCount = 3
+            TroopCount = 3
         };
 
         // Act

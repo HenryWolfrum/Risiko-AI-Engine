@@ -20,6 +20,10 @@ public unsafe struct GameState
     public GamePhase CurrentPhase;
 
     public byte PlayersAliveBitboard;
+
+    public byte AttackerTerritory;
+    public byte DefenderTerritory;
+    
     
     
     public byte WinnerId;

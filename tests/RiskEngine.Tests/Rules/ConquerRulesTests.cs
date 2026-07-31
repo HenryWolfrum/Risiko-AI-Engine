@@ -40,7 +40,7 @@ public class ConquerRulesTests
         {
             SourceTerritory = 0,
             TargetTerritory = 1,
-            ConquerTroopCount = 3
+            TroopCount = 3
         };
 
         // Act
@@ -76,7 +76,7 @@ public class ConquerRulesTests
         {
             SourceTerritory = layout.Map.TerritoryCount,
             TargetTerritory = 0,
-            ConquerTroopCount = 1
+            TroopCount = 1
         };
 
         // Act
@@ -111,7 +111,7 @@ public class ConquerRulesTests
         {
             SourceTerritory = 0,
             TargetTerritory = layout.Map.TerritoryCount,
-            ConquerTroopCount = 1
+            TroopCount = 1
         };
 
         // Act
@@ -153,7 +153,7 @@ public class ConquerRulesTests
         {
             SourceTerritory = 0,
             TargetTerritory = 1,
-            ConquerTroopCount = 2
+            TroopCount = 2
         };
 
         // Act
@@ -198,7 +198,7 @@ public class ConquerRulesTests
         {
             SourceTerritory = 0,
             TargetTerritory = 1,
-            ConquerTroopCount = 2
+            TroopCount = 2
         };
 
         // Act
@@ -242,7 +242,7 @@ public class ConquerRulesTests
         {
             SourceTerritory = 0,
             TargetTerritory = 1,
-            ConquerTroopCount = 1
+            TroopCount = 1
         };
 
         // Act
@@ -287,7 +287,7 @@ public class ConquerRulesTests
         {
             SourceTerritory = 0,
             TargetTerritory = 1,
-            ConquerTroopCount = 0
+            TroopCount = 0
         };
 
         // Act
@@ -330,7 +330,7 @@ public class ConquerRulesTests
         {
             SourceTerritory = 0,
             TargetTerritory = 1,
-            ConquerTroopCount = 5
+            TroopCount = 5
         };
 
         // Act
@@ -373,7 +373,7 @@ public class ConquerRulesTests
         {
             SourceTerritory = 0,
             TargetTerritory = 1,
-            ConquerTroopCount = 4
+            TroopCount = 4
         };
 
         // Act

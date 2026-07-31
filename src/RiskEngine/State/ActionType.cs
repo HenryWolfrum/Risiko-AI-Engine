@@ -6,6 +6,7 @@
 /// </summary>
 public enum ActionType : byte
 {
+    Default, //Not intialized
     TurnInCards, // Trade in 3 matching/distinct cards for troops
     Reinforce, // Place troops during reinforcement phase
     Attack, // Execute an attack from source to target territory with Selected Dice Count

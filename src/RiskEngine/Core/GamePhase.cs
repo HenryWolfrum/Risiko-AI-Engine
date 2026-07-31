@@ -6,9 +6,10 @@ public enum GamePhase : byte
     CardTurnIn = 1,
     Reinforce = 2,
     Attack = 3,
-    Conquer = 4,
-    Fortify = 5,
-    Terminated = 6, //Game is decided
+    Defend = 4,
+    Conquer = 5,
+    Fortify = 6,
+    Terminated = 7, //Game is decided
 
 
     Error = byte.MaxValue

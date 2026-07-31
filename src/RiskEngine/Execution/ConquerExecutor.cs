@@ -66,7 +66,7 @@ public static class ConquerExecutor
 
             TargetTerritory = attackAction.TargetTerritory,
 
-            ConquerTroopCount = 1
+            TroopCount = 1
         };
     }
     

@@ -20,7 +20,7 @@ public static class ConquerMutator
 
 
         // Remove moved troops from the source territory.
-        GameStateHelper.SetTerritoryTroops(ref state, action.SourceTerritory, (byte)(sourceTroops - action.ConquerTroopCount));
+        GameStateHelper.SetTerritoryTroops(ref state, action.SourceTerritory, (byte)(sourceTroops - action.TroopCount));
 
 
         // Transfer ownership of the conquered territory.
@@ -28,6 +28,6 @@ public static class ConquerMutator
 
 
         // Place moved troops into the conquered territory.
-        GameStateHelper.SetTerritoryTroops(ref state, action.TargetTerritory, action.ConquerTroopCount);
+        GameStateHelper.SetTerritoryTroops(ref state, action.TargetTerritory, action.TroopCount);
     }
 }
