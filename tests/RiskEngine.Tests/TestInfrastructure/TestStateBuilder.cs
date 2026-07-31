@@ -1,4 +1,6 @@
-﻿namespace RiskEngine.State.Tests.TestInfrastructure;
+﻿using RiskEngine.Mission;
+
+namespace RiskEngine.State.Tests.TestInfrastructure;
 
 using RiskEngine.State;
 
@@ -71,7 +73,7 @@ public sealed class TestStateBuilder
     /// </summary>
     public TestStateBuilder WithPlayerMission(byte player, byte missionId)
     {
-        GameStateHelper.SetPlayerMission(ref _state, player, missionId);
+        MissionHelper.SetPlayerMission(ref _state, player, missionId);
 
         return this;
     }

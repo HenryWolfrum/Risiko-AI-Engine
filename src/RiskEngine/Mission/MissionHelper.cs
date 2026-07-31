@@ -12,6 +12,16 @@ public static unsafe class MissionHelper
     {
         return state.PlayerMissions[playerIndex];
     }
+    
+    /// <summary>
+    /// Sets the assigned mission for a specific player
+    /// </summary>
+  
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SetPlayerMission(ref GameState state, byte player, byte missionId)
+    {
+        state.PlayerMissions[player] = missionId;
+    }
 
     /// <summary>
     /// Checks if all territories owned by a player meet or exceed the required minimum troop count.

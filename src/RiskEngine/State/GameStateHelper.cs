@@ -20,22 +20,7 @@ public static unsafe class GameStateHelper
     {
         state.TerritoryOwners[territoryId] = owner;
     }
-
-    // ==========================================
-    // --- MISSION GETTERS & SETTERS ------------
-    // ==========================================
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static byte GetPlayerMission(in GameState state, byte player)
-    {
-        return state.PlayerMissions[player];
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SetPlayerMission(ref GameState state, byte player, byte missionId)
-    {
-        state.PlayerMissions[player] = missionId;
-    }
+    
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte GetTerritoryTroops(in GameState state, int territoryId)
