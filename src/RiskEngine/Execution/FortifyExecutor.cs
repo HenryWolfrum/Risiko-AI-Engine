@@ -25,7 +25,7 @@ public static class FortifyExecutor
 
         // Limit the number of actions per phase to prevent infinite loops.
         // This is an execution safety limit, not a game rule.
-        var maxFortifyMoves = (ownedTerritoriesCount * (ownedTerritoriesCount - 1)) >> 1;
+        var maxFortifyMoves = EngineConstants.MAX_FORTIFY_MOVES_PER_TURN;
 
 
         var moveCounter = 0;

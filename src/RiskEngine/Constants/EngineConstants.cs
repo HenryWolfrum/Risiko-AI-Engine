@@ -58,6 +58,7 @@ public static class EngineConstants
 
     public const int DECISION_BUFFER_SIZE = 2048;
     
+    public const byte MAX_FORTIFY_MOVES_PER_TURN = 1;
     
     // ---------------------------------------------------------------------
     // Misc
