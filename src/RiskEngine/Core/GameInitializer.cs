@@ -51,6 +51,9 @@ public static class GameInitializer
 
         // 9. Initialize GameState
         var state = GameStateHelper.CreateEmpty(playerCount);
+        
+        //Set Round
+        state.CurrentRound = 1;
 
         // Assign owners and place exactly 1 initial troop per territory
         for (var i = 0; i < territoryCount; i++)

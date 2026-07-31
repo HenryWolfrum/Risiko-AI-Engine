@@ -140,14 +140,14 @@ public static unsafe class GameStateHelper
     {
         GameState state = default;
 
-        state.CurrentRound = 1;
+        state.CurrentRound = EngineConstants.NO_VALUE;
         state.CurrentPhase = GamePhase.Default;
         state.PlayersAliveBitboard = (byte)((1 << playerCount) - 1);
 
         for (int i = 0; i < territoryCount; i++)
         {
             state.TerritoryOwners[i] = EngineConstants.NO_VALUE;
-            state.TerritoryTroops[i] = 0;
+            state.TerritoryTroops[i] = EngineConstants.NO_VALUE;
         }
 
         return state;

@@ -324,9 +324,7 @@ public class GameStateHelperTests
         // Assert
         for (byte territory = 0; territory < EngineConstants.MAX_TERRITORIES; territory++)
         {
-            Assert.Equal(
-                0,
-                GameStateHelper.GetTerritoryTroops(in state, territory));
+            Assert.Equal(EngineConstants.NO_VALUE, GameStateHelper.GetTerritoryTroops(in state, territory));
         }
     }
     
@@ -348,7 +346,7 @@ public class GameStateHelperTests
         var state = GameStateHelper.CreateEmpty(2);
 
         // Assert
-        Assert.Equal(1, state.CurrentRound);
+        Assert.Equal(EngineConstants.NO_VALUE, state.CurrentRound);
         Assert.Equal(GamePhase.Default, state.CurrentPhase);
     }
     
