@@ -40,7 +40,7 @@ using System;
          outputList.Clear();
  
          // 254 options cover the theoretical max for any single phase in Risk
-         Span<DecisionOption> buffer = stackalloc DecisionOption[EngineConstants.DECISION_BUFFER_SIZE];
+         Span<DecisionOption> buffer = stackalloc DecisionOption[EngineConstants.MAX_DECISION_BUFFER_SIZE];
          
          int count = GenerateLegalDecisions(in state, layout, buffer);
  

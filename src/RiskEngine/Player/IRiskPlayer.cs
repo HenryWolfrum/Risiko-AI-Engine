@@ -16,7 +16,7 @@ public interface IRiskPlayer
     public GameAction DecideAction(in GameState state, GameLayout layout)
     {
         // Allocation-free workspace on the stack for legal decision space
-        Span<DecisionOption> buffer = stackalloc DecisionOption[EngineConstants.DECISION_BUFFER_SIZE];
+        Span<DecisionOption> buffer = stackalloc DecisionOption[EngineConstants.MAX_DECISION_BUFFER_SIZE];
         
         int count = DecisionGenerator.GenerateLegalDecisions(in state, layout, buffer);
         ReadOnlySpan<DecisionOption> options = buffer.Slice(0, count);

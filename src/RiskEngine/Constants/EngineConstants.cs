@@ -25,6 +25,7 @@ public static class EngineConstants
     /// </summary>
     public const byte MAX_TERRITORIES = 64;
 
+    public const int MAX_DECISION_BUFFER_SIZE = 2048;
 
     // ---------------------------------------------------------------------
     // Default Configuration
@@ -35,6 +36,7 @@ public static class EngineConstants
     public const ushort MAX_ROUNDS = 200;
 
     public const byte JOKER_COUNT = 2;
+    
 
     // ---------------------------------------------------------------------
     // Combat Rules
@@ -54,9 +56,11 @@ public static class EngineConstants
     public const byte CARD_TERRITORY_BONUS_TROOPS = 2;
 
     public const byte FORCE_TRADE_CARD_COUNT = 5;
-
-
-    public const int DECISION_BUFFER_SIZE = 2048;
+    
+    
+    // ---------------------------------------------------------------------
+    // Fortify Rules
+    // ---------------------------------------------------------------------
     
     public const byte MAX_FORTIFY_MOVES_PER_TURN = 1;
     
