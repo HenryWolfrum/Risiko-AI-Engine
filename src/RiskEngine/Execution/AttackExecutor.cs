@@ -60,7 +60,7 @@ public static class AttackExecutor
             var defenderTerritory = attackAction.TargetTerritory;
             
             //Im GameState als cache setzen
-            state.AttackerTerritory = attackAction.TargetTerritory;
+            state.AttackerTerritory = attackAction.SourceTerritory;
             state.DefenderTerritory = defenderTerritory;
             
             var defenderPlayerId = GameStateHelper.GetTerritoryOwner(in state, defenderTerritory);
