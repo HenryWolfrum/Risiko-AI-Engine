@@ -1,8 +1,5 @@
-﻿# Detailed Test Coverage
-
-## GameInitializer
-
 # Detailed Test Coverage
+
 
 ## GameInitializer
 
@@ -153,7 +150,6 @@
 | MUTATE-CONQUER-005 | Modifies only the participating territories during conquest | Covered |
 
 
-
 ## TurnInCardsRules
 
 | Test ID | Description | Status |
@@ -208,3 +204,116 @@
 | UNDIR-003 | Confirms an isolated single-territory map as undirected | Covered |
 | UNDIR-004 | Confirms an empty map with zero territories as undirected | Covered |
 | UNDIR-005 | Rejects a complex graph when a single reverse connection is missing | Covered |
+
+
+## AttackOptionGenerator
+
+| Test ID | Description | Status |
+|---|---|---|
+| ATTACKGEN-001 | Generates exactly one attack decision and one skip decision for a single attack opportunity | Covered |
+| ATTACKGEN-002 | Generates all possible attacks from a territory with multiple attackable neighbours | Covered |
+| ATTACKGEN-003 | Generates attacks from multiple eligible source territories | Covered |
+| ATTACKGEN-004 | Generates no attack options when none are possible, but keeps phase control decisions | Covered |
+| ATTACKGEN-005 | Ignores friendly (own) neighbouring territories | Covered |
+| ATTACKGEN-006 | Does not generate an attack from a source territory with only a single troop | Covered |
+| ATTACKGEN-007 | Never generates duplicate attack decisions | Covered |
+
+## CardTurnInOptionGenerator
+
+| Test ID | Description | Status |
+|---|---|---|
+| CARDTURNINGEN-001 | Generates a single valid card set plus SkipPhase when trade is optional | Covered |
+| CARDTURNINGEN-002 | Generates all valid card sets held by the player | Covered |
+| CARDTURNINGEN-003 | Ignores invalid card combinations, still generates SkipPhase | Covered |
+| CARDTURNINGEN-004 | Omits SkipPhase when a card trade is mandatory | Covered |
+| CARDTURNINGEN-005 | Never generates duplicate card turn-in decisions | Covered |
+
+## FortifyOptionGenerator
+
+| Test ID | Description | Status |
+|---|---|---|
+| FORTIFYGEN-001 | Generates a single fortify option between connected owned territories | Covered |
+| FORTIFYGEN-002 | Does not fortify across territory owned by an enemy (breaks connectivity) | Covered |
+| FORTIFYGEN-003 | Generates all reachable fortify targets | Covered |
+| FORTIFYGEN-004 | Ignores source territories with only a single troop | Covered |
+
+## ReinforcementOptionGenerator
+
+| Test ID | Description | Status |
+|---|---|---|
+| REINFORCEGEN-001 | Generates a reinforcement option for every owned territory | Covered |
+| REINFORCEGEN-002 | Returns no reinforcement options when no troops remain | Covered |
+| REINFORCEGEN-003 | Generates the correct parameter range for available troops | Covered |
+| REINFORCEGEN-004 | Never generates duplicate reinforcement options | Covered |
+
+## ConquerOptionGenerator
+
+| Test ID | Description | Status |
+|---|---|---|
+| — | No tests. Reads `state.AttackerTerritory`, which is currently set incorrectly and reset too early in `AttackExecutor` (see gap analysis above) | **Missing** |
+
+## DefendOptionGenerator
+
+| Test ID | Description | Status |
+|---|---|---|
+| — | No tests. Reads `state.DefenderTerritory`, affected by the same premature-reset issue in `AttackExecutor` | **Missing** |
+
+
+## MissionEvaluator
+
+| Test ID | Description | Status |
+|---|---|---|
+| MISSION-001 | WorldDomination mission requires ownership of every territory on the map | Covered |
+| MISSION-002 | ConquerTerritories mission is fulfilled once the required territory count is reached | Covered |
+| MISSION-003 | ConquerTerritories with minimum troops fails if any owned territory is below the minimum | Covered |
+| MISSION-004 | ConquerContinents mission requires all target continents to be owned | Covered |
+| MISSION-005 | EliminatePlayer mission depends only on the target's alive status | Covered |
+| MISSION-006 | CheckEliminationWin only matches the correct mission target | Covered |
+
+## CardHelper
+
+| Test ID | Description | Status |
+|---|---|---|
+| CARD-001 | Adds a card to a player's hand | Covered |
+| CARD-002 | Removes a card from a player's hand | Covered |
+| CARD-003 | Counts a player's cards correctly | Covered |
+| CARD-004 | Returns the correct player card bitboard | Covered |
+| CARD-005 | Transfers cards on player elimination | Covered |
+| CARD-006 | Returns the currently available (undealt) cards | Covered |
+| CARD-007 | Gives a bonus card to a player | Covered |
+| CARD-008 | Detects a set of three Infantry cards as valid | Covered |
+
+
+## ActionFactory / ActionFactoryHelper
+
+| Test ID | Description | Status |
+|---|---|---|
+| — | No tests. Boundary-checking logic (`OptionIndex` out of range, `ChosenParameter` outside `[Min..Max]`) and the mapping from every `DecisionKind` to a concrete `GameAction` are currently unverified | **Missing** |
+
+## ReinforcementCalculator
+
+| Test ID | Description | Status |
+|---|---|---|
+| — | No tests. Base income (`floor(owned/3)`, minimum threshold) and continent-bonus aggregation via bitboard masks are currently unverified | **Missing** |
+
+## Execution (TurnExecutor, AttackExecutor, ConquerExecutor, ReinforceExecutor, FortifyExecutor, CardTurnInExecutor)
+
+| Test ID | Description | Status |
+|---|---|---|
+| — | No tests anywhere in this layer. This is where the confirmed `AttackerTerritory`/`DefenderTerritory` cache bug lives (see gap analysis above); it also owns turn/phase sequencing, conquest, elimination, and bonus-card awarding | **Missing** |
+
+## GameRunner
+
+| Test ID | Description | Status |
+|---|---|---|
+| — | No tests. Main game loop (turn/round advancement, termination on max rounds, win detection, last-player-standing handling) is currently only exercised manually via `RiskEngine.Simulations` | **Missing** |
+
+## Niedrige Priorität (nicht dringend)
+
+| Component | Notes |
+|---|---|
+| GameLayoutValidator | Validiert statische Map-Daten einmalig beim Start; geringes Änderungsrisiko |
+| RiskMapFactory | Erzeugt die feste Standardkarte; am ehesten indirekt über GameLayoutValidator abgedeckt |
+| EngineRandom | Dünner RNG-Wrapper; Determinismus wird bereits indirekt über INIT-003/COMBAT-004 mitgeprüft |
+| AttackHelper | `CanPlayerAttack`-Logik, wird von `AttackExecutor` verwendet; sollte mitziehen, sobald Execution getestet wird |
+| MissionCatalog / MissionHelper | Datencontainer bzw. Hilfsfunktionen um `MissionEvaluator`, das selbst gut getestet ist |
