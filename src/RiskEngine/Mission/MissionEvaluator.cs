@@ -53,11 +53,11 @@ public static class MissionEvaluator
     }
 
     private static bool CheckWorldDomination(in GameState state, in GameLayout layout, byte player)
-        => GameStateHelper.GetOwnedTerritoryCount(in state, player,layout.Map.TerritoryCount) == layout.Map.TerritoryCount;
+        => GameStateHelper.GetOwnedTerritoryCount(in state, player) == layout.Map.TerritoryCount;
 
     private static bool CheckTerritories(in GameState state, in GameLayout layout, byte player, in MissionDefinition mission)
     {
-        int count = GameStateHelper.GetOwnedTerritoryCount(in state, player,layout.Map.TerritoryCount);
+        int count = GameStateHelper.GetOwnedTerritoryCount(in state, player);
         if (count < mission.RequiredTerritories) 
             return false;
 

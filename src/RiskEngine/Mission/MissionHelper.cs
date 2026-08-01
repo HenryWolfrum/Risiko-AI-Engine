@@ -46,7 +46,7 @@ public static unsafe class MissionHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte GetControlledContinentMask(in GameState state, in GameLayout layout, byte playerIndex)
     {
-        ulong playerTerritories = GameStateHelper.GetPlayerTerritoriesBitboard(in state, playerIndex,layout.Map.TerritoryCount);
+        ulong playerTerritories = GameStateHelper.GetPlayerTerritoriesBitboard(in state, playerIndex);
         byte controlledContinentsMask = 0;
 
         for (int c = 0; c < layout.Map.ContinentMasks.Length; c++)

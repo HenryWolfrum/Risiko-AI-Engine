@@ -50,24 +50,27 @@ public static class GameInitializer
         }
 
         // 9. Initialize GameState
-        var state = GameStateHelper.CreateEmpty(playerCount);
+        var state = GameStateHelper.CreateEmpty(playerCount, (byte)territoryCount);
         
-        //Set Round
+        // Set Round
         state.CurrentRound = 1;
 
         // Assign owners and place exactly 1 initial troop per territory
+        // Nutzt jetzt die Helper-Methoden, um das Bitboard von Beginn an korrekt aufzubauen
         for (var i = 0; i < territoryCount; i++)
         {
-            state.TerritoryOwners[i] = territoryOwners[i];
-            state.TerritoryTroops[i] = 1;
+            GameStateHelper.SetTerritoryOwner(ref state, i, territoryOwners[i]);
+            GameStateHelper.SetTerritoryTroops(ref state, i, 1);
         }
 
         // Set starting player (first player in shuffled order)
         state.PlayerTurn = playerOrder[0];
 
         // Reset troops to place for all players
-        for (byte p = 0; p < playerCount; p++) state.PlayerTroopsToPlace[p] = 0;
-        
+        for (byte p = 0; p < playerCount; p++)
+        {
+            GameStateHelper.SetPlayerTroopsToPlace(ref state, p, 0);
+        }
         
         // 10. Assign each player one unique mission with fallback safety
         int missionCount = layout.Missions.Count;
@@ -111,8 +114,6 @@ public static class GameInitializer
                 state.PlayerMissions[p] = layout.Missions.FallbackMissionId;
             }
         }
-        
-      
 
         return state;
     }
