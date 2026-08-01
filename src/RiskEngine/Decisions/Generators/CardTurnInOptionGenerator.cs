@@ -37,10 +37,7 @@ public static class CardTurnInOptionGenerator
             {
                 for (int c = b + 1; c < cardCount; c++)
                 {
-                    if (!TurnInCardsRules.IsValidSet(
-                            types[a],
-                            types[b],
-                            types[c]))
+                    if (!TurnInCardsRules.IsValidSet(types[a], types[b], types[c]))
                     {
                         continue;
                     }

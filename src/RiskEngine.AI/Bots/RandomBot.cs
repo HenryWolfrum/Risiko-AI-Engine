@@ -11,10 +11,6 @@ namespace RiskEngine.AI.Bots;
 /// </summary>
 public sealed class RandomBot : IRiskPlayer
 {
-    // NOT readonly: EngineRandom is a mutable struct. A readonly field would
-    // force the compiler to make a defensive copy on every call to Next(),
-    // so _state would never actually advance and the bot would always pick
-    // the same action for a given actionCount. Do not add `readonly` back.
     private EngineRandom _rng;
 
     public RandomBot(EngineRandom rng)
