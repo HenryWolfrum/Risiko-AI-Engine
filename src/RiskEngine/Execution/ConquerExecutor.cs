@@ -1,3 +1,4 @@
+using RiskEngine.Exceptions;
 using RiskEngine.Mission;
 using RiskEngine.State.Mutation;
 
@@ -14,7 +15,7 @@ public static class ConquerExecutor
     /// The attacker moves troops from the attacking territory
     /// into the newly conquered territory.
     /// </summary>
-    public static void Execute(ref GameState state, IRiskPlayer attacker, byte defenderId, in GameAction attackAction, GameLayout layout, ref EngineRandom rng)
+    public static void Execute(ref GameState state, IRiskPlayer attacker, byte defenderId, GameLayout layout, ref EngineRandom rng)
     {
         state.CurrentPhase = GamePhase.Conquer;
 
@@ -22,15 +23,7 @@ public static class ConquerExecutor
         // Ask attacker how many troops should move
         // into the conquered territory.
         var conquerAction = attacker.DecideAction(in state, layout);
-
-
-        // Ensure source and target are always the conquered
-        // territory pair from the previous attack.
-        conquerAction.Type = ActionType.Conquer;
-        conquerAction.SourceTerritory = attackAction.SourceTerritory;
-
-        conquerAction.TargetTerritory = attackAction.TargetTerritory;
-
+        
 
         // Validate conquest action through central rule system.
         var validation = RuleValidator.Validate(in state, in conquerAction, layout);
@@ -38,9 +31,17 @@ public static class ConquerExecutor
 
         if (!validation.IsValid)
         {
-            // Safe fallback:
-            // Move one troop into the conquered territory.
-            conquerAction = CreateFallbackConquerAction(in attackAction);
+            var sourceTroops = GameStateHelper.GetTerritoryTroops(in state, conquerAction.SourceTerritory);
+            var targetTroops = GameStateHelper.GetTerritoryTroops(in state, conquerAction.TargetTerritory);
+
+            throw new InvalidGameActionException(
+                $"Invalid conquer action for Player {state.PlayerTurn}!\n" +
+                $"  • Error Reason:      {validation.Error}\n" +
+                $"  • Source Territory:  #{conquerAction.SourceTerritory} (Troops available: {sourceTroops})\n" +
+                $"  • Target Territory:  #{conquerAction.TargetTerritory} (Current troops: {targetTroops})\n" +
+                $"  • Requested Move:    {conquerAction.TroopCount} troops\n"
+
+            );
         }
         
         // Apply troop movement and ownership transfer.
@@ -52,23 +53,6 @@ public static class ConquerExecutor
     }
 
 
-    /// <summary>
-    /// Creates a safe fallback conquest action.
-    /// Moves only one troop into the conquered territory.
-    /// </summary>
-    private static GameAction CreateFallbackConquerAction(in GameAction attackAction)
-    {
-        return new GameAction
-        {
-            Type = ActionType.Conquer,
-
-            SourceTerritory = attackAction.SourceTerritory,
-
-            TargetTerritory = attackAction.TargetTerritory,
-
-            TroopCount = 1
-        };
-    }
     
     /// <summary>
     /// Removes eliminated players and transfers their cards.

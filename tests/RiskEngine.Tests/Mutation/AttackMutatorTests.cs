@@ -1,3 +1,8 @@
+using System;
+using Xunit;
+using RiskEngine.Exceptions;
+using RiskEngine.State.Mutation;
+
 namespace RiskEngine.State.Tests.Mutation;
 
 public class AttackMutatorTests
@@ -16,7 +21,6 @@ public class AttackMutatorTests
     {
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
-
         GameStateHelper.SetTerritoryTroops(ref state, 0, 10);
 
         var action = new GameAction
@@ -37,8 +41,7 @@ public class AttackMutatorTests
         // Assert
         Assert.Equal(8, GameStateHelper.GetTerritoryTroops(in state, 0));
     }
-    
-    
+
     /*
      * MUTATE-ATTACK-002
      *
@@ -53,7 +56,6 @@ public class AttackMutatorTests
     {
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
-
         GameStateHelper.SetTerritoryTroops(ref state, 1, 7);
 
         var action = new GameAction
@@ -72,27 +74,23 @@ public class AttackMutatorTests
         AttackMutator.Apply(ref state, in action, in result);
 
         // Assert
-        Assert.Equal(
-            4,
-            GameStateHelper.GetTerritoryTroops(in state, 1));
+        Assert.Equal(4, GameStateHelper.GetTerritoryTroops(in state, 1));
     }
-    
+
     /*
      * MUTATE-ATTACK-003
      *
-     * Defender troops should never
-     * become negative.
+     * Defender troops should become zero
+     * when combat losses exactly equal troop count.
      *
      * Guarantees:
-     * - defender troops become zero
-     *   when losses equal troop count
+     * - defender troops become zero when wiped out
      */
     [Fact]
     public void MUTATE_ATTACK_003_ShouldSetDefenderTroopsToZero_WhenLossesEqualTroops()
     {
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
-
         GameStateHelper.SetTerritoryTroops(ref state, 1, 3);
 
         var action = new GameAction
@@ -113,23 +111,21 @@ public class AttackMutatorTests
         // Assert
         Assert.Equal(0, GameStateHelper.GetTerritoryTroops(in state, 1));
     }
-    
+
     /*
      * MUTATE-ATTACK-004
      *
-     * Defender troops should never
-     * underflow.
+     * Defender losses exceeding actual troops must fail-fast
+     * and throw an InvalidGameActionException instead of underflowing or clamping silently.
      *
      * Guarantees:
-     * - defender troops become zero
-     *   when losses exceed troop count
+     * - Fail-fast state mutation safety on corrupt combat results
      */
     [Fact]
-    public void MUTATE_ATTACK_004_ShouldPreventDefenderTroopUnderflow()
+    public void MUTATE_ATTACK_004_ShouldThrowInvalidGameActionException_WhenLossesExceedTroops()
     {
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
-
         GameStateHelper.SetTerritoryTroops(ref state, 1, 2);
 
         var action = new GameAction
@@ -141,16 +137,14 @@ public class AttackMutatorTests
         var result = new CombatResult
         {
             AttackerLosses = 0,
-            DefenderLosses = 5
+            DefenderLosses = 5 // Ungültig: Mehr Verluste als Truppen vorhanden
         };
 
-        // Act
-        AttackMutator.Apply(ref state, in action, in result);
-
-        // Assert
-        Assert.Equal(0, GameStateHelper.GetTerritoryTroops(in state, 1));
+        // Act & Assert
+        Assert.Throws<InvalidGameActionException>(() =>
+            AttackMutator.Apply(ref state, in action, in result));
     }
-    
+
     /*
      * MUTATE-ATTACK-005
      *
@@ -165,7 +159,6 @@ public class AttackMutatorTests
     {
         // Arrange
         var state = GameStateHelper.CreateEmpty(3);
-
         GameStateHelper.SetTerritoryTroops(ref state, 0, 10);
         GameStateHelper.SetTerritoryTroops(ref state, 1, 5);
         GameStateHelper.SetTerritoryTroops(ref state, 2, 8);
@@ -188,7 +181,7 @@ public class AttackMutatorTests
         // Assert
         Assert.Equal(8, GameStateHelper.GetTerritoryTroops(in state, 2));
     }
-    
+
     /*
      * MUTATE-ATTACK-006
      *
@@ -196,14 +189,13 @@ public class AttackMutatorTests
      * change territory ownership.
      *
      * Guarantees:
-     * - territory owners remain unchanged
+     * - territory owners remain unchanged during attack mutation
      */
     [Fact]
     public void MUTATE_ATTACK_006_ShouldNotModifyTerritoryOwnership()
     {
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
-
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryOwner(ref state, 1, 1);
 
@@ -226,7 +218,7 @@ public class AttackMutatorTests
         Assert.Equal(0, GameStateHelper.GetTerritoryOwner(in state, 0));
         Assert.Equal(1, GameStateHelper.GetTerritoryOwner(in state, 1));
     }
-    
+
     /*
      * MUTATE-ATTACK-007
      *
@@ -242,7 +234,6 @@ public class AttackMutatorTests
     {
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
-
         GameStateHelper.SetTerritoryTroops(ref state, 0, 8);
         GameStateHelper.SetTerritoryTroops(ref state, 1, 5);
 
@@ -262,16 +253,10 @@ public class AttackMutatorTests
         AttackMutator.Apply(ref state, in action, in result);
 
         // Assert
-        Assert.Equal(
-            8,
-            GameStateHelper.GetTerritoryTroops(in state, 0));
-
-        Assert.Equal(
-            5,
-            GameStateHelper.GetTerritoryTroops(in state, 1));
+        Assert.Equal(8, GameStateHelper.GetTerritoryTroops(in state, 0));
+        Assert.Equal(5, GameStateHelper.GetTerritoryTroops(in state, 1));
     }
-    
-    
+
     /*
      * MUTATE-ATTACK-008
      *
@@ -288,7 +273,6 @@ public class AttackMutatorTests
     {
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
-
         GameStateHelper.SetTerritoryTroops(ref state, 0, 9);
         GameStateHelper.SetTerritoryTroops(ref state, 1, 6);
 
@@ -308,12 +292,7 @@ public class AttackMutatorTests
         AttackMutator.Apply(ref state, in action, in result);
 
         // Assert
-        Assert.Equal(
-            7,
-            GameStateHelper.GetTerritoryTroops(in state, 0));
-
-        Assert.Equal(
-            3,
-            GameStateHelper.GetTerritoryTroops(in state, 1));
+        Assert.Equal(7, GameStateHelper.GetTerritoryTroops(in state, 0));
+        Assert.Equal(3, GameStateHelper.GetTerritoryTroops(in state, 1));
     }
 }

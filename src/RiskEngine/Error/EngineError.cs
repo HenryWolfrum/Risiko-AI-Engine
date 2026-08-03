@@ -34,6 +34,7 @@ public enum EngineError : byte
 
     CannotAttackOwnTerritory = 60,
     InvalidDiceCount = 61,
+    CacheDoesNotMatchState=62,
 
     // =========================================
     // Card Errors (80-99)

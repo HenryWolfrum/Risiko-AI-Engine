@@ -8,11 +8,11 @@ public static class ReinforceRules
 
 
         //Territory out of Range
-        if (action.SourceTerritory >= map.TerritoryCount)
+        if (action.TargetTerritory >= map.TerritoryCount)
             return ValidationResult.Invalid(EngineError.InvalidTerritory);
 
         //Owner not equal to action Executor
-        if (GameStateHelper.GetTerritoryOwner(state, action.SourceTerritory) != player)
+        if (GameStateHelper.GetTerritoryOwner(state, action.TargetTerritory) != player)
             return ValidationResult.Invalid(EngineError.TerritoryNotOwned);
 
         //No Troops to distribute

@@ -33,10 +33,7 @@ public static class TurnInCardsRules
     
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsValidSet(
-        CardType type1,
-        CardType type2,
-        CardType type3)
+    public static bool IsValidSet(CardType type1, CardType type2, CardType type3)
     {
         if (type1 == CardType.Joker ||
             type2 == CardType.Joker ||

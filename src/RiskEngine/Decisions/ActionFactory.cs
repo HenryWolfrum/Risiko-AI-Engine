@@ -33,7 +33,7 @@ public static class ActionFactory
             DecisionKind.Reinforce  => ActionFactoryHelper.Reinforce(option.GetReinforceData().TargetTerritory, selection.ChosenParameter),
             DecisionKind.Attack     => ActionFactoryHelper.Attack(option.GetAttackData().SourceTerritory, option.GetAttackData().TargetTerritory, selection.ChosenParameter),
             DecisionKind.Defend     => ActionFactoryHelper.Defend(selection.ChosenParameter),
-            DecisionKind.Conquer    => ActionFactoryHelper.Conquer(selection.ChosenParameter),
+            DecisionKind.Conquer    => ActionFactoryHelper.Conquer(option.GetConquerData().SourceTerritory,option.GetConquerData().TargetTerritory,selection.ChosenParameter),
             DecisionKind.Fortify    => ActionFactoryHelper.Fortify(option.GetFortifyData().SourceTerritory, option.GetFortifyData().TargetTerritory, selection.ChosenParameter),
             DecisionKind.SkipPhase => ActionFactoryHelper.Skip(),
             DecisionKind.EndTurn => ActionFactoryHelper.EndTurn(),

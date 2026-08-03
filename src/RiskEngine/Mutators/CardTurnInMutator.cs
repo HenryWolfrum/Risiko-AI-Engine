@@ -9,7 +9,7 @@ public static class CardTurnInMutator
     {
         var player = state.PlayerTurn;
 
-        // 1. Remove cards from player's hand (fixed typo: Card3 instead of duplicate Card1)
+        // 1. Remove cards from player's hand
         CardHelper.RemoveCardFromPlayer(ref state, player, action.Card1,deck);
         CardHelper.RemoveCardFromPlayer(ref state, player, action.Card2,deck);
         CardHelper.RemoveCardFromPlayer(ref state, player, action.Card3,deck);

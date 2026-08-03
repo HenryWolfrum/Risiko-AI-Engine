@@ -37,8 +37,8 @@ public static class AttackOptionGenerator
                 {
                     byte target = neighbors[i];
 
-                    // Target MUST belong to an opponent (NOT in ownedTerritories)
-                    if ((ownedTerritories & (1UL << target)) == 0)
+                    // ✅ Target MUST belong to opponent AND MUST have at least 1 defender troop
+                    if ((ownedTerritories & (1UL << target)) == 0 && GameStateHelper.GetTerritoryTroops(in state, target) > 0)
                     {
                         options[optionCount++] = DecisionOption.Attack(
                             source: source,
@@ -56,9 +56,8 @@ public static class AttackOptionGenerator
         // Ending the attack phase voluntarily is always a valid option
         options[optionCount++] = DecisionOption.SkipPhase();
         
-        //Ending turn in attack phase voluntarily is alway a valid option
+        // Ending turn in attack phase voluntarily is always a valid option
         options[optionCount++] = DecisionOption.EndTurn();
-
 
         return optionCount;
     }

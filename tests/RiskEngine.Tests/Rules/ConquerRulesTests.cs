@@ -1,3 +1,4 @@
+using Xunit;
 using RiskEngine.State.Rules;
 using RiskEngine.State.Tests.Helpers;
 
@@ -25,7 +26,6 @@ public class ConquerRulesTests
             .Build();
 
         var state = GameStateHelper.CreateEmpty(2);
-
         state.PlayerTurn = 0;
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
@@ -50,8 +50,7 @@ public class ConquerRulesTests
         Assert.True(result.IsValid);
         Assert.Equal(EngineError.None, result.Error);
     }
-    
-    
+
     /*
      * CONQUER-002
      *
@@ -69,12 +68,11 @@ public class ConquerRulesTests
             .Build();
 
         var state = GameStateHelper.CreateEmpty(2);
-
         state.PlayerTurn = 0;
 
         var action = new GameAction
         {
-            SourceTerritory = layout.Map.TerritoryCount,
+            SourceTerritory = (byte)layout.Map.TerritoryCount,
             TargetTerritory = 0,
             TroopCount = 1
         };
@@ -86,7 +84,7 @@ public class ConquerRulesTests
         Assert.False(result.IsValid);
         Assert.Equal(EngineError.InvalidTerritory, result.Error);
     }
-    
+
     /*
      * CONQUER-003
      *
@@ -104,13 +102,12 @@ public class ConquerRulesTests
             .Build();
 
         var state = GameStateHelper.CreateEmpty(2);
-
         state.PlayerTurn = 0;
 
         var action = new GameAction
         {
             SourceTerritory = 0,
-            TargetTerritory = layout.Map.TerritoryCount,
+            TargetTerritory = (byte)layout.Map.TerritoryCount,
             TroopCount = 1
         };
 
@@ -121,7 +118,7 @@ public class ConquerRulesTests
         Assert.False(result.IsValid);
         Assert.Equal(EngineError.InvalidTerritory, result.Error);
     }
-    
+
     /*
      * CONQUER-004
      *
@@ -140,7 +137,6 @@ public class ConquerRulesTests
             .Build();
 
         var state = GameStateHelper.CreateEmpty(2);
-
         state.PlayerTurn = 0;
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 1);
@@ -163,7 +159,7 @@ public class ConquerRulesTests
         Assert.False(result.IsValid);
         Assert.Equal(EngineError.TerritoryNotOwned, result.Error);
     }
-    
+
     /*
      * CONQUER-005
      *
@@ -183,7 +179,6 @@ public class ConquerRulesTests
             .Build();
 
         var state = GameStateHelper.CreateEmpty(2);
-
         state.PlayerTurn = 0;
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
@@ -208,8 +203,7 @@ public class ConquerRulesTests
         Assert.False(result.IsValid);
         Assert.Equal(EngineError.InvalidTarget, result.Error);
     }
-    
-    
+
     /*
      * CONQUER-006
      *
@@ -229,7 +223,6 @@ public class ConquerRulesTests
             .Build();
 
         var state = GameStateHelper.CreateEmpty(2);
-
         state.PlayerTurn = 0;
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
@@ -246,16 +239,13 @@ public class ConquerRulesTests
         };
 
         // Act
-        var result = ConquerRules.Validate(
-            in state,
-            in action,
-            layout.Map);
+        var result = ConquerRules.Validate(in state, in action, layout.Map);
 
         // Assert
         Assert.False(result.IsValid);
         Assert.Equal(EngineError.NotEnoughTroops, result.Error);
     }
-    
+
     /*
      * CONQUER-007
      *
@@ -274,7 +264,6 @@ public class ConquerRulesTests
             .Build();
 
         var state = GameStateHelper.CreateEmpty(2);
-
         state.PlayerTurn = 0;
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
@@ -297,7 +286,7 @@ public class ConquerRulesTests
         Assert.False(result.IsValid);
         Assert.Equal(EngineError.InvalidTroopCount, result.Error);
     }
-    
+
     /*
      * CONQUER-008
      *
@@ -317,7 +306,6 @@ public class ConquerRulesTests
             .Build();
 
         var state = GameStateHelper.CreateEmpty(2);
-
         state.PlayerTurn = 0;
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
@@ -340,7 +328,7 @@ public class ConquerRulesTests
         Assert.False(result.IsValid);
         Assert.Equal(EngineError.InvalidTroopCount, result.Error);
     }
-    
+
     /*
      * CONQUER-009
      *
@@ -360,7 +348,6 @@ public class ConquerRulesTests
             .Build();
 
         var state = GameStateHelper.CreateEmpty(2);
-
         state.PlayerTurn = 0;
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
@@ -383,5 +370,4 @@ public class ConquerRulesTests
         Assert.True(result.IsValid);
         Assert.Equal(EngineError.None, result.Error);
     }
-    
 }

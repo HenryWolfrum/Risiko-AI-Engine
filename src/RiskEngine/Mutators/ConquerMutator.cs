@@ -17,7 +17,7 @@ public static class ConquerMutator
 
         // Get current troop count from the attacking territory.
         var sourceTroops = GameStateHelper.GetTerritoryTroops(in state, action.SourceTerritory);
-
+        
 
         // Remove moved troops from the source territory.
         GameStateHelper.SetTerritoryTroops(ref state, action.SourceTerritory, (byte)(sourceTroops - action.TroopCount));

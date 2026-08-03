@@ -14,7 +14,7 @@ public static class AttackRules
         // Territory range check
         if (source >= map.TerritoryCount || target >= map.TerritoryCount)
             return ValidationResult.Invalid(EngineError.InvalidTerritory);
-
+        
         // Source must belong to attacker
         if (GameStateHelper.GetTerritoryOwner(in state, source) != player)
             return ValidationResult.Invalid(EngineError.TerritoryNotOwned);
@@ -22,6 +22,11 @@ public static class AttackRules
         // Target must belong to enemy
         if (GameStateHelper.GetTerritoryOwner(in state, target) == player)
             return ValidationResult.Invalid(EngineError.InvalidTarget);
+
+        // Target must have at least 1 defender troop
+        var defenderTroops = GameStateHelper.GetTerritoryTroops(in state, target);
+        if (defenderTroops == 0)
+            return ValidationResult.Invalid(EngineError.InvalidTerritory);
 
         // Territories must be connected
         if (!map.AreNeighbors(source, target))
@@ -52,6 +57,10 @@ public static class AttackRules
     public static byte GetMaxDefenderDice(in GameState state, byte targetTerritory)
     {
         var defenderTroops = GameStateHelper.GetTerritoryTroops(in state, targetTerritory);
+
+        if (defenderTroops == 0)
+            return 0;
+
         return defenderTroops >= 2 ? (byte)2 : (byte)1;
     }
 }

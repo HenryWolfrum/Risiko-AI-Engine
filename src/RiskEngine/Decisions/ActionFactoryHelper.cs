@@ -45,14 +45,20 @@ public static class ActionFactoryHelper
         };
     }
 
-    public static GameAction Conquer(byte amount)
+    /// <summary>
+    /// Creates a conquer action. Explicitly sets source and target territories.
+    /// </summary>
+    public static GameAction Conquer(byte source, byte target, byte amount)
     {
         return new GameAction()
         {
             Type = ActionType.Conquer,
+            SourceTerritory = source,
+            TargetTerritory = target,
             TroopCount = amount
         };
     }
+    
     
     public static GameAction Fortify(byte source, byte target, byte amount)
     {
