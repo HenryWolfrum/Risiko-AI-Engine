@@ -1,3 +1,4 @@
+using RiskEngine.Exceptions;
 using RiskEngine.State.Resolution;
 
 namespace RiskEngine.State.Mutation;
@@ -60,7 +61,7 @@ public static class GameStateMutator
 
             default:
             {
-                throw new InvalidOperationException($"Unsupported action type: {action.Type}");
+                throw new InvalidGameActionException($"Unsupported action type: {action.Type}");
             }
         }
     }

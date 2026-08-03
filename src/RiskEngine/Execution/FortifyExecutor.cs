@@ -23,16 +23,9 @@ public static class FortifyExecutor
         var maxFortifyMoves = EngineConstants.MAX_FORTIFY_MOVES_PER_TURN;
         var moveCounter = 0;
 
-        while (true)
+        while (moveCounter<maxFortifyMoves)
         {
-            // Safety upper-bound check against infinite loops / stuck AI decision loops.
-            if (moveCounter >= maxFortifyMoves)
-            {
-                throw new InvalidEngineStateException(
-                    $"Fortify phase exceeded maximum allowed moves limit ({maxFortifyMoves}) for Player {state.PlayerTurn}!"
-                );
-            }
-
+           
             // Ask player for a fortification action
             var action = player.DecideAction(in state, layout);
 

@@ -34,7 +34,7 @@ public class ReinforceRulesTests
 
         var action = new GameAction
         {
-            SourceTerritory = 0,
+            TargetTerritory = 0,
             TroopCount = 3
         };
 
@@ -73,7 +73,7 @@ public class ReinforceRulesTests
 
         var action = new GameAction
         {
-            SourceTerritory = 0,
+            TargetTerritory = 0,
             TroopCount = 2
         };
 
@@ -111,7 +111,7 @@ public class ReinforceRulesTests
 
         var action = new GameAction
         {
-            SourceTerritory = 0,
+            TargetTerritory = 0,
             TroopCount = 0
         };
 
@@ -150,7 +150,7 @@ public class ReinforceRulesTests
 
         var action = new GameAction
         {
-            SourceTerritory = 0,
+            TargetTerritory = 0,
             TroopCount = 3
         };
 
@@ -184,7 +184,7 @@ public class ReinforceRulesTests
 
         var action = new GameAction
         {
-            SourceTerritory = layout.Map.TerritoryCount,
+            TargetTerritory = layout.Map.TerritoryCount,
             TroopCount = 1
         };
 
@@ -221,7 +221,7 @@ public class ReinforceRulesTests
 
         var action = new GameAction
         {
-            SourceTerritory = 0,
+            TargetTerritory = 0,
             TroopCount = 5
         };
 
@@ -255,7 +255,7 @@ public class ReinforceRulesTests
 
         var action = new GameAction
         {
-            SourceTerritory = 0,
+            TargetTerritory = 0,
             TroopCount = 2
         };
 

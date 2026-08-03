@@ -1,4 +1,5 @@
 using System;
+using RiskEngine.Exceptions;
 
 namespace RiskEngine.State;
 
@@ -24,7 +25,7 @@ public static class AttackMutator
         // Fail-fast Guard 1: Attacker territory can NEVER drop to 0 troops during combat.
         if (result.AttackerLosses >= attackerTroops)
         {
-            throw new InvalidOperationException(
+            throw new InvalidGameActionException(
                 $"Combat casualties caused attacker territory #{attackerTerritory} to drop to 0 or negative troops!\n" +
                 $"  • Source Territory: #{attackerTerritory} (Available troops: {attackerTroops})\n" +
                 $"  • Attacker Losses:  {result.AttackerLosses}\n" +
@@ -35,7 +36,7 @@ public static class AttackMutator
         // Fail-fast Guard 2: Defender losses cannot exceed defender troops present.
         if (result.DefenderLosses > defenderTroops)
         {
-            throw new InvalidOperationException(
+            throw new InvalidGameActionException(
                 $"Combat casualties exceeded defender troops on target territory #{defenderTerritory}!\n" +
                 $"  • Target Territory: #{defenderTerritory} (Current troops: {defenderTroops})\n" +
                 $"  • Defender Losses:  {result.DefenderLosses}"

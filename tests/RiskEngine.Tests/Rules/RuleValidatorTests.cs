@@ -33,7 +33,7 @@ public class RuleValidatorTests
         var action = new GameAction
         {
             Type = ActionType.Reinforce,
-            SourceTerritory = 0,
+            TargetTerritory = 0,
             TroopCount = 3
         };
 

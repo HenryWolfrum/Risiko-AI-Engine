@@ -21,12 +21,7 @@ public static class ConquerRules
             return ValidationResult.Invalid(EngineError.InvalidTerritory);
         }
 
-        //Consistency Cache check
-        if (source != state.AttackerTerritory || target != state.DefenderTerritory)
-        {
-            return ValidationResult.Invalid(EngineError.CacheDoesNotMatchState);
-        }
-
+       
         // Source territory must belong to the attacker
         if (GameStateHelper.GetTerritoryOwner(in state, source) != player)
         {
