@@ -1,14 +1,16 @@
 using RiskEngine.Mission;
-
+using RiskEngine.Replay;
 namespace RiskEngine.State;
 
+
+ 
 /// <summary>
 /// Main game loop controller.
 /// Responsible only for global game flow.
 /// </summary>
 public static class GameRunner
 {
-    public static GameState PlayGame(GameLayout layout, IRiskPlayer[] players, int seed)
+    public static GameState PlayGame(GameLayout layout, IRiskPlayer[] players, int seed, IReplayObserver? replayObserver = null)
     {
         // Create deterministic random generator
         var rng = new EngineRandom(seed);
