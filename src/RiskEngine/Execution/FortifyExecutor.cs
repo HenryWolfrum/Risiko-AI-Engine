@@ -15,28 +15,37 @@ public static class FortifyExecutor
     /// <summary>
     /// Executes the fortification phase.
     /// </summary>
-    public static void Execute(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng,IGameObserver? observer=null)
+    public static void Execute(
+        ref GameState state,
+        IRiskPlayer player,
+        GameLayout layout,
+        ref EngineRandom rng,
+        IGameObserver? observer = null)
     {
         state.CurrentPhase = GamePhase.Fortify;
+
 
         // Limit the number of actions per phase to prevent infinite loops.
         // This is an execution safety limit, not a game rule.
         var maxFortifyMoves = EngineConstants.MAX_FORTIFY_MOVES_PER_TURN;
         var moveCounter = 0;
 
-        while (moveCounter<maxFortifyMoves)
+
+        while (moveCounter < maxFortifyMoves)
         {
-           
-            // Ask player for a fortification action
+            // Ask player for a fortification action.
             var action = player.DecideAction(in state, layout);
 
-            // Player chooses to end fortification phase
-            if (action.Type == ActionType.SkipPhase || action.Type == ActionType.EndTurn)
+
+            // Player chooses to end fortification phase.
+            if (action.Type == ActionType.SkipPhase ||
+                action.Type == ActionType.EndTurn)
             {
                 break;
             }
 
-            // Fail-fast: Action type must strictly be Fortify when not skipping/ending
+
+            // Fail-fast: Action type must strictly be Fortify.
             if (action.Type != ActionType.Fortify)
             {
                 throw new InvalidGameActionException(
@@ -46,13 +55,24 @@ public static class FortifyExecutor
                 );
             }
 
-            // Validate troop movement and connectivity rules
-            var validation = RuleValidator.Validate(in state, in action, layout);
+
+            // Validate troop movement and connectivity rules.
+            var validation = RuleValidator.Validate(
+                in state,
+                in action,
+                layout);
+
 
             if (!validation.IsValid)
             {
-                var sourceTroops = GameStateHelper.GetTerritoryTroops(in state, action.SourceTerritory);
-                var targetTroops = GameStateHelper.GetTerritoryTroops(in state, action.TargetTerritory);
+                var sourceTroops = GameStateHelper.GetTerritoryTroops(
+                    in state,
+                    action.SourceTerritory);
+
+                var targetTroops = GameStateHelper.GetTerritoryTroops(
+                    in state,
+                    action.TargetTerritory);
+
 
                 throw new InvalidGameActionException(
                     $"Invalid fortify action for Player {state.PlayerTurn}!\n" +
@@ -62,9 +82,23 @@ public static class FortifyExecutor
                     $"  • Requested Troops: {action.TroopCount}"
                 );
             }
+            
+            // Record completed fortification event.
+            observer?.Record(
+                in state,
+                in action);
 
-            // Apply troop movement
-            GameStateMutator.Apply(ref state, in action, ref rng, layout,observer);
+
+            // Apply troop movement.
+            GameStateMutator.Apply(
+                ref state,
+                in action,
+                ref rng,
+                layout);
+
+
+          
+
 
             moveCounter++;
         }

@@ -2,18 +2,16 @@
 
 namespace RiskEngine.Replay;
 
-/// <summary>
-/// Represents a single recorded state transition during a simulation.
-/// </summary>
+public enum ReplayFrameKind : byte
+{
+    InitialState,
+    Action,
+    FinalState
+}
+
 public struct ReplayFrame
 {
-    /// <summary>
-    /// Game state after the action has been applied.
-    /// </summary>
     public GameState State;
-
-    /// <summary>
-    /// Action that produced this state.
-    /// </summary>
     public GameAction? Action;
+    public ReplayFrameKind Kind;
 }

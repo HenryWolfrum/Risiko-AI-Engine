@@ -15,4 +15,9 @@ public interface IGameObserver
     void Record(in GameState state, in GameAction action);
     
     void RecordInitialState(in GameState state);
+    
+    /// <summary>
+    /// Records the final state after the game has ended.
+    /// </summary>
+    void RecordFinalState(in GameState state);
 }

@@ -43,7 +43,7 @@ internal static class Program
 
         ReplayPlayer player = new(replay);
 
-        ReplayConsole.Run(player);
+        ReplayConsole.Run(player,layout);
     }
 
 

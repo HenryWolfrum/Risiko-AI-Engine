@@ -16,7 +16,13 @@ public static class ConquerExecutor
     /// The attacker moves troops from the attacking territory
     /// into the newly conquered territory.
     /// </summary>
-    public static void Execute(ref GameState state, IRiskPlayer attacker, byte defenderId, GameLayout layout, ref EngineRandom rng,IGameObserver? observer=null)
+    public static void Execute(
+        ref GameState state,
+        IRiskPlayer attacker,
+        byte defenderId,
+        GameLayout layout,
+        ref EngineRandom rng,
+        IGameObserver? observer = null)
     {
         state.CurrentPhase = GamePhase.Conquer;
 
@@ -24,16 +30,24 @@ public static class ConquerExecutor
         // Ask attacker how many troops should move
         // into the conquered territory.
         var conquerAction = attacker.DecideAction(in state, layout);
-        
+
 
         // Validate conquest action through central rule system.
-        var validation = RuleValidator.Validate(in state, in conquerAction, layout);
+        var validation = RuleValidator.Validate(
+            in state,
+            in conquerAction,
+            layout);
 
 
         if (!validation.IsValid)
         {
-            var sourceTroops = GameStateHelper.GetTerritoryTroops(in state, conquerAction.SourceTerritory);
-            var targetTroops = GameStateHelper.GetTerritoryTroops(in state, conquerAction.TargetTerritory);
+            var sourceTroops = GameStateHelper.GetTerritoryTroops(
+                in state,
+                conquerAction.SourceTerritory);
+
+            var targetTroops = GameStateHelper.GetTerritoryTroops(
+                in state,
+                conquerAction.TargetTerritory);
 
             throw new InvalidGameActionException(
                 $"Invalid conquer action for Player {state.PlayerTurn}!\n" +
@@ -41,41 +55,67 @@ public static class ConquerExecutor
                 $"  • Source Territory:  #{conquerAction.SourceTerritory} (Troops available: {sourceTroops})\n" +
                 $"  • Target Territory:  #{conquerAction.TargetTerritory} (Current troops: {targetTroops})\n" +
                 $"  • Requested Move:    {conquerAction.TroopCount} troops\n"
-
             );
         }
-        
+
+        //Record
+        observer?.Record(in state, in conquerAction);
+
         // Apply troop movement and ownership transfer.
-        GameStateMutator.Apply(ref state, in conquerAction, ref rng,layout,observer);
+        GameStateMutator.Apply(
+            ref state,
+            in conquerAction,
+            ref rng,
+            layout);
 
 
         // Check whether defender lost their final territory.
-        CheckPlayerElimination(ref state, in layout,defenderId);
+        CheckPlayerElimination(
+            ref state,
+            in layout,
+            defenderId);
+
+
+
     }
 
 
-    
+
     /// <summary>
     /// Removes eliminated players and transfers their cards.
     /// </summary>
-    private static void CheckPlayerElimination(ref GameState state, in GameLayout layout, byte defenderId)
+    private static void CheckPlayerElimination(
+        ref GameState state,
+        in GameLayout layout,
+        byte defenderId)
     {
         // Defender still owns territories.
         if (GameStateHelper.GetOwnedTerritoryCount(in state, defenderId) > 0)
         {
             return;
         }
-        
+
+
         var attackerId = state.PlayerTurn;
-        
+
+
         // Transfer cards and remove defender from active players.
-        CardHelper.EliminateAndTransferCards(ref state, attackerId, defenderId);
-        
-        
-        // Immediate Event-Check: Did ANY player win due to this elimination?
-        if (MissionEvaluator.CheckEliminationWin(in state, in layout, defenderId, out byte winnerId))
+        CardHelper.EliminateAndTransferCards(
+            ref state,
+            attackerId,
+            defenderId);
+
+
+        // Immediate event check: did any player win due to elimination?
+        if (MissionEvaluator.CheckEliminationWin(
+                in state,
+                in layout,
+                defenderId,
+                out byte winnerId))
         {
-            GameStateHelper.Terminate(ref state, winnerId);
+            GameStateHelper.Terminate(
+                ref state,
+                winnerId);
         }
     }
 }

@@ -14,7 +14,7 @@ public static class GameStateMutator
     /// Applies an action and updates the game state.
     /// Validation must happen before calling this method.
     /// </summary>
-    public static void Apply(ref GameState state, in GameAction action, ref EngineRandom rng,GameLayout layout, IGameObserver? observer = null)
+    public static void Apply(ref GameState state, in GameAction action, ref EngineRandom rng,GameLayout layout)
     {
         switch (action.Type)
         {
@@ -67,8 +67,6 @@ public static class GameStateMutator
         }
         
         
-        //Inform observers
-        observer?.Record(in state, in action);
     }
     
     

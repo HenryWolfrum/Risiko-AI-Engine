@@ -15,18 +15,28 @@ public static class ReinforceExecutor
     /// <summary>
     /// Executes the reinforcement phase for the current player.
     /// </summary>
-    public static void Execute(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng,IGameObserver? observer=null)
+    public static void Execute(
+        ref GameState state,
+        IRiskPlayer player,
+        GameLayout layout,
+        ref EngineRandom rng,
+        IGameObserver? observer = null)
     {
         state.CurrentPhase = GamePhase.Reinforce;
 
         // Calculate reinforcement troops based on current game state.
-        var totalTroops = ReinforcementCalculator.CalculateTroops(in state, layout.Map);
+        var totalTroops = ReinforcementCalculator.CalculateTroops(
+            in state,
+            layout.Map);
 
         // Store available troops for the current player.
-        GameStateHelper.SetPlayerTroopsToPlace(ref state, state.PlayerTurn, totalTroops);
+        GameStateHelper.SetPlayerTroopsToPlace(
+            ref state,
+            state.PlayerTurn,
+            totalTroops);
 
         // Upper bound safety limit based on total troops to place.
-        // Each valid action places at least 1 troop, so iterations must not exceed totalTroops.
+        // Each valid action places at least 1 troop.
         var maxIterations = totalTroops + 10;
         var iterationCount = 0;
 
@@ -35,7 +45,10 @@ public static class ReinforceExecutor
             // Guard against infinite loops caused by stuck bots or state mutation bugs.
             if (++iterationCount > maxIterations)
             {
-                var remaining = GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn);
+                var remaining = GameStateHelper.GetPlayerTroopsToPlace(
+                    in state,
+                    state.PlayerTurn);
+
                 throw new InvalidGameActionException(
                     $"Reinforcement phase exceeded maximum iteration limit ({maxIterations}) for Player {state.PlayerTurn}!\n" +
                     $"  • Initial Troops to Place: {totalTroops}\n" +
@@ -49,7 +62,7 @@ public static class ReinforceExecutor
             // Fail-fast: Reinforce phase strictly requires a Reinforce action type.
             if (action.Type != ActionType.Reinforce)
             {
-                throw new InvalidOperationException(
+                throw new InvalidGameActionException(
                     $"Player {state.PlayerTurn} submitted an invalid action type during reinforcement phase!\n" +
                     $"  • Expected: {ActionType.Reinforce}\n" +
                     $"  • Actual:   {action.Type}"
@@ -57,14 +70,24 @@ public static class ReinforceExecutor
             }
 
             // Validate reinforcement action through central rule system.
-            var validation = RuleValidator.Validate(in state, in action, layout);
+            var validation = RuleValidator.Validate(
+                in state,
+                in action,
+                layout);
 
-            // Fail-fast on rule validation error.
             if (!validation.IsValid)
             {
-                var remainingTroops = GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn);
-                var targetOwner = GameStateHelper.GetTerritoryOwner(in state, action.TargetTerritory);
-                var currentTargetTroops = GameStateHelper.GetTerritoryTroops(in state, action.TargetTerritory);
+                var remainingTroops = GameStateHelper.GetPlayerTroopsToPlace(
+                    in state,
+                    state.PlayerTurn);
+
+                var targetOwner = GameStateHelper.GetTerritoryOwner(
+                    in state,
+                    action.TargetTerritory);
+
+                var currentTargetTroops = GameStateHelper.GetTerritoryTroops(
+                    in state,
+                    action.TargetTerritory);
 
                 throw new InvalidGameActionException(
                     $"Invalid reinforcement action for Player {state.PlayerTurn}!\n" +
@@ -76,16 +99,16 @@ public static class ReinforceExecutor
                 );
             }
 
+            //Record
+            observer?.Record(in state, in action);
+            
             // Apply valid reinforcement placement.
-            GameStateMutator.Apply(ref state, in action, ref rng, layout,observer);
-        }
+            GameStateMutator.Apply(
+                ref state,
+                in action,
+                ref rng,
+                layout);
 
-        // Final fail-fast guard: Ensure no unplaced troops remain before advancing phase.
-        if (GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn) > 0)
-        {
-            throw new InvalidGameActionException(
-                $"Player {state.PlayerTurn} ended reinforcement phase with unplaced troops remaining!"
-            );
         }
     }
 }
