@@ -1,5 +1,6 @@
 using RiskEngine.Mission;
-using RiskEngine.Replay;
+using RiskEngine.Observer;
+
 namespace RiskEngine.State;
 
 
@@ -10,7 +11,7 @@ namespace RiskEngine.State;
 /// </summary>
 public static class GameRunner
 {
-    public static GameState PlayGame(GameLayout layout, IRiskPlayer[] players, int seed, IReplayObserver? replayObserver = null)
+    public static GameState PlayGame(GameLayout layout, IRiskPlayer[] players, int seed, IGameObserver? replayObserver = null)
     {
         // Create deterministic random generator
         var rng = new EngineRandom(seed);

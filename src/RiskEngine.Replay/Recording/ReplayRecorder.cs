@@ -1,11 +1,12 @@
-﻿using RiskEngine.State;
+﻿using RiskEngine.Observer;
+using RiskEngine.State;
 
 namespace RiskEngine.Replay.Recording;
 
 /// <summary>
 /// Records simulation frames and builds a replay.
 /// </summary>
-public sealed class ReplayRecorder : IReplayObserver
+public sealed class ReplayRecorder: IGameObserver
 {
     private readonly Replay _replay;
 
@@ -19,16 +20,21 @@ public sealed class ReplayRecorder : IReplayObserver
             Header = header
         };
     }
-
-    /// <inheritdoc />
-    public void Record(
-        in GameState state,
-        in GameAction action)
+    
+    public void Record(in GameState state, in GameAction action)
     {
         _replay.Frames.Add(new ReplayFrame
         {
             State = state,
             Action = action
+        });
+    }
+
+    public void RecordInitialState(in GameState state)
+    {
+        _replay.Frames.Add(new ReplayFrame
+        {
+            State = state
         });
     }
 

@@ -15,5 +15,5 @@ public struct ReplayFrame
     /// <summary>
     /// Action that produced this state.
     /// </summary>
-    public GameAction Action;
+    public GameAction? Action;
 }

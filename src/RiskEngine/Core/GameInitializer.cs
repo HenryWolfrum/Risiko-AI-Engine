@@ -1,10 +1,11 @@
 ﻿using RiskEngine.Mission;
+using RiskEngine.Observer;
 
 namespace RiskEngine.State;
 
 public static class GameInitializer
 {
-    public static unsafe GameState CreateInitialState(GameLayout layout, ref EngineRandom rng)
+    public static unsafe GameState CreateInitialState(GameLayout layout, ref EngineRandom rng,IGameObserver? observer = null)
     {
         // 1. Get Params
         int territoryCount = layout.Map.TerritoryCount;
@@ -114,6 +115,9 @@ public static class GameInitializer
                 state.PlayerMissions[p] = layout.Missions.FallbackMissionId;
             }
         }
+        
+        //11. Inform Observers
+        observer?.RecordInitialState(in state);
 
         return state;
     }

@@ -1,18 +1,18 @@
 ﻿using RiskEngine.State;
 
-namespace RiskEngine.Replay.Recording;
+namespace RiskEngine.Observer;
 
 /// <summary>
 /// Observes state changes during a simulation.
 /// </summary>
-public interface IReplayObserver
+public interface IGameObserver
 {
     /// <summary>
     /// Records a new simulation frame.
     /// </summary>
     /// <param name="state">Current game state.</param>
     /// <param name="action">Action that produced the state.</param>
-    void Record(
-        in GameState state,
-        in GameAction action);
+    void Record(in GameState state, in GameAction action);
+    
+    void RecordInitialState(in GameState state);
 }
