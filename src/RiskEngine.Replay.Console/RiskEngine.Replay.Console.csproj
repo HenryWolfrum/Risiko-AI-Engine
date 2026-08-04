@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\RiskEngine\RiskEngine.csproj" />
     <ProjectReference Include="..\RiskEngine.Replay\RiskEngine.Replay.csproj" />
+    <ProjectReference Include="..\RiskEngine.AI\RiskEngine.AI.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -11,14 +11,14 @@ namespace RiskEngine.State;
 /// </summary>
 public static class GameRunner
 {
-    public static GameState PlayGame(GameLayout layout, IRiskPlayer[] players, int seed, IGameObserver? replayObserver = null)
+    public static GameState PlayGame(GameLayout layout, IRiskPlayer[] players, int seed, IGameObserver? observer = null)
     {
         // Create deterministic random generator
         var rng = new EngineRandom(seed);
 
 
         // Create initial game state
-        var state = GameInitializer.CreateInitialState(layout, ref rng);
+        var state = GameInitializer.CreateInitialState(layout, ref rng,observer);
 
 
         // Main game loop
@@ -55,7 +55,7 @@ public static class GameRunner
 
 
             // Execute complete player turn
-            Execution.TurnExecutor.ExecuteTurn(ref state, players, layout, ref rng);
+            Execution.TurnExecutor.ExecuteTurn(ref state, players, layout, ref rng,observer);
 
 
             // Check victory condition

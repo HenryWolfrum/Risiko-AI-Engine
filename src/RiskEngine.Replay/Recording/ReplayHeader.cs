@@ -17,13 +17,6 @@ public struct ReplayHeader
     /// </summary>
     public required GameLayout Layout;
 
-    /// <summary>
-    /// Optional engine version.
-    /// </summary>
-    public string? EngineVersion;
+    public IRiskPlayer[] players;
 
-    /// <summary>
-    /// Time when the replay was recorded.
-    /// </summary>
-    public DateTime Timestamp;
 }

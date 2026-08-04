@@ -1,5 +1,6 @@
 using System;
 using RiskEngine.Exceptions;
+using RiskEngine.Observer;
 using RiskEngine.State.Mutation;
 using RiskEngine.State.Validation;
 
@@ -19,7 +20,7 @@ public static class AttackExecutor
     /// <summary>
     /// Executes the complete attack phase for the current player.
     /// </summary>
-    public static void Execute(ref GameState state, IRiskPlayer[] players, GameLayout layout, ref EngineRandom rng)
+    public static void Execute(ref GameState state, IRiskPlayer[] players, GameLayout layout, ref EngineRandom rng,IGameObserver? observer=null)
     {
         state.CurrentPhase = GamePhase.Attack;
         var conqueredTerritoryThisTurn = false;
@@ -130,14 +131,14 @@ public static class AttackExecutor
             attackAction.ChosenDefenderDiceCount = defenderDice;
 
             // Resolve combat and apply troop losses.
-            GameStateMutator.Apply(ref state, in attackAction, ref rng, layout);
+            GameStateMutator.Apply(ref state, in attackAction, ref rng, layout,observer);
 
             // Territory is conquered when defender troops reach zero.
             if (GameStateHelper.GetTerritoryTroops(in state, defenderTerritory) == 0)
             {
                 conqueredTerritoryThisTurn = true;
 
-                ConquerExecutor.Execute(ref state, attackerPlayer, defenderPlayerId, layout, ref rng);
+                ConquerExecutor.Execute(ref state, attackerPlayer, defenderPlayerId, layout, ref rng,observer);
 
                 // Attack Phase only continues if game was not decided after conquering.
                 if (state.CurrentPhase != GamePhase.Terminated)

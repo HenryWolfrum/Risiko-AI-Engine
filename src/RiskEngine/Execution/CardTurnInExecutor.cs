@@ -1,5 +1,6 @@
 using System;
 using RiskEngine.Exceptions;
+using RiskEngine.Observer;
 using RiskEngine.State.Mutation;
 using RiskEngine.State.Validation;
 
@@ -19,21 +20,21 @@ public static class CardTurnInExecutor
     /// <summary>
     /// Executes the card exchange phase for the current player.
     /// </summary>
-    public static void Execute(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng)
+    public static void Execute(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng,IGameObserver? observer = null)
     {
         state.CurrentPhase = GamePhase.CardTurnIn;
 
         // Players with too many cards must trade in immediately.
-        ExecuteMandatoryTradeIn(ref state, player, layout, ref rng);
+        ExecuteMandatoryTradeIn(ref state, player, layout, ref rng,observer);
 
         // Players may optionally trade in additional valid sets.
-        ExecuteOptionalTradeIn(ref state, player, layout, ref rng);
+        ExecuteOptionalTradeIn(ref state, player, layout, ref rng,observer);
     }
 
     /// <summary>
     /// Forces card exchanges while the player exceeds the maximum hand size.
     /// </summary>
-    private static void ExecuteMandatoryTradeIn(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng)
+    private static void ExecuteMandatoryTradeIn(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng,IGameObserver? observer = null)
     {
         var iterationCount = 0;
 
@@ -80,14 +81,14 @@ public static class CardTurnInExecutor
             }
 
             // Apply Card Set Trade.
-            GameStateMutator.Apply(ref state, in action, ref rng, layout);
+            GameStateMutator.Apply(ref state, in action, ref rng, layout,observer);
         }
     }
 
     /// <summary>
     /// Allows the player to voluntarily exchange valid card sets.
     /// </summary>
-    private static void ExecuteOptionalTradeIn(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng)
+    private static void ExecuteOptionalTradeIn(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng,IGameObserver? observer = null)
     {
 
         //No loop is needed. Max Card amount after Mandatory Trade can at most result in one legal further trade
@@ -131,7 +132,7 @@ public static class CardTurnInExecutor
             }
 
             // Apply valid voluntary trade.
-            GameStateMutator.Apply(ref state, in action, ref rng, layout);
+            GameStateMutator.Apply(ref state, in action, ref rng, layout,observer);
         }
     }
 }

@@ -1,5 +1,6 @@
 using RiskEngine.Exceptions;
 using RiskEngine.Mission;
+using RiskEngine.Observer;
 using RiskEngine.State.Mutation;
 
 namespace RiskEngine.State.Execution;
@@ -15,7 +16,7 @@ public static class ConquerExecutor
     /// The attacker moves troops from the attacking territory
     /// into the newly conquered territory.
     /// </summary>
-    public static void Execute(ref GameState state, IRiskPlayer attacker, byte defenderId, GameLayout layout, ref EngineRandom rng)
+    public static void Execute(ref GameState state, IRiskPlayer attacker, byte defenderId, GameLayout layout, ref EngineRandom rng,IGameObserver? observer=null)
     {
         state.CurrentPhase = GamePhase.Conquer;
 
@@ -45,7 +46,7 @@ public static class ConquerExecutor
         }
         
         // Apply troop movement and ownership transfer.
-        GameStateMutator.Apply(ref state, in conquerAction, ref rng,layout);
+        GameStateMutator.Apply(ref state, in conquerAction, ref rng,layout,observer);
 
 
         // Check whether defender lost their final territory.

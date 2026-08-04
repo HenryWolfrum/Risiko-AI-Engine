@@ -1,5 +1,6 @@
 using System;
 using RiskEngine.Exceptions;
+using RiskEngine.Observer;
 using RiskEngine.State.Mutation;
 using RiskEngine.State.Validation;
 
@@ -14,7 +15,7 @@ public static class ReinforceExecutor
     /// <summary>
     /// Executes the reinforcement phase for the current player.
     /// </summary>
-    public static void Execute(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng)
+    public static void Execute(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng,IGameObserver? observer=null)
     {
         state.CurrentPhase = GamePhase.Reinforce;
 
@@ -76,7 +77,7 @@ public static class ReinforceExecutor
             }
 
             // Apply valid reinforcement placement.
-            GameStateMutator.Apply(ref state, in action, ref rng, layout);
+            GameStateMutator.Apply(ref state, in action, ref rng, layout,observer);
         }
 
         // Final fail-fast guard: Ensure no unplaced troops remain before advancing phase.

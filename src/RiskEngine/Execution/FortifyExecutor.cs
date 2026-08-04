@@ -1,5 +1,6 @@
 using System;
 using RiskEngine.Exceptions;
+using RiskEngine.Observer;
 using RiskEngine.State.Mutation;
 using RiskEngine.State.Validation;
 
@@ -14,7 +15,7 @@ public static class FortifyExecutor
     /// <summary>
     /// Executes the fortification phase.
     /// </summary>
-    public static void Execute(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng)
+    public static void Execute(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng,IGameObserver? observer=null)
     {
         state.CurrentPhase = GamePhase.Fortify;
 
@@ -63,7 +64,7 @@ public static class FortifyExecutor
             }
 
             // Apply troop movement
-            GameStateMutator.Apply(ref state, in action, ref rng, layout);
+            GameStateMutator.Apply(ref state, in action, ref rng, layout,observer);
 
             moveCounter++;
         }
