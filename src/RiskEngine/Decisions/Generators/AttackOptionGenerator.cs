@@ -29,15 +29,15 @@ public static class AttackOptionGenerator
             // Attacker needs at least 2 troops to attack (1 troop must stay behind)
             if (troops > 1)
             {
-                // Risk rule: Max 3 dice, but cannot exceed (troops - 1)
-                byte maxDice = (byte)Math.Min(3, troops - 1);
+                // Risk rule: Max dice, but cannot exceed (troops - 1)
+                byte maxDice = (byte)Math.Min(EngineConstants.MAX_ATTACKER_DICE, troops - 1);
                 byte[] neighbors = layout.Map.Adjacencies[source];
 
                 for (int i = 0; i < neighbors.Length; i++)
                 {
                     byte target = neighbors[i];
 
-                    // ✅ Target MUST belong to opponent AND MUST have at least 1 defender troop
+                    // Target MUST belong to opponent AND MUST have at least 1 defender troop
                     if ((ownedTerritories & (1UL << target)) == 0 && GameStateHelper.GetTerritoryTroops(in state, target) > 0)
                     {
                         options[optionCount++] = DecisionOption.Attack(
