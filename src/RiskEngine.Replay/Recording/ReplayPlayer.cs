@@ -85,21 +85,7 @@ public sealed class ReplayPlayer
         return false;
     }
 
-    /// <summary>
-    /// Moves to the first frame of the previous round.
-    /// </summary>
-    public bool PreviousRound()
-    {
-        ushort currentRound = CurrentFrame.State.CurrentRound;
-
-        while (PreviousEvent())
-        {
-            if (CurrentFrame.State.CurrentRound != currentRound)
-                return true;
-        }
-
-        return false;
-    }
+  
 
     /// <summary>
     /// Moves to the first frame of the next player's turn.
@@ -117,22 +103,7 @@ public sealed class ReplayPlayer
         return false;
     }
 
-    /// <summary>
-    /// Moves to the first frame of the previous player's turn.
-    /// </summary>
-    public bool PreviousPlayer()
-    {
-        byte currentPlayer = CurrentFrame.State.PlayerTurn;
-
-        while (PreviousEvent())
-        {
-            if (CurrentFrame.State.PlayerTurn != currentPlayer)
-                return true;
-        }
-
-        return false;
-    }
-
+    
     public bool NextPhase()
     {
         GamePhase currentPhase = CurrentFrame.State.CurrentPhase;
@@ -146,19 +117,88 @@ public sealed class ReplayPlayer
         return false;
     }
 
-    public bool PreviousPhase()
-    {
-        GamePhase currentPhase = CurrentFrame.State.CurrentPhase;
+    /// <summary>
+/// Moves to the first frame of the previous round.
+/// </summary>
+public bool PreviousRound()
+{
+    if (IsFirstFrame) return false;
 
-        while (PreviousEvent())
-        {
-            if (CurrentFrame.State.CurrentPhase != currentPhase)
-            {
-                return true;
-            }
-        }
-        return false;
+    ushort startRound = CurrentFrame.State.CurrentRound;
+
+    // 1. Zurückgehen, bis wir nicht mehr in der aktuellen Runde sind
+    while (!IsFirstFrame && CurrentFrame.State.CurrentRound == startRound)
+    {
+        PreviousEvent();
     }
+
+    // 2. Falls wir in einer früheren Runde gelandet sind, bis zu deren ERSTEM Frame zurückspulen
+    if (CurrentFrame.State.CurrentRound != startRound)
+    {
+        ushort targetRound = CurrentFrame.State.CurrentRound;
+        while (_currentFrame > 0 && _replay.Frames[_currentFrame - 1].State.CurrentRound == targetRound)
+        {
+            _currentFrame--;
+        }
+        return true;
+    }
+
+    return false;
+}
+
+/// <summary>
+/// Moves to the first frame of the previous player's turn.
+/// </summary>
+public bool PreviousPlayer()
+{
+    if (IsFirstFrame) return false;
+
+    byte startPlayer = CurrentFrame.State.PlayerTurn;
+
+    while (!IsFirstFrame && CurrentFrame.State.PlayerTurn == startPlayer)
+    {
+        PreviousEvent();
+    }
+
+    if (CurrentFrame.State.PlayerTurn != startPlayer)
+    {
+        byte targetPlayer = CurrentFrame.State.PlayerTurn;
+        while (_currentFrame > 0 && _replay.Frames[_currentFrame - 1].State.PlayerTurn == targetPlayer)
+        {
+            _currentFrame--;
+        }
+        return true;
+    }
+
+    return false;
+}
+
+/// <summary>
+/// Moves to the first frame of the previous phase.
+/// </summary>
+public bool PreviousPhase()
+{
+    if (IsFirstFrame) return false;
+
+    GamePhase startPhase = CurrentFrame.State.CurrentPhase;
+
+    while (!IsFirstFrame && CurrentFrame.State.CurrentPhase == startPhase)
+    {
+        PreviousEvent();
+    }
+
+    if (CurrentFrame.State.CurrentPhase != startPhase)
+    {
+        GamePhase targetPhase = CurrentFrame.State.CurrentPhase;
+        while (_currentFrame > 0 && _replay.Frames[_currentFrame - 1].State.CurrentPhase == targetPhase)
+        {
+            _currentFrame--;
+        }
+        return true;
+    }
+
+    return false;
+}
     
     
     
