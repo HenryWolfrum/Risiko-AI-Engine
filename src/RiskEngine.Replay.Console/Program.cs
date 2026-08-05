@@ -1,4 +1,5 @@
 ﻿using RiskEngine.AI.Bots;
+using RiskEngine.Replay.ConsoleView;
 using RiskEngine.Replay.Recording;
 using RiskEngine.State;
 
@@ -23,29 +24,31 @@ internal static class Program
             players[p] = new RandomBot(rng);
         }
 
-        System.Console.WriteLine("Players created.");
-        
+        System.Console.WriteLine("Players created. Simulating game...");
         
         ReplayHeader header = new()
         {
             Seed = seed,
             Layout = layout,
             players = players
-            
         };
         
         ReplayRecorder recorder = new(header);
         
-        
         GameRunner.PlayGame(layout, players, seed, recorder);
         
         Replay replay = recorder.Build();
-
         ReplayPlayer player = new(replay);
 
-        ReplayConsole.Run(player,layout);
-    }
+        System.Console.WriteLine($"Replay generated ({player.FrameCount} frames). Launching GUI & CLI...");
 
+        // 1. Konsolen-Eingabeschleife im Hintergrund-Thread starten
+        Task.Run(() => ReplayConsole.Run(player, layout));
+
+        // 2. Raylib-GUI auf dem Haupt-Thread starten (blockiert Main, bis das Fenster geschlossen wird)
+        var gui = new ReplayGuiPrototype();
+        gui.Run(player,layout);
+    }
 
     private static int ReadSeed()
     {

@@ -213,4 +213,12 @@ public bool PreviousPhase()
         _currentFrame = frame;
         return true;
     }
+    
+    /// <summary>
+    /// Gets the frame at the specified index without changing the current frame.
+    /// </summary>
+    public ReplayFrame GetFrame(int index)
+    {
+        return _replay.Frames[index];
+    }
 }
