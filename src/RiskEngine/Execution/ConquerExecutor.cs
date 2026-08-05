@@ -59,21 +59,17 @@ public static class ConquerExecutor
         }
 
         //Record
-        observer?.Record(in state, in conquerAction);
+        observer?.Record(in state, conquerAction);
 
         // Apply troop movement and ownership transfer.
-        GameStateMutator.Apply(
-            ref state,
-            in conquerAction,
-            ref rng,
-            layout);
+        GameStateMutator.Apply(ref state, in conquerAction, ref rng, layout);
+        
+        //Record
+        observer?.Record(in state, conquerAction);
 
 
         // Check whether defender lost their final territory.
-        CheckPlayerElimination(
-            ref state,
-            in layout,
-            defenderId);
+        CheckPlayerElimination(ref state, in layout, defenderId);
 
 
 

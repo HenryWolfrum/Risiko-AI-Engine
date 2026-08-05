@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using RiskEngine.Exceptions;
 using RiskEngine.Observer;
 using RiskEngine.State.Mutation;
@@ -8,14 +9,12 @@ namespace RiskEngine.State.Execution;
 
 public static class AttackExecutor
 {
-    private const int MAX_ATTACK_ITERATIONS = 500;
+    /// Safety guard against infinite attack loops.
+    /// The limit is intentionally high because valid RandomBot games
+    /// can contain several hundred consecutive attacks.
+    private const int MAX_ATTACK_ITERATIONS = 5000;
 
-    public static void Execute(
-        ref GameState state,
-        IRiskPlayer[] players,
-        GameLayout layout,
-        ref EngineRandom rng,
-        IGameObserver? observer = null)
+    public static void Execute(ref GameState state, IRiskPlayer[] players, GameLayout layout, ref EngineRandom rng, IGameObserver? observer = null)
     {
         state.CurrentPhase = GamePhase.Attack;
         var conqueredTerritoryThisTurn = false;
@@ -23,11 +22,11 @@ public static class AttackExecutor
 
         while (AttackHelper.CanPlayerAttack(in state, state.PlayerTurn, layout.Map))
         {
+            
+            
             if (++iterationCount > MAX_ATTACK_ITERATIONS)
             {
-                throw new InvalidEngineStateException(
-                    $"Attack phase exceeded maximum iteration limit ({MAX_ATTACK_ITERATIONS}) for Player {state.PlayerTurn}!"
-                );
+                throw new InvalidEngineStateException($"Attack phase exceeded maximum iteration limit ({MAX_ATTACK_ITERATIONS}) for Player {state.PlayerTurn}!");
             }
 
             if (state.CurrentPhase == GamePhase.Terminated)
@@ -78,14 +77,16 @@ public static class AttackExecutor
             }
 
             attackAction.ChosenDefenderDiceCount = defenderAction.ChosenDefenderDiceCount;
+            
+           
+       
 
-            // 1. Pre-Action Recording: Zustand VOR dem Kampf speichern
-            observer?.Record(in state, in attackAction);
-
-            // 2. Kampfergebnis anwenden
+     
             GameStateMutator.Apply(ref state, in attackAction, ref rng, layout);
 
-            // 3. Eroberung verarbeiten (falls Ziel auf 0 Truppen)
+            //State after attack is slected
+            observer?.Record(in state, attackAction);
+            
             if (GameStateHelper.GetTerritoryTroops(in state, defenderTerritory) == 0)
             {
                 conqueredTerritoryThisTurn = true;

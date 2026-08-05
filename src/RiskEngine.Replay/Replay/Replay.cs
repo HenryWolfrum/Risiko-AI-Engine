@@ -9,7 +9,7 @@ public sealed class Replay
     /// <summary>
     /// General metadata describing the replay.
     /// </summary>
-    public ReplayHeader Header { get; init; }
+    public required ReplayHeader Header { get; init; }
 
     /// <summary>
     /// Chronological list of recorded simulation frames.

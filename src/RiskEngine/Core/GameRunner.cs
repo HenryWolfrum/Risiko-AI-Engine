@@ -50,13 +50,8 @@ public static class GameRunner
                         }
                     }
 
-
-                    GameStateHelper.Terminate(
-                        ref state,
-                        winner);
-
-
-                    observer?.RecordFinalState(in state);
+                    GameStateHelper.Terminate(ref state, winner);
+                    
 
                     return state;
                 }
@@ -80,17 +75,11 @@ public static class GameRunner
 
 
             // Check victory condition.
-            if (HasPlayerWon(
-                    in state,
-                    in layout,
-                    currentPlayer))
+            if (HasPlayerWon(in state, in layout, currentPlayer))
             {
-                GameStateHelper.Terminate(
-                    ref state,
-                    currentPlayer);
+                GameStateHelper.Terminate(ref state, currentPlayer);
 
-
-                observer?.RecordFinalState(in state);
+                
 
                 return state;
             }
@@ -104,14 +93,7 @@ public static class GameRunner
 
 
         // Maximum round limit reached.
-        GameStateHelper.Terminate(
-            ref state,
-            EngineConstants.NO_VALUE);
-
-
-        observer?.RecordFinalState(
-            in state);
-
+        GameStateHelper.Terminate(ref state, EngineConstants.NO_VALUE);
 
         return state;
     }

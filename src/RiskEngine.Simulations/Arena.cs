@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
-using RiskEngine.AI.Bots;
+using RiskEngine.AI.Configuration;
+using RiskEngine.AI.Factory;
 using RiskEngine.State;
 
 namespace RiskEngine.Simulations;
@@ -10,35 +11,37 @@ public static class Arena
     public static void RunTournament(int numberOfGames, byte playerCount = 4)
     {
         Console.WriteLine($"=== STARTING ARENA TOURNAMENT ({numberOfGames} Games, {playerCount} Players) ===");
-        
-        var layout = RiskMapFactory.CreateStandardRiskMap();
+
+        GameLayout layout = RiskMapFactory.CreateStandardRiskMap();
+
         int[] winCounts = new int[playerCount];
         int totalRounds = 0;
         int maxRoundsReachedCount = 0;
 
         Stopwatch sw = Stopwatch.StartNew();
 
-        for (int i = 0; i < numberOfGames; i++)
+        for (int game = 0; game < numberOfGames; game++)
         {
-     
-            var rng = new EngineRandom((i + 133799));
+            int gameSeed = game + 133799;
 
             IRiskPlayer[] players = new IRiskPlayer[playerCount];
-            for (byte p = 0; p < playerCount; p++)
+
+            for (byte player = 0; player < playerCount; player++)
             {
-                players[p] = new RandomBot(rng);
+                PlayerConfiguration configuration = new RandomBotConfiguration
+                {
+                    Seed = gameSeed + player
+                };
+
+                players[player] = PlayerFactory.Create(configuration);
             }
 
-            GameState state = GameRunner.PlayGame(layout, players, i + 133799);
+            GameState state = GameRunner.PlayGame(layout, players, gameSeed);
 
             if (state.WinnerId != EngineConstants.NO_VALUE)
-            {
                 winCounts[state.WinnerId]++;
-            }
             else
-            {
                 maxRoundsReachedCount++;
-            }
 
             totalRounds += state.CurrentRound;
         }
@@ -51,11 +54,11 @@ public static class Arena
         Console.WriteLine($"Avg Rounds / Game:  {(double)totalRounds / numberOfGames:F1}");
         Console.WriteLine($"Unfinished Games:   {maxRoundsReachedCount}");
         Console.WriteLine("-----------------------------------");
-        
-        for (int p = 0; p < playerCount; p++)
+
+        for (int player = 0; player < playerCount; player++)
         {
-            double winRate = (double)winCounts[p] / numberOfGames * 100.0;
-            Console.WriteLine($"Player {p} Winrate:   {winRate:F2}% ({winCounts[p]} wins)");
+            double winRate = (double)winCounts[player] / numberOfGames * 100.0;
+            Console.WriteLine($"Player {player} Winrate: {winRate:F2}% ({winCounts[player]} wins)");
         }
     }
 }

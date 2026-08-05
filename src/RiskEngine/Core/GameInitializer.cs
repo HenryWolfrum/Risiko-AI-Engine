@@ -117,7 +117,7 @@ public static class GameInitializer
         }
         
         //11. Inform Observers
-        observer?.RecordInitialState(in state);
+        observer?.Record(in state,null);
 
         return state;
     }

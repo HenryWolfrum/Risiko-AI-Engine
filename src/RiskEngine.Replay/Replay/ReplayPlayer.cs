@@ -16,8 +16,12 @@ public sealed class ReplayPlayer
     /// </summary>
     public ReplayPlayer(Replay replay)
     {
+        ArgumentNullException.ThrowIfNull(replay);
+
+        if (replay.Frames.Count == 0)
+            throw new ArgumentException("Replay contains no frames.");
+
         _replay = replay;
-        _currentFrame = 0;
     }
 
     /// <summary>
