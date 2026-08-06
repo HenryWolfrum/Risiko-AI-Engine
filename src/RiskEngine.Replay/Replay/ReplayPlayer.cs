@@ -7,7 +7,7 @@ namespace RiskEngine.Replay;
 /// </summary>
 public sealed class ReplayPlayer
 {
-    private readonly Replay _replay;
+    public readonly Replay _replay;
 
     private int _currentFrame;
 

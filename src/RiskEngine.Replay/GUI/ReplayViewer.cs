@@ -7,6 +7,7 @@ public sealed class ReplayViewer
 {
     private readonly ReplayPlayer _player;
     private readonly ReplayRenderer _renderer;
+    private NavigationMode _navigationMode = NavigationMode.Event;
 
     public ReplayViewer(Replay replay)
     {
@@ -35,34 +36,23 @@ public sealed class ReplayViewer
 
     private void Update()
     {
-        if (Raylib.IsKeyPressed(KeyboardKey.Right))
+        switch (_navigationMode)
         {
-            _player.NextEvent();
-        }
+            case NavigationMode.Event:
+                _player.NextEvent();
+                break;
 
-        if (Raylib.IsKeyPressed(KeyboardKey.Left))
-        {
-            _player.PreviousEvent();
-        }
+            case NavigationMode.Player:
+                _player.NextPlayer();
+                break;
 
-        if (Raylib.IsKeyPressed(KeyboardKey.Down))
-        {
-            _player.NextPlayer();
-        }
+            case NavigationMode.Phase:
+                _player.NextPhase();
+                break;
 
-        if (Raylib.IsKeyPressed(KeyboardKey.Up))
-        {
-            _player.PreviousPlayer();
-        }
-
-        if (Raylib.IsKeyPressed(KeyboardKey.PageDown))
-        {
-            _player.NextRound();
-        }
-
-        if (Raylib.IsKeyPressed(KeyboardKey.PageUp))
-        {
-            _player.PreviousRound();
+            case NavigationMode.Round:
+                _player.NextRound();
+                break;
         }
     }
 
@@ -72,7 +62,7 @@ public sealed class ReplayViewer
 
         Raylib.ClearBackground(Color.DarkGray);
 
-        _renderer.Draw(_player.CurrentFrame);
+        _renderer.Draw(_player._replay.Header, _player.CurrentFrame, _player.CurrentFrameIndex, _player.FrameCount);
 
         Raylib.EndDrawing();
     }
