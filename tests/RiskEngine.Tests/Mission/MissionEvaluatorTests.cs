@@ -322,7 +322,7 @@ public class MissionEvaluatorTests
         var cardTypes = new[] { CardType.Infantry, CardType.Cavalry, CardType.Artillery, CardType.Infantry, CardType.Joker, CardType.Joker };
         var deck = new DeckLayout(cardTypes);
 
-        var config = new EngineConfig(playerCount: 2);
+        var config = new EngineConfig(playerCount: 2,100);
 
         continentAMask = 0b0011; // territories 0,1
         continentBMask = 0b1100; // territories 2,3

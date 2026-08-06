@@ -7,7 +7,7 @@ public static class RiskMapFactory
     public static GameLayout CreateStandardRiskMap(EngineConfig? config = null)
     {
         //Check for null config and set default values if necessary
-        var gameConfig = config ?? new EngineConfig(EngineConstants.DEFAULT_PLAYERS);
+        var gameConfig = config ?? EngineConfig.Default;
 
         //Define Continents
         var continents = new[]

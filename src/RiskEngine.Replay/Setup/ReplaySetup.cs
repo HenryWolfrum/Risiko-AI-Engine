@@ -44,7 +44,7 @@ public static class ReplaySetup
     {
         if (SetupHelper.AskYesNo("Use default configuration?"))
         {
-            return new EngineConfig();
+            return EngineConfig.Default;
 
         }
         

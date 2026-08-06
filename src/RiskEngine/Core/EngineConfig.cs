@@ -9,8 +9,10 @@ public readonly struct EngineConfig
     
     public ushort MaxRounds { get; }
 
+    public static readonly EngineConfig Default =
+        new(EngineConstants.DEFAULT_PLAYERS, EngineConstants.MAX_ROUNDS);
 
-    public EngineConfig(byte playerCount = EngineConstants.DEFAULT_PLAYERS, ushort maxRounds = EngineConstants.MAX_ROUNDS)
+    public EngineConfig(byte playerCount, ushort maxRounds)
     {
         PlayerCount = playerCount;
         MaxRounds = maxRounds;

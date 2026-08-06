@@ -136,7 +136,7 @@ public sealed class TestLayoutBuilder
     /// </summary>
     public EngineConfig BuildConfig()
     {
-        return new EngineConfig(playerCount: _playerCount);
+        return new EngineConfig(playerCount: _playerCount,EngineConstants.MAX_ROUNDS);
     }
 
     /// <summary>
