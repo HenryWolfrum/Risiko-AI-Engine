@@ -15,4 +15,17 @@ public static class PlayerFactory
             _ => throw new NotSupportedException($"Unsupported configuration type: {configuration.GetType().Name}")
         };
     }
+    
+    //Create multiple players
+    public static IRiskPlayer[] Create(PlayerConfiguration[] configurations)
+    {
+        IRiskPlayer[] players = new IRiskPlayer[configurations.Length];
+
+        for (int i = 0; i < configurations.Length; i++)
+        {
+            players[i] = Create(configurations[i]);
+        }
+
+        return players;
+    }
 }

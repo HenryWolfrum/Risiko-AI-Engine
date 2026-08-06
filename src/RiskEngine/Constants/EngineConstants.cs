@@ -34,6 +34,7 @@ public static class EngineConstants
     public const byte DEFAULT_PLAYERS = 4;
 
     public const ushort MAX_ROUNDS = 200;
+    public const ushort MIN_ROUNDS = 50;
 
     public const byte JOKER_COUNT = 2;
     
