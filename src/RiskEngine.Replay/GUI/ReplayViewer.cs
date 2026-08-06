@@ -36,22 +36,58 @@ public sealed class ReplayViewer
 
     private void Update()
     {
-        switch (_navigationMode)
+        TopBarAction action = _renderer.Update();
+
+        switch (action)
+        {
+            case TopBarAction.Next:
+                ExecuteNext();
+                break;
+
+            case TopBarAction.Previous:
+                ExecutePrevious();
+                break;
+        }
+    }
+    private void ExecuteNext()
+    {
+        switch (_renderer.CurrentMode)
         {
             case NavigationMode.Event:
                 _player.NextEvent();
-                break;
-
-            case NavigationMode.Player:
-                _player.NextPlayer();
                 break;
 
             case NavigationMode.Phase:
                 _player.NextPhase();
                 break;
 
+            case NavigationMode.Player:
+                _player.NextPlayer();
+                break;
+
             case NavigationMode.Round:
                 _player.NextRound();
+                break;
+        }
+    }
+    private void ExecutePrevious()
+    {
+        switch (_renderer.CurrentMode)
+        {
+            case NavigationMode.Event:
+                _player.PreviousEvent();
+                break;
+
+            case NavigationMode.Phase:
+                _player.PreviousPhase();
+                break;
+
+            case NavigationMode.Player:
+                _player.PreviousPlayer();
+                break;
+
+            case NavigationMode.Round:
+                _player.PreviousRound();
                 break;
         }
     }

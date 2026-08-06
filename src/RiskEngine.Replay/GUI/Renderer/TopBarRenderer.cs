@@ -12,12 +12,16 @@ public sealed class TopBarRenderer
     private readonly Button _previousButton;
     private readonly Button _nextButton;
     private readonly Button _modeButton;
+    
+    public NavigationMode CurrentMode => _mode;
+    
+    private NavigationMode _mode = NavigationMode.Event;
 
     public TopBarRenderer()
     {
         _modeButton = new Button(
             new Rectangle(850, 20, 120, 40),
-            "Event");
+            CurrentMode.ToString());
 
         _previousButton = new Button(
             new Rectangle(1000, 20, 120, 40),
@@ -27,12 +31,44 @@ public sealed class TopBarRenderer
             new Rectangle(1140, 20, 120, 40),
             "Next");
     }
+    
+    private void ChangeMode()
+    {
+        _mode = _mode switch
+        {
+            NavigationMode.Event => NavigationMode.Phase,
+            NavigationMode.Phase => NavigationMode.Player,
+            NavigationMode.Player => NavigationMode.Round,
+            NavigationMode.Round => NavigationMode.Event,
+            _ => NavigationMode.Event
+        };
 
-    public void Draw(
-        ReplayHeader header,
-        ReplayFrame frame,
-        int frameIndex,
-        int frameCount)
+        _modeButton.Text = _mode.ToString();
+    }
+    
+    
+    public TopBarAction Update()
+    {
+        if (_modeButton.IsClicked())
+        {
+            ChangeMode();
+            return TopBarAction.ChangeMode;
+        }
+
+        if (_previousButton.IsClicked())
+        {
+            return TopBarAction.Previous;
+        }
+
+        if (_nextButton.IsClicked())
+        {
+            return TopBarAction.Next;
+        }
+
+        return TopBarAction.None;
+    }
+
+    public void Draw(ReplayHeader header, ReplayFrame frame, int frameIndex, int frameCount)
     {
         // Background
         Rectangle topBar = new Rectangle(0, 0, Raylib.GetScreenWidth(), Height);
