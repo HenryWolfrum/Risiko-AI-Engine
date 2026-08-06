@@ -6,32 +6,28 @@ namespace RiskEngine.Replay.GUI.Renderer;
 
 public sealed class TopBarRenderer
 {
-    private const int Height = 80;
-    private const int TextY = 30;
+    private const int FontSize = 20;
+
+    private const int ButtonWidth = 120;
+    private const int ButtonHeight = 40;
+    private const int ButtonSpacing = 20;
 
     private readonly Button _previousButton;
     private readonly Button _nextButton;
     private readonly Button _modeButton;
-    
-    public NavigationMode CurrentMode => _mode;
-    
+
     private NavigationMode _mode = NavigationMode.Event;
+
+    public NavigationMode CurrentMode => _mode;
 
     public TopBarRenderer()
     {
-        _modeButton = new Button(
-            new Rectangle(850, 20, 120, 40),
-            CurrentMode.ToString());
-
-        _previousButton = new Button(
-            new Rectangle(1000, 20, 120, 40),
-            "Previous");
-
-        _nextButton = new Button(
-            new Rectangle(1140, 20, 120, 40),
-            "Next");
+        // Position wird später durch das Layout gesetzt
+        _modeButton = new Button(new Rectangle(), _mode.ToString());
+        _previousButton = new Button(new Rectangle(), "Previous");
+        _nextButton = new Button(new Rectangle(), "Next");
     }
-    
+
     private void ChangeMode()
     {
         _mode = _mode switch
@@ -45,8 +41,7 @@ public sealed class TopBarRenderer
 
         _modeButton.Text = _mode.ToString();
     }
-    
-    
+
     public TopBarAction Update()
     {
         if (_modeButton.IsClicked())
@@ -56,39 +51,87 @@ public sealed class TopBarRenderer
         }
 
         if (_previousButton.IsClicked())
-        {
             return TopBarAction.Previous;
-        }
 
         if (_nextButton.IsClicked())
-        {
             return TopBarAction.Next;
-        }
 
         return TopBarAction.None;
     }
 
-    public void Draw(ReplayHeader header, ReplayFrame frame, int frameIndex, int frameCount)
+    public void Draw(
+        Rectangle area,
+        ReplayHeader header,
+        ReplayFrame frame,
+        int frameIndex,
+        int frameCount)
     {
-        // Background
-        Rectangle topBar = new Rectangle(0, 0, Raylib.GetScreenWidth(), Height);
+        // Hintergrund
+        Raylib.DrawRectangleRec(area, Color.DarkGray);
+        Raylib.DrawRectangleLinesEx(area, 2, Color.Black);
 
-        Raylib.DrawRectangleRec(topBar, Color.DarkGray);
+        float right = area.X + area.Width;
+        float centerY = area.Y + area.Height / 2f;
 
-        Raylib.DrawRectangleLinesEx(topBar, 2, Color.Black);
+        int textY = (int)(centerY - FontSize / 2f);
+        float buttonY = centerY - ButtonHeight / 2f;
 
-        // Metadata
-        Raylib.DrawText($"Seed: {header.Seed}", 20, TextY, 20, Color.White);
+        // Metadaten
+        Raylib.DrawText(
+            $"Seed: {header.Seed}",
+            (int)area.X + 20,
+            textY,
+            FontSize,
+            Color.White);
 
-        Raylib.DrawText($"Frame: {frameIndex}/{frameCount}", 180, TextY, 20, Color.White);
+        Raylib.DrawText(
+            $"Frame: {frameIndex}/{frameCount}",
+            (int)area.X + 180,
+            textY,
+            FontSize,
+            Color.White);
 
-        Raylib.DrawText($"Round: {frame.State.CurrentRound}", 380, TextY, 20, Color.White);
+        Raylib.DrawText(
+            $"Round: {frame.State.CurrentRound}",
+            (int)area.X + 380,
+            textY,
+            FontSize,
+            Color.White);
 
-        Raylib.DrawText($"Player: {frame.State.PlayerTurn + 1}", 520, TextY, 20, Color.White);
+        Raylib.DrawText(
+            $"Player: {frame.State.PlayerTurn + 1}",
+            (int)area.X + 520,
+            textY,
+            FontSize,
+            Color.White);
 
-        Raylib.DrawText($"Phase: {frame.State.CurrentPhase}", 650, TextY, 20, Color.White);
+        Raylib.DrawText(
+            $"Phase: {frame.State.CurrentPhase}",
+            (int)area.X + 650,
+            textY,
+            FontSize,
+            Color.White);
 
-        // Buttons
+        // Buttons relativ zum Layout positionieren
+        _modeButton.Bounds = new Rectangle(
+            right - 3 * ButtonWidth - 2 * ButtonSpacing,
+            buttonY,
+            ButtonWidth,
+            ButtonHeight);
+
+        _previousButton.Bounds = new Rectangle(
+            right - 2 * ButtonWidth - ButtonSpacing,
+            buttonY,
+            ButtonWidth,
+            ButtonHeight);
+
+        _nextButton.Bounds = new Rectangle(
+            right - ButtonWidth,
+            buttonY,
+            ButtonWidth,
+            ButtonHeight);
+
+        // Zeichnen
         _modeButton.Draw();
         _previousButton.Draw();
         _nextButton.Draw();

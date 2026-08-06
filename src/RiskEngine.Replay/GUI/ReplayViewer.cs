@@ -1,13 +1,14 @@
 ﻿using Raylib_cs;
+using RiskEngine.Replay;
+using RiskEngine.Replay.GUI;
 using RiskEngine.Replay.GUI.Renderer;
-
-namespace RiskEngine.Replay.GUI;
 
 public sealed class ReplayViewer
 {
     private readonly ReplayPlayer _player;
     private readonly ReplayRenderer _renderer;
-    private NavigationMode _navigationMode = NavigationMode.Event;
+
+    private ReplayLayout _layout;
 
     public ReplayViewer(Replay replay)
     {
@@ -32,10 +33,23 @@ public sealed class ReplayViewer
     {
         Raylib.InitWindow(1600, 900, "Risk Replay Viewer");
         Raylib.SetTargetFPS(60);
+
+        _layout = ReplayLayoutBuilder.Create();
+
+        _renderer.Initialize();
+    }
+
+    private void Shutdown()
+    {
+        _renderer.Shutdown();
+        Raylib.CloseWindow();
     }
 
     private void Update()
     {
+        // Falls später Fenstergröße geändert werden kann
+        _layout = ReplayLayoutBuilder.Create();
+
         TopBarAction action = _renderer.Update();
 
         switch (action)
@@ -49,13 +63,24 @@ public sealed class ReplayViewer
                 break;
         }
     }
-    private void ExecuteNext()
+
+    private void Draw()
     {
-        switch (_renderer.CurrentMode)
-        {
-            case NavigationMode.Event:
-                _player.NextEvent();
-                break;
+        Raylib.BeginDrawing();
+
+        Raylib.ClearBackground(Color.DarkGray);
+
+        _renderer.Draw(
+            _layout,
+            _player._replay.Header,
+            _player.CurrentFrame,
+            _player.CurrentFrameIndex,
+            _player.FrameCount);
+
+        Raylib.EndDrawing();
+    }
+
+    private void ExecuteNext(){switch (_renderer.CurrentMode){case NavigationMode.Event:_player.NextEvent();break;
 
             case NavigationMode.Phase:
                 _player.NextPhase();
@@ -90,21 +115,5 @@ public sealed class ReplayViewer
                 _player.PreviousRound();
                 break;
         }
-    }
-
-    private void Draw()
-    {
-        Raylib.BeginDrawing();
-
-        Raylib.ClearBackground(Color.DarkGray);
-
-        _renderer.Draw(_player._replay.Header, _player.CurrentFrame, _player.CurrentFrameIndex, _player.FrameCount);
-
-        Raylib.EndDrawing();
-    }
-
-    private void Shutdown()
-    {
-        Raylib.CloseWindow();
     }
 }
