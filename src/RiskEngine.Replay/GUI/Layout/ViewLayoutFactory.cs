@@ -35,7 +35,7 @@ public abstract class ViewLayoutFactory
         
         //Map Dimensions
         float mapX = 0;
-        float mapY = height;
+        float mapY = ControlBarHeight;
         float mapWidth = 0.5F * width;
         float mapHeight = 0.75F * height;
         
@@ -49,7 +49,7 @@ public abstract class ViewLayoutFactory
         
         //Player Viewer Dimensions
         float playerViewX = 0.5F * width;
-        float playerViewY = height;
+        float playerViewY = ControlBarHeight;
         float playerViewWidth = 0.5F * width;
         float playerViewHeight = 0.75F * height;
 
