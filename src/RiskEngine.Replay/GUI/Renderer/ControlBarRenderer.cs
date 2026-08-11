@@ -1,22 +1,26 @@
 using System.Numerics;
 using Raylib_cs;
+using RiskEngine.Replay.GUI.Controls;
 
 namespace RiskEngine.Replay.GUI;
 
 public class ControlBarRenderer : ISectionRenderer
 {
-    // Beispiel-Zustand für den Step-Modus (Phase, Frame, Turn etc.)
-    private string _currentMode = "Phase";
+    // Button-Objekte einmalig beim Erstellen des Renderers instanziieren
+    private readonly Button _prevButton = new(default, "<");
+    private readonly Button _modeButton = new(default, "Phase");
+    private readonly Button _nextButton = new(default, ">");
 
-    public void Render(Rectangle bounds, ReplayPlayer player)
+    public void Render(Rectangle bounds, ReplayUIContext context)
     {
+        var player = context.Player;
         var frame = player.CurrentFrame;
         
-        // 1. Hintergrund der ControlBar zeichnen
+        // Background
         Raylib.DrawRectangleRec(bounds, Color.DarkGray);
         Raylib.DrawRectangleLinesEx(bounds, 1, Color.Gray); // Subtle Border
 
-        // 2. Aufteilung in 3 Subbereiche
+        // Separate into three subareas
         float leftWidth = bounds.Width * 0.30f;
         float centerWidth = bounds.Width * 0.40f;
         float rightWidth = bounds.Width * 0.30f;
@@ -25,15 +29,15 @@ public class ControlBarRenderer : ISectionRenderer
         Rectangle centerArea = new(bounds.X + leftWidth, bounds.Y, centerWidth, bounds.Height);
         Rectangle rightArea = new(bounds.X + leftWidth + centerWidth, bounds.Y, rightWidth, bounds.Height);
 
-        // Subbereiche rendern
-        RenderLeftMetaInfo(leftArea,player._replay.Header.Seed,player.CurrentFrameIndex,player.FrameCount);
+        // Render sub Areas
+        RenderLeftMetaInfo(leftArea, player._replay.Header.Seed, player.CurrentFrameIndex, player.FrameCount);
         RenderCenterGameStatus(centerArea, frame);
-        RenderRightControls(rightArea);
+        RenderRightControls(rightArea, context);
     }
 
-    private static void RenderLeftMetaInfo(Rectangle bounds,int seed, int currentFrameIndex, int totalFrames)
+    private static void RenderLeftMetaInfo(Rectangle bounds, int seed, int currentFrameIndex, int totalFrames)
     {
-        // Mittlere Hälfte der Höhe berechnen (Top Padding = 25% der Höhe)
+        // Middle Half of height
         float middleHalfY = bounds.Y + (bounds.Height * 0.25f);
         float lineSpacing = 22f;
         float paddingLeft = 20f;
@@ -41,11 +45,11 @@ public class ControlBarRenderer : ISectionRenderer
         int fontSize = 18;
         Color textColor = Color.RayWhite;
 
-        // Zeile 1: Seed
+        // Seed
         string seedText = $"Seed: {seed}";
         Raylib.DrawText(seedText, (int)(bounds.X + paddingLeft), (int)middleHalfY, fontSize, textColor);
 
-        // Zeile 2: Frame x/y
+        // Frame
         string frameText = $"Frame: {currentFrameIndex} / {totalFrames}";
         Raylib.DrawText(frameText, (int)(bounds.X + paddingLeft), (int)(middleHalfY + lineSpacing), fontSize, Color.LightGray);
     }
@@ -54,10 +58,10 @@ public class ControlBarRenderer : ISectionRenderer
     {
         int fontSize = 20;
 
-        // Text zusammenbauen
+        // Build text
         string statusText = $"Round: {frame.State.CurrentRound}  |  Player: {frame.State.PlayerTurn}  |  Phase: {frame.State.CurrentPhase}";
         
-        // Zentrieren in der mittleren Area
+        // center
         int textWidth = Raylib.MeasureText(statusText, fontSize);
         float textX = bounds.X + (bounds.Width - textWidth) / 2f;
         float textY = bounds.Y + (bounds.Height - fontSize) / 2f;
@@ -65,14 +69,14 @@ public class ControlBarRenderer : ISectionRenderer
         Raylib.DrawText(statusText, (int)textX, (int)textY, fontSize, Color.Gold);
     }
 
-    private void RenderRightControls(Rectangle bounds)
+    private void RenderRightControls(Rectangle bounds, ReplayUIContext context)
     {
         Vector2 mousePos = Raylib.GetMousePosition();
 
-        float buttonHeight = bounds.Height * 0.5f; // 50% der Bar-Höhe
-        float buttonY = bounds.Y + (bounds.Height - buttonHeight) / 2f; // Vertikal zentriert
+        float buttonHeight = bounds.Height * 0.5f; 
+        float buttonY = bounds.Y + (bounds.Height - buttonHeight) / 2f; 
 
-        // Breiten für < , Mode , >
+        // Button dimensions
         float btnNavWidth = 40f;
         float btnModeWidth = 110f;
         float spacing = 10f;
@@ -80,46 +84,28 @@ public class ControlBarRenderer : ISectionRenderer
         float totalControlWidth = (btnNavWidth * 2) + btnModeWidth + (spacing * 2);
         float startX = bounds.X + (bounds.Width - totalControlWidth) / 2f;
 
-        Rectangle prevBtn = new(startX, buttonY, btnNavWidth, buttonHeight);
-        Rectangle modeBtn = new(startX + btnNavWidth + spacing, buttonY, btnModeWidth, buttonHeight);
-        Rectangle nextBtn = new(startX + btnNavWidth + btnModeWidth + (spacing * 2), buttonY, btnNavWidth, buttonHeight);
+        // Update button positions & dynamic label
+        _prevButton.Bounds = new Rectangle(startX, buttonY, btnNavWidth, buttonHeight);
+    
+        _modeButton.Bounds = new Rectangle(startX + btnNavWidth + spacing, buttonY, btnModeWidth, buttonHeight);
+        _modeButton.Text = context.Mode.ToString(); // Displays "Frame", "Phase", "Player", or "Round"
+    
+        _nextButton.Bounds = new Rectangle(startX + btnNavWidth + btnModeWidth + (spacing * 2), buttonY, btnNavWidth, buttonHeight);
 
-        // Buttons Zeichnen & Interaktion
-        if (DrawButton(prevBtn, "<", mousePos))
+        // Render buttons & set trigger actions directly on context
+        if (_prevButton.DrawAndCheck(mousePos))
         {
-            // TODO: Event/Action für Previous
+            context.PendingAction = ReplayAction.Previous;
         }
 
-        if (DrawButton(modeBtn, _currentMode, mousePos))
+        if (_modeButton.DrawAndCheck(mousePos))
         {
-            // Modus umschalten
-            _currentMode = _currentMode == "Phase" ? "Frame" : "Phase";
+            context.PendingAction = ReplayAction.ToggleMode;
         }
 
-        if (DrawButton(nextBtn, ">", mousePos))
+        if (_nextButton.DrawAndCheck(mousePos))
         {
-            // TODO: Event/Action für Next
+            context.PendingAction = ReplayAction.Next;
         }
-    }
-
-    private static bool DrawButton(Rectangle rect, string text, Vector2 mousePos)
-    {
-        bool isHovered = Raylib.CheckCollisionPointRec(mousePos, rect);
-        bool isClicked = isHovered && Raylib.IsMouseButtonPressed(MouseButton.Left);
-
-        Color btnColor = isClicked ? Color.Gray : (isHovered ? Color.LightGray : Color.DarkBlue);
-        Color textColor = isHovered ? Color.Black : Color.White;
-
-        Raylib.DrawRectangleRec(rect, btnColor);
-        Raylib.DrawRectangleLinesEx(rect, 1, Color.White);
-
-        int fontSize = 18;
-        int textWidth = Raylib.MeasureText(text, fontSize);
-        float textX = rect.X + (rect.Width - textWidth) / 2f;
-        float textY = rect.Y + (rect.Height - fontSize) / 2f;
-
-        Raylib.DrawText(text, (int)textX, (int)textY, fontSize, textColor);
-
-        return isClicked;
     }
 }

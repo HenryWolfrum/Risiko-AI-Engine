@@ -52,7 +52,7 @@ public sealed class ReplayPlayer
     /// <summary>
     /// Moves to the next recorded event.
     /// </summary>
-    public bool NextEvent()
+    public bool NextFrame()
     {
         if (IsLastFrame)
             return false;
@@ -64,7 +64,7 @@ public sealed class ReplayPlayer
     /// <summary>
     /// Moves to the previous recorded event.
     /// </summary>
-    public bool PreviousEvent()
+    public bool PreviousFrame()
     {
         if (IsFirstFrame)
             return false;
@@ -80,7 +80,7 @@ public sealed class ReplayPlayer
     {
         ushort currentRound = CurrentFrame.State.CurrentRound;
 
-        while (NextEvent())
+        while (NextFrame())
         {
             if (CurrentFrame.State.CurrentRound != currentRound)
                 return true;
@@ -98,7 +98,7 @@ public sealed class ReplayPlayer
     {
         byte currentPlayer = CurrentFrame.State.PlayerTurn;
 
-        while (NextEvent())
+        while (NextFrame())
         {
             if (CurrentFrame.State.PlayerTurn != currentPlayer)
                 return true;
@@ -112,7 +112,7 @@ public sealed class ReplayPlayer
     {
         GamePhase currentPhase = CurrentFrame.State.CurrentPhase;
 
-        while (NextEvent())
+        while (NextFrame())
         {
             if (CurrentFrame.State.CurrentPhase != currentPhase)
                 return true;
@@ -133,7 +133,7 @@ public bool PreviousRound()
     // 1. Zurückgehen, bis wir nicht mehr in der aktuellen Runde sind
     while (!IsFirstFrame && CurrentFrame.State.CurrentRound == startRound)
     {
-        PreviousEvent();
+        PreviousFrame();
     }
 
     // 2. Falls wir in einer früheren Runde gelandet sind, bis zu deren ERSTEM Frame zurückspulen
@@ -161,7 +161,7 @@ public bool PreviousPlayer()
 
     while (!IsFirstFrame && CurrentFrame.State.PlayerTurn == startPlayer)
     {
-        PreviousEvent();
+        PreviousFrame();
     }
 
     if (CurrentFrame.State.PlayerTurn != startPlayer)
@@ -188,7 +188,7 @@ public bool PreviousPhase()
 
     while (!IsFirstFrame && CurrentFrame.State.CurrentPhase == startPhase)
     {
-        PreviousEvent();
+        PreviousFrame();
     }
 
     if (CurrentFrame.State.CurrentPhase != startPhase)

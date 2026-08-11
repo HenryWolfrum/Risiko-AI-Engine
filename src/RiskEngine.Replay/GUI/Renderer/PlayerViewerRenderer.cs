@@ -3,7 +3,7 @@ namespace RiskEngine.Replay.GUI;
 
 public class PlayerViewerRenderer:ISectionRenderer
 {
-    public void Render(Rectangle bounds, ReplayPlayer player)
+    public void Render(Rectangle bounds, ReplayUIContext context)
     {
         return;
     }

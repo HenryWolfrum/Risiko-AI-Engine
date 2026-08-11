@@ -4,7 +4,7 @@ namespace RiskEngine.Replay.GUI;
 
 public class MapRenderer:ISectionRenderer
 {
-    public void Render(Rectangle bounds, ReplayPlayer player)
+    public void Render(Rectangle bounds, ReplayUIContext context)
     {
         return;
 

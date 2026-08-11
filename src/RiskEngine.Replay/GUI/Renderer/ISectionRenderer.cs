@@ -4,5 +4,5 @@ namespace RiskEngine.Replay.GUI;
 
 public interface ISectionRenderer
 {
-    void Render(Rectangle bounds, ReplayPlayer player);
+    void Render(Rectangle bounds,ReplayUIContext context);
 }

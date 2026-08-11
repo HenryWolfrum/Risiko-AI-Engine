@@ -16,11 +16,11 @@ public class ViewSection
         Renderer = renderer;
     }
 
-    public void Draw(ReplayPlayer player)
+    public void Draw(ReplayUIContext context)
     {
         Raylib.BeginScissorMode((int)Bounds.X, (int)Bounds.Y, (int)Bounds.Width, (int)Bounds.Height);
 
-        Renderer.Render(Bounds, player);
+        Renderer.Render(Bounds, context);
 
         Raylib.EndScissorMode();
     }
