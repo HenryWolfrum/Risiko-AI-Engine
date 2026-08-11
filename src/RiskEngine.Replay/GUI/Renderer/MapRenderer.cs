@@ -46,7 +46,7 @@ public class MapRenderer : ISectionRenderer
     private void LoadMapTexture()
     {
         _loadAttempted = true;
-        string imagePath = Path.Combine(AppContext.BaseDirectory, "Assets", "risk_map_image.png");
+        string imagePath = Path.Combine(AppContext.BaseDirectory, "Assets", "risk_map.png");
 
         if (File.Exists(imagePath))
         {
