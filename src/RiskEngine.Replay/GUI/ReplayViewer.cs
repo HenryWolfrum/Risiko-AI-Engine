@@ -1,119 +1,66 @@
-﻿using Raylib_cs;
-using RiskEngine.Replay;
-using RiskEngine.Replay.GUI;
-using RiskEngine.Replay.GUI.Renderer;
+using Raylib_cs;
+using RiskEngine.Replay.Recording;
 
-public sealed class ReplayViewer
+namespace RiskEngine.Replay.GUI;
+
+// Main script for organizing the replay view
+public static class ReplayViewer
 {
-    private readonly ReplayPlayer _player;
-    private readonly ReplayRenderer _renderer;
-
-    private ReplayLayout _layout;
-
-    public ReplayViewer(Replay replay)
+    public static void Run(ReplayPlayer player,int screenWidth,int screenHeight)
     {
-        _player = new ReplayPlayer(replay);
-        _renderer = new ReplayRenderer();
-    }
 
-    public void Run()
-    {
-        Initialize();
+        InitializeView(screenWidth, screenHeight);
+        
+        ViewLayout layout = ViewLayoutFactory.CreateDefault(screenWidth, screenHeight);
 
-        while (!Raylib.WindowShouldClose())
+        if (!player.IsFirstFrame)
         {
-            Update();
-            Draw();
+            if (player.FrameCount == 0)
+            {
+                throw new ArgumentException("Replay player must have a frame count.");
+            }
+
+            //Go to intial frame
+            player.JumpTo(0);
         }
 
-        Shutdown();
-    }
+        // Main game / render loop
+        while (!Raylib.WindowShouldClose())
+        {
+            //1. Update
+            UpdateView();
+            
+            // 2. Render
+            Raylib.BeginDrawing();
 
-    private void Initialize()
-    {
-        Raylib.InitWindow(1600, 900, "Risk Replay Viewer");
-        Raylib.SetTargetFPS(60);
+            RenderView(layout,player);
 
-        _layout = ReplayLayoutBuilder.Create();
+            Raylib.EndDrawing();
+        }
 
-        _renderer.Initialize();
-    }
-
-    private void Shutdown()
-    {
-        _renderer.Shutdown();
+        // Cleanup graphics context
         Raylib.CloseWindow();
     }
 
-    private void Update()
+    public static void InitializeView(int screenWidth, int screenHeight)
     {
-        // Falls später Fenstergröße geändert werden kann
-        _layout = ReplayLayoutBuilder.Create();
+        
+        Raylib.SetConfigFlags(ConfigFlags.ResizableWindow | ConfigFlags.Msaa4xHint);
+       
+        Raylib.InitWindow(screenWidth, screenHeight, "Risk Engine - Replay Viewer");
+        
+        Raylib.SetTargetFPS(60);
+    }
 
-        TopBarAction action = _renderer.Update();
+    public static void UpdateView()
+    {
+        
+    }
+    public static void RenderView(ViewLayout layout,ReplayPlayer player){
 
-        switch (action)
+        foreach (ViewSection section in layout.Sections)
         {
-            case TopBarAction.Next:
-                ExecuteNext();
-                break;
-
-            case TopBarAction.Previous:
-                ExecutePrevious();
-                break;
-        }
-    }
-
-    private void Draw()
-    {
-        Raylib.BeginDrawing();
-
-        Raylib.ClearBackground(Color.DarkGray);
-
-        _renderer.Draw(
-            _layout,
-            _player._replay.Header,
-            _player.CurrentFrame,
-            _player.CurrentFrameIndex,
-            _player.FrameCount);
-
-        Raylib.EndDrawing();
-    }
-
-    private void ExecuteNext(){switch (_renderer.CurrentMode){case NavigationMode.Event:_player.NextEvent();break;
-
-            case NavigationMode.Phase:
-                _player.NextPhase();
-                break;
-
-            case NavigationMode.Player:
-                _player.NextPlayer();
-                break;
-
-            case NavigationMode.Round:
-                _player.NextRound();
-                break;
-        }
-    }
-    private void ExecutePrevious()
-    {
-        switch (_renderer.CurrentMode)
-        {
-            case NavigationMode.Event:
-                _player.PreviousEvent();
-                break;
-
-            case NavigationMode.Phase:
-                _player.PreviousPhase();
-                break;
-
-            case NavigationMode.Player:
-                _player.PreviousPlayer();
-                break;
-
-            case NavigationMode.Round:
-                _player.PreviousRound();
-                break;
+            section.Renderer.Render(section.Bounds,player);
         }
     }
 }

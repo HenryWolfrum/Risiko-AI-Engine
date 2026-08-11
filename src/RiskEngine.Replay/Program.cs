@@ -13,9 +13,11 @@ internal static class Program
 
         // Resimulate and record the game
         Replay replay = ReplayRunner.Run(header);
+        
+        //Setup a player for replay
+        ReplayPlayer player = new ReplayPlayer(replay);
 
         // Launch the replay viewer
-        ReplayViewer viewer = new ReplayViewer(replay);
-        viewer.Run();
+        ReplayViewer.Run(player,1600,900);
     }
 }
