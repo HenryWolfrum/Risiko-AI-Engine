@@ -1,5 +1,6 @@
 using System;
 using Raylib_cs;
+using RiskEngine.AI.Configuration;
 using RiskEngine.Replay.Recording;
 
 namespace RiskEngine.Replay.GUI;
@@ -33,6 +34,8 @@ public static class ReplayViewer
         // Ungültiger Index -> Error-Farbe (Magenta)
         return ErrorColor;
     }
+
+ 
 
     public static void Run(ReplayPlayer player, int screenWidth, int screenHeight)
     {
