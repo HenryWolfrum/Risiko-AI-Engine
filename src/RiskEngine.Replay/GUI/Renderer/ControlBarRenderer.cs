@@ -58,15 +58,33 @@ public class ControlBarRenderer : ISectionRenderer
     {
         int fontSize = 20;
 
-        // Build text
-        string statusText = $"Round: {frame.State.CurrentRound}  |  Player: {frame.State.PlayerTurn}  |  Phase: {frame.State.CurrentPhase}";
-        
-        // center
-        int textWidth = Raylib.MeasureText(statusText, fontSize);
-        float textX = bounds.X + (bounds.Width - textWidth) / 2f;
+        // 1. Statuszeile in Segmente zerlegen
+        string part1 = $"Round: {frame.State.CurrentRound}  |  Player: ";
+        string part2 = $"{frame.State.PlayerTurn}";
+        string part3 = $"  |  Phase: {frame.State.CurrentPhase}";
+
+        // 2. Farbe des aktuellen Spielers ermitteln
+        Color playerColor = ReplayViewer.GetPlayerColor(frame.State.PlayerTurn);
+
+        // 3. Breiten für die Gesamtzentrierung messen
+        int width1 = Raylib.MeasureText(part1, fontSize);
+        int width2 = Raylib.MeasureText(part2, fontSize);
+        int width3 = Raylib.MeasureText(part3, fontSize);
+
+        int totalWidth = width1 + width2 + width3;
+
+        // 4. Startkoordinaten berechnen
+        float currentX = bounds.X + (bounds.Width - totalWidth) / 2f;
         float textY = bounds.Y + (bounds.Height - fontSize) / 2f;
 
-        Raylib.DrawText(statusText, (int)textX, (int)textY, fontSize, Color.Gold);
+        // 5. Segmente nacheinander rendern
+        Raylib.DrawText(part1, (int)currentX, (int)textY, fontSize, Color.Gold);
+        currentX += width1;
+
+        Raylib.DrawText(part2, (int)currentX, (int)textY, fontSize, playerColor);
+        currentX += width2;
+
+        Raylib.DrawText(part3, (int)currentX, (int)textY, fontSize, Color.Gold);
     }
 
     private void RenderRightControls(Rectangle bounds, ReplayUIContext context)
