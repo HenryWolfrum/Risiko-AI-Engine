@@ -1,6 +1,8 @@
 using System;
 using System.Numerics;
 using Raylib_cs;
+using RiskEngine.AI.Configuration;
+using RiskEngine.Mission;
 using RiskEngine.Replay.GUI.Controls;
 using RiskEngine.State;
 
@@ -72,12 +74,12 @@ public class PlayerViewerRenderer : ISectionRenderer
         float padding = 12f;
         float headerHeight = 30f;
 
-        Raylib.DrawText("PLAYER DOSSIER", (int)(bounds.X + padding), (int)(bounds.Y + 8), 15, Color.LightGray);
+        Raylib.DrawText("PLAYER VIEWER", (int)(bounds.X + padding), (int)(bounds.Y + 8), 15, Color.LightGray);
 
         // 3. Karten-Hauptbereich
         Rectangle cardBounds = new(
-            bounds.X + padding,
-            bounds.Y + headerHeight + 4f,
+            bounds.X + padding, 
+            bounds.Y + headerHeight + 4f, 
             bounds.Width - (padding * 2f),
             bounds.Height - headerHeight - (padding * 2f)
         );
@@ -85,7 +87,7 @@ public class PlayerViewerRenderer : ISectionRenderer
         bool isActiveTurn = (state.PlayerTurn == _selectedPlayerId);
 
         // Dossier-Inhalt zeichnen (Schicht 1)
-        RenderSinglePlayerDossier(cardBounds, _selectedPlayerId, in state, seed, isActiveTurn);
+        RenderSinglePlayerDossier(cardBounds,player, _selectedPlayerId, in state, seed, isActiveTurn);
 
         // 4. Navigation-Buttons im Dossier-Header platzieren (Schicht 2)
         float btnWidth = 34f;
@@ -95,19 +97,22 @@ public class PlayerViewerRenderer : ISectionRenderer
         _prevPlayerBtn.Bounds = new Rectangle(cardBounds.X + 12f, navY, btnWidth, btnHeight);
         _nextPlayerBtn.Bounds = new Rectangle(cardBounds.X + cardBounds.Width - 12f - btnWidth, navY, btnWidth, btnHeight);
 
+        var playerCount = player._replay.Header.PlayerConfigs.Length;
         if (_prevPlayerBtn.DrawAndCheck(mousePos))
         {
-            _selectedPlayerId = (_selectedPlayerId + 3) % 4;
+            _selectedPlayerId = (_selectedPlayerId + 3) % playerCount ;
         }
 
         if (_nextPlayerBtn.DrawAndCheck(mousePos))
         {
-            _selectedPlayerId = (_selectedPlayerId + 1) % 4;
+            _selectedPlayerId = (_selectedPlayerId + 1) % playerCount;
         }
     }
 
-    private static void RenderSinglePlayerDossier(Rectangle bounds, int playerId, in GameState state, int seed, bool isActiveTurn)
+    private static void RenderSinglePlayerDossier(Rectangle bounds,ReplayPlayer player, int playerId, in GameState state, int seed, bool isActiveTurn)
     {
+     
+        
         int territoryCount = GameStateHelper.GetOwnedTerritoryCount(in state, (byte)playerId);
         bool isAlive = territoryCount > 0;
         Color playerColor = ReplayViewer.GetPlayerColor(playerId);
@@ -135,16 +140,21 @@ public class PlayerViewerRenderer : ISectionRenderer
 
         currentY += 46f;
 
-        // --- B) Sub-Panel: Meta-Info (Type & Seed) ---
-        Rectangle metaBox = new(innerX, currentY, contentWidth, 34f);
+        // --- B) Sub-Panel: Meta-Info (Dynamisch nach Konfigurationstyp) ---
+        PlayerConfiguration playerConfig = player._replay.Header.PlayerConfigs[playerId];
+
+        // Dynamische Höhe basierend auf der Anzahl der Parameter
+        float metaPanelHeight = GetConfigPanelHeight(playerConfig);
+
+        Rectangle metaBox = new(innerX, currentY, contentWidth, metaPanelHeight);
         Raylib.DrawRectangleRounded(metaBox, 0.12f, 4, SubPanelBgColor);
         Raylib.DrawRectangleRoundedLinesEx(metaBox, 0.12f, 4, 1.0f, BorderColor);
 
-        string botType = "RandomBot";
-        Raylib.DrawText($"Type: {botType}", (int)(metaBox.X + 12f), (int)(metaBox.Y + 9f), 14, TextMutedColor);
-        Raylib.DrawText($"Seed: {seed}", (int)(metaBox.X + metaBox.Width - 95f), (int)(metaBox.Y + 9f), 14, TextMutedColor);
+        // Render-Funktion aufrufen, die nach Typ unterscheidet
+        RenderPlayerConfigDetails(metaBox, playerConfig);
 
-        currentY += 44f;
+        // currentY dynamisch nach Paneel-Höhe anpassen
+        currentY += metaPanelHeight + 10f;
 
         if (!isAlive)
         {
@@ -156,31 +166,63 @@ public class PlayerViewerRenderer : ISectionRenderer
         }
 
         // --- C) Sub-Panel: Territorien & Kontinente ---
+        var layout = player._replay.Header.Layout;
+
+        // Auslesen der Bitmaske für den ausgewählten Spieler
+        var continentMask = MissionHelper.GetControlledContinentMask(state, layout, (byte)playerId);
+
         Rectangle territoryBox = new(innerX, currentY, contentWidth, 68f);
         Raylib.DrawRectangleRounded(territoryBox, 0.08f, 4, SubPanelBgColor);
         Raylib.DrawRectangleRoundedLinesEx(territoryBox, 0.08f, 4, 1.0f, BorderColor);
 
-        string continents = GetPlayerContinentsText(in state, playerId);
+        // Dynamische Ermittlung der Kontinent-Namen via Bitmaske
+        string continents = GetPlayerContinentsText(continentMask, layout.Map);
+
         Raylib.DrawText($"Territories: {territoryCount}", (int)(territoryBox.X + 14f), (int)(territoryBox.Y + 12f), 15, Color.White);
         Raylib.DrawText($"Continents: {continents}", (int)(territoryBox.X + 14f), (int)(territoryBox.Y + 37f), 14, Color.SkyBlue);
 
         currentY += 78f;
-
+        
         // --- D) Sub-Panel: Verstärkungsbonus ---
-        Rectangle bonusBox = new(innerX, currentY, contentWidth, 80f);
+
+        // 1. Basis-Verstärkung berechnen
+        byte baseBonus = ReinforcementCalculator.CalculateBaseTroops(in state, (byte)playerId);
+
+        // 3. Formel-Bestandteile dynamisch zusammenbauen
+        List<string> formulaParts = new() { baseBonus.ToString() };
+        int totalTroops = baseBonus;
+
+        for (int i = 0; i < layout.Map.Continents.Length; i++)
+        {
+            // Ist Kontinent i unter Kontrolle?
+            if ((continentMask & (1UL << i)) != 0)
+            {
+                var continent = layout.Map.Continents[i];
+                int bonus = continent.BonusTroops; // Hinweis: Falls deine Eigenschaft anders heißt (z. B. TroopBonus), hier anpassen
+
+                // Variante A (Mit Namen): "Nordamerika(5)"
+                formulaParts.Add($"{continent.Name}({bonus})");
+        
+                // Variante B (Nur Zahl): Falls du lieber "4 + 5 + 2 = 11" willst, nutze stattdessen:
+                // formulaParts.Add(bonus.ToString());
+
+                totalTroops += bonus;
+            }
+        }
+
+        // Ergibt z. B.: "4 + Nordamerika(5) + Afrika(2) = 11"
+        string bonusFormula = string.Join(" + ", formulaParts) + $" = {totalTroops} Truppen";
+
+        // 4. Panel zeichnen
+        Rectangle bonusBox = new(innerX, currentY, contentWidth, 68f);
         Raylib.DrawRectangleRounded(bonusBox, 0.08f, 4, SubPanelBgColor);
         Raylib.DrawRectangleRoundedLinesEx(bonusBox, 0.08f, 4, 1.0f, BorderColor);
 
-        int baseBonus = Math.Max(territoryCount / 3, 3);
         Raylib.DrawText("Verstärkungsbonus:", (int)(bonusBox.X + 14f), (int)(bonusBox.Y + 10f), 14, Color.LightGray);
+        Raylib.DrawText(bonusFormula, (int)(bonusBox.X + 14f), (int)(bonusBox.Y + 35f), 15, Color.Lime);
+
+        currentY += 78f;
         
-        string bonusFormula = $"Max({territoryCount}/3, 3) + Kontinente";
-        string bonusTotal = $"= {baseBonus} Truppen";
-        Raylib.DrawText(bonusFormula, (int)(bonusBox.X + 14f), (int)(bonusBox.Y + 32f), 13, Color.Lime);
-        Raylib.DrawText(bonusTotal, (int)(bonusBox.X + 14f), (int)(bonusBox.Y + 52f), 14, Color.Lime);
-
-        currentY += 90f;
-
         // --- E) Sub-Panel: Karten auf der Hand ---
         Rectangle cardsBox = new(innerX, currentY, contentWidth, 122f);
         Raylib.DrawRectangleRounded(cardsBox, 0.08f, 4, SubPanelBgColor);
@@ -205,8 +247,71 @@ public class PlayerViewerRenderer : ISectionRenderer
         Raylib.DrawText($"Mission: Eliminieren Sie Spieler {targetPlayer}!", (int)(missionBox.X + 14f), (int)(missionBox.Y + 14f), 14, Color.Orange);
     }
 
-    private static string GetPlayerContinentsText(in GameState state, int playerId)
+    /// <summary>
+    /// Wandelt die Kontinent-Bitmaske eines Spielers in einen lesbaren String um.
+    /// </summary>
+    private static string GetPlayerContinentsText(ulong continentMask, MapLayout layout)
     {
-        return "Nordamerika, Afrika";
+        // Bitmaske 0 = Spieler besitzt keinen einzigen Kontinent komplett
+        if (continentMask == 0)
+            return "Keine";
+
+        List<string> controlled = new();
+
+        // Iteriere über alle definierten Kontinente
+        for (int i = 0; i < layout.Continents.Length; i++)
+        {
+            // Prüfe, ob das Bit für Kontinent i gesetzt ist (Option 1)
+            bool isControlled = (continentMask & (1UL << i)) != 0;
+
+            if (isControlled)
+            {
+                // Direkt über den Index auf den Namen des Kontinents zugreifen
+                controlled.Add(layout.Continents[i].Name);
+            }
+        }
+
+        return controlled.Count > 0 
+            ? string.Join(", ", controlled) 
+            : "None";
+    }
+    
+    /// <summary>
+    /// Berechnet die Höhe des Panels abhängig davon, wie viele Zeilen die Config benötigt.
+    /// </summary>
+    private static float GetConfigPanelHeight(PlayerConfiguration config)
+    {
+        return config switch
+        {
+            RandomBotConfiguration => 34f,      // Type + Seed in 1 Zeile
+            _ => 34f                            // Fallback
+        };
+    }
+
+    /// <summary>
+    /// Rendert die spezifischen Eigenschaften je nach Config-Klasse.
+    /// </summary>
+    private static void RenderPlayerConfigDetails(Rectangle box, PlayerConfiguration config)
+    {
+        float startX = box.X + 12f;
+        float startY = box.Y + 9f;
+        float lineHeight = 20f;
+
+        switch (config)
+        {
+            case RandomBotConfiguration randomBot:
+                // Bot Typ links, Seed rechts
+                Raylib.DrawText("Type: RandomBot", (int)startX, (int)startY, 14, TextMutedColor);
+                Raylib.DrawText($"Seed: {randomBot.Seed}", (int)(box.X + box.Width - 110f), (int)startY, 14, TextMutedColor);
+                break;
+
+      
+
+            default:
+                // Fallback für unbekannte oder Basis-Player
+                string typeName = config.GetType().Name.Replace("Configuration", "");
+                Raylib.DrawText($"Type: {typeName}", (int)startX, (int)startY, 14, TextMutedColor);
+                break;
+        }
     }
 }

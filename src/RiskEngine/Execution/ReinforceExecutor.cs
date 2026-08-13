@@ -25,15 +25,10 @@ public static class ReinforceExecutor
         state.CurrentPhase = GamePhase.Reinforce;
 
         // Calculate reinforcement troops based on current game state.
-        var totalTroops = ReinforcementCalculator.CalculateTroops(
-            in state,
-            layout.Map);
+        var totalTroops = ReinforcementCalculator.CalculateTroops(in state, layout.Map,state.PlayerTurn);
 
         // Store available troops for the current player.
-        GameStateHelper.SetPlayerTroopsToPlace(
-            ref state,
-            state.PlayerTurn,
-            totalTroops);
+        GameStateHelper.SetPlayerTroopsToPlace(ref state, state.PlayerTurn, totalTroops);
 
         // Upper bound safety limit based on total troops to place.
         // Each valid action places at least 1 troop.
