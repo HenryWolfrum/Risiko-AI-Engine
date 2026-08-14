@@ -234,7 +234,6 @@ var cardsBitboard = CardHelper.GetPlayerCardsBitboard(state, (byte)playerId);
 var cardsMask = layout.Deck.AllCardsMask;
 var territoryToType = layout.Deck.TerritoryToType;
 
-// Listen zur Sammlung der Kartennamen pro Typ
 List<string> infantry = new();
 List<string> cavalry = new();
 List<string> artillery = new();
@@ -243,40 +242,37 @@ int jokerCount = 0;
 // Nur die Karten des Spielers filtern
 ulong playerHand = cardsBitboard & cardsMask;
 
-// Iteriere über die Bits (Territorien)
-for (int i = 0; i < layout.Map.TerritoryCount; i++)
+for (int i = 0; i < layout.Deck.CardCount; i++)
 {
-    // Ist das Bit für Territorium i gesetzt?
-    if ((playerHand & (1UL << i)) != 0)
-    {
-        string territoryName = layout.Map.TerritoryNames[i];
-        
-        // Typ-Zuordnung über territoryToType (oder enum-Lookup)
-        var cardType = territoryToType[i]; 
+    // 1. ZUERST prüfen, ob der Spieler diese Karte überhaupt hat!
+    if ((playerHand & (1UL << i)) == 0)
+        continue;
 
-        switch (cardType)
-        {
-            case CardType.Infantry:
-                infantry.Add(territoryName);
-                break;
-            case CardType.Cavalry:
-                cavalry.Add(territoryName);
-                break;
-            case CardType.Artillery:
-                artillery.Add(territoryName);
-                break;
-            case CardType.Joker:
-                jokerCount++;
-                break;
-        }
+    var cardType = territoryToType[i]; 
+
+    // 2. Je nach Typ verarbeiten (Joker greifen nicht auf TerritoryNames zu)
+    switch (cardType)
+    {
+        case CardType.Infantry:
+            infantry.Add(layout.Map.TerritoryNames[i]);
+            break;
+        case CardType.Cavalry:
+            cavalry.Add(layout.Map.TerritoryNames[i]);
+            break;
+        case CardType.Artillery:
+            artillery.Add(layout.Map.TerritoryNames[i]);
+            break;
+        case CardType.Joker:
+            jokerCount++;
+            break;
     }
 }
 
 // Formatierte Strings erzeugen
-string infantryText = infantry.Count > 0 ? string.Join(", ", infantry) : "-";
-string cavalryText  = cavalry.Count > 0  ? string.Join(", ", cavalry)  : "-";
+string infantryText  = infantry.Count > 0  ? string.Join(", ", infantry)  : "-";
+string cavalryText   = cavalry.Count > 0   ? string.Join(", ", cavalry)   : "-";
 string artilleryText = artillery.Count > 0 ? string.Join(", ", artillery) : "-";
-string jokerText     = jokerCount > 0     ? $"Joker ({jokerCount})"        : "-";
+string jokerText     = jokerCount > 0      ? $"Joker ({jokerCount})"        : "-";
 
 // Visualisierung
 float cardTextY = cardsBox.Y + 34f;
@@ -294,14 +290,16 @@ cardTextY += lineSpacing;
 Raylib.DrawText($"Joker: {jokerText}", (int)(cardsBox.X + 18f), (int)cardTextY, 13, TextMutedColor);
 
 currentY += 132f;
-
+        
         // --- F) Sub-Panel: Mission ---
         Rectangle missionBox = new(innerX, currentY, contentWidth, 46f);
         Raylib.DrawRectangleRounded(missionBox, 0.08f, 4, SubPanelBgColor);
         Raylib.DrawRectangleRoundedLinesEx(missionBox, 0.08f, 4, 1.0f, new Color(180, 100, 30, 255));
 
-        int targetPlayer = (playerId + 1) % 4;
-        Raylib.DrawText($"Mission: Eliminieren Sie Spieler {targetPlayer}!", (int)(missionBox.X + 14f), (int)(missionBox.Y + 14f), 14, Color.Orange);
+        byte playerMissionId = MissionHelper.GetPlayerMission(state, (byte)playerId);
+        MissionDefinition mission = layout.Missions[playerMissionId];
+        string missionText = MissionTranslator.TranslateMission(mission,layout);
+        Raylib.DrawText(missionText, (int)(missionBox.X + 14f), (int)(missionBox.Y + 14f), 14, Color.Orange);
     }
 
     /// <summary>

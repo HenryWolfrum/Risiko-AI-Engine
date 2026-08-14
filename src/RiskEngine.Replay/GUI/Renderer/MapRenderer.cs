@@ -151,6 +151,20 @@ public class MapRenderer : ISectionRenderer
                     break;
             }
         }
+        
+        // --- LAYER 5: ACTION BANNER (Unten Links) ---
+        if (action != null)
+        {
+            var layout = context.Player._replay.Header.Layout;
+            byte activePlayerId = (byte)currentFrame.State.PlayerTurn;
+
+            // Text über deinen Translator generieren
+            string actionText = ActionTranslator.TranslateAction(action.Value, layout, activePlayerId);
+
+            // Banner unten links zeichnen
+            DrawActionBanner(bounds, actionText, activePlayerId);
+        }
+    
     }
 
     private void LoadMapTexture()
@@ -242,5 +256,40 @@ public class MapRenderer : ISectionRenderer
 
         // Centered Text
         Raylib.DrawText(text, (int)(position.X - textWidth / 2f), (int)(position.Y - fontSize / 2f), fontSize, textColor);
+    }
+    
+    
+    /// <summary>
+    /// Zeichnet ein semi-transparentes Banner mit dem Text der letzten Aktion unten links auf der Karte.
+    /// </summary>
+    private static void DrawActionBanner(Rectangle bounds, string text, byte playerId)
+    {
+        int fontSize = 15;
+        int textWidth = Raylib.MeasureText(text, fontSize);
+
+        float paddingX = 14f;
+        float paddingY = 10f;
+        float boxWidth = textWidth + (paddingX * 2);
+        float boxHeight = fontSize + (paddingY * 2);
+
+        float margin = 15f;
+        
+        // Positionierung unten links im Viewport der Map
+        Rectangle box = new(
+            bounds.X + margin,
+            bounds.Y + bounds.Height - boxHeight - margin,
+            boxWidth,
+            boxHeight
+        );
+
+        Color playerColor = ReplayViewer.GetPlayerColor(playerId);
+        Color boxBg = new(20, 24, 32, 220); // Semi-transparentes Dunkelgrau
+
+        // Hintergrund & Akzent-Rahmen in Spielerfarbe
+        Raylib.DrawRectangleRounded(box, 0.25f, 4, boxBg);
+        Raylib.DrawRectangleRoundedLinesEx(box, 0.25f, 4, 1.5f, playerColor);
+
+        // Text rendern
+        Raylib.DrawText(text, (int)(box.X + paddingX), (int)(box.Y + paddingY), fontSize, Color.White);
     }
 }
