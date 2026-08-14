@@ -224,19 +224,76 @@ public class PlayerViewerRenderer : ISectionRenderer
         currentY += 78f;
         
         // --- E) Sub-Panel: Karten auf der Hand ---
-        Rectangle cardsBox = new(innerX, currentY, contentWidth, 122f);
-        Raylib.DrawRectangleRounded(cardsBox, 0.08f, 4, SubPanelBgColor);
-        Raylib.DrawRectangleRoundedLinesEx(cardsBox, 0.08f, 4, 1.0f, BorderColor);
+Rectangle cardsBox = new(innerX, currentY, contentWidth, 122f);
+Raylib.DrawRectangleRounded(cardsBox, 0.08f, 4, SubPanelBgColor);
+Raylib.DrawRectangleRoundedLinesEx(cardsBox, 0.08f, 4, 1.0f, BorderColor);
 
-        Raylib.DrawText("Karten in Hand:", (int)(cardsBox.X + 14f), (int)(cardsBox.Y + 10f), 15, Color.Gold);
+Raylib.DrawText("Cards:", (int)(cardsBox.X + 14f), (int)(cardsBox.Y + 10f), 15, Color.Gold);
 
-        float cardTextY = cardsBox.Y + 34f;
-        Raylib.DrawText("Infanterie: Alaska", (int)(cardsBox.X + 18f), (int)cardTextY, 13, TextMutedColor); cardTextY += 19f;
-        Raylib.DrawText("Kavallerie: -", (int)(cardsBox.X + 18f), (int)cardTextY, 13, TextMutedColor); cardTextY += 19f;
-        Raylib.DrawText("Artillerie: China", (int)(cardsBox.X + 18f), (int)cardTextY, 13, TextMutedColor); cardTextY += 19f;
-        Raylib.DrawText("Joker: Joker (1)", (int)(cardsBox.X + 18f), (int)cardTextY, 13, TextMutedColor);
+var cardsBitboard = CardHelper.GetPlayerCardsBitboard(state, (byte)playerId);
+var cardsMask = layout.Deck.AllCardsMask;
+var territoryToType = layout.Deck.TerritoryToType;
 
-        currentY += 132f;
+// Listen zur Sammlung der Kartennamen pro Typ
+List<string> infantry = new();
+List<string> cavalry = new();
+List<string> artillery = new();
+int jokerCount = 0;
+
+// Nur die Karten des Spielers filtern
+ulong playerHand = cardsBitboard & cardsMask;
+
+// Iteriere über die Bits (Territorien)
+for (int i = 0; i < layout.Map.TerritoryCount; i++)
+{
+    // Ist das Bit für Territorium i gesetzt?
+    if ((playerHand & (1UL << i)) != 0)
+    {
+        string territoryName = layout.Map.TerritoryNames[i];
+        
+        // Typ-Zuordnung über territoryToType (oder enum-Lookup)
+        var cardType = territoryToType[i]; 
+
+        switch (cardType)
+        {
+            case CardType.Infantry:
+                infantry.Add(territoryName);
+                break;
+            case CardType.Cavalry:
+                cavalry.Add(territoryName);
+                break;
+            case CardType.Artillery:
+                artillery.Add(territoryName);
+                break;
+            case CardType.Joker:
+                jokerCount++;
+                break;
+        }
+    }
+}
+
+// Formatierte Strings erzeugen
+string infantryText = infantry.Count > 0 ? string.Join(", ", infantry) : "-";
+string cavalryText  = cavalry.Count > 0  ? string.Join(", ", cavalry)  : "-";
+string artilleryText = artillery.Count > 0 ? string.Join(", ", artillery) : "-";
+string jokerText     = jokerCount > 0     ? $"Joker ({jokerCount})"        : "-";
+
+// Visualisierung
+float cardTextY = cardsBox.Y + 34f;
+float lineSpacing = 19f;
+
+Raylib.DrawText($"Infanterie: {infantryText}", (int)(cardsBox.X + 18f), (int)cardTextY, 13, TextMutedColor); 
+cardTextY += lineSpacing;
+
+Raylib.DrawText($"Kavallerie: {cavalryText}", (int)(cardsBox.X + 18f), (int)cardTextY, 13, TextMutedColor); 
+cardTextY += lineSpacing;
+
+Raylib.DrawText($"Artillerie: {artilleryText}", (int)(cardsBox.X + 18f), (int)cardTextY, 13, TextMutedColor); 
+cardTextY += lineSpacing;
+
+Raylib.DrawText($"Joker: {jokerText}", (int)(cardsBox.X + 18f), (int)cardTextY, 13, TextMutedColor);
+
+currentY += 132f;
 
         // --- F) Sub-Panel: Mission ---
         Rectangle missionBox = new(innerX, currentY, contentWidth, 46f);
@@ -254,7 +311,7 @@ public class PlayerViewerRenderer : ISectionRenderer
     {
         // Bitmaske 0 = Spieler besitzt keinen einzigen Kontinent komplett
         if (continentMask == 0)
-            return "Keine";
+            return "None";
 
         List<string> controlled = new();
 
