@@ -2,8 +2,8 @@
 
 namespace RiskEngine.State;
 
-// Deterministic, 100% Zero-Allocation RNG
-public struct EngineRandom
+// Deterministic, 100% Zero-Allocation inside Game Loop RNG
+public sealed class EngineRandom
 {
     private uint _state;
 
@@ -15,7 +15,6 @@ public struct EngineRandom
         _state = seed == 0 ? 1u : (uint)seed;
     }
 
-    // ACHTUNG: Mutation von _state erfordert ref, falls op-Methoden intern aufgerufen werden!
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public uint NextUInt()
     {
