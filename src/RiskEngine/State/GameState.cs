@@ -5,6 +5,7 @@ public unsafe struct GameState
     // --- Bitboards (8-Byte Aligned for optimal Memory Layout) ---
     public fixed ulong PlayerTerritoriesBitboard[EngineConstants.MAX_PLAYERS];
     public fixed ulong PlayerCardsBitboard[EngineConstants.MAX_PLAYERS];
+    public ulong DiscardCardsBitboard; // 8-Byte Bitboard für abgelegte Karten
 
     // --- Territory Info ---
     public fixed byte TerritoryOwners[EngineConstants.MAX_TERRITORIES];
