@@ -3,11 +3,14 @@ using Raylib_cs;
 using RiskEngine.AI.Configuration;
 using RiskEngine.Replay.Recording;
 
+
 namespace RiskEngine.Replay.GUI;
 
 // Main script for organizing and running the replay view
 public static class ReplayViewer
 {
+    public static Font DefaultFont { get; private set; }
+    
     // Klassische "Missing Texture / Error"-Farbe (Magenta/Pink)
     public static readonly Color ErrorColor = Color.Magenta;
 
@@ -81,14 +84,16 @@ public static class ReplayViewer
         Raylib.CloseWindow();
     }
 
+    
     public static void InitializeView(int screenWidth, int screenHeight)
     {
-        // Set window flags (resizable window and anti-aliasing)
         Raylib.SetConfigFlags(ConfigFlags.ResizableWindow | ConfigFlags.Msaa4xHint);
-       
         Raylib.InitWindow(screenWidth, screenHeight, "Risk Engine - Replay Viewer");
-        
         Raylib.SetTargetFPS(60);
+
+        // Standard-Schriftart holen & Filter auf Bilinear stellen
+        DefaultFont = Raylib.GetFontDefault();
+        Raylib.SetTextureFilter(DefaultFont.Texture, TextureFilter.Bilinear);
     }
     
     /// <summary>
