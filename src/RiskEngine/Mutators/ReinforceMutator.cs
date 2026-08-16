@@ -11,11 +11,9 @@ public static class ReinforceMutator
         var player = state.PlayerTurn;
         
         //Add to Territory
-        var currentTroops = GameStateHelper.GetTerritoryTroops(in state, territory);
-        GameStateHelper.SetTerritoryTroops(ref state, territory, (byte)(currentTroops + amount));
+        GameStateHelper.AddTerritoryTroops(ref state,territory,amount);
         
         //Remove from Troop Bank
-        var availableTroops = GameStateHelper.GetPlayerTroopsToPlace(in state, player);
-        GameStateHelper.SetPlayerTroopsToPlace(ref state, player, (byte)(availableTroops - amount));
+        GameStateHelper.SubPlayerTroopsToPlace(ref state, player, amount);
     }
 }

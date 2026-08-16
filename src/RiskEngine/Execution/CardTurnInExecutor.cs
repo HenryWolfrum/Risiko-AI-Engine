@@ -27,6 +27,7 @@ public static class CardTurnInExecutor
         ref EngineRandom rng,
         IGameObserver? observer = null)
     {
+        
         state.CurrentPhase = GamePhase.CardTurnIn;
 
         // Players with too many cards must trade in immediately.

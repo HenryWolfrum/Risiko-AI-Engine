@@ -12,6 +12,9 @@ public static unsafe class GameStateHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte GetTerritoryOwner(in GameState state, int territoryId)
     {
+        if (territoryId >= EngineConstants.MAX_TERRITORIES) 
+            return EngineConstants.NO_VALUE;
+        
         return state.TerritoryOwners[territoryId];
     }
 
@@ -21,6 +24,9 @@ public static unsafe class GameStateHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SetTerritoryOwner(ref GameState state, int territoryId, byte owner)
     {
+        if (territoryId >= EngineConstants.MAX_TERRITORIES) 
+            return;
+        
         byte oldOwner = state.TerritoryOwners[territoryId];
 
         // 1. Territorium beim alten Besitzer entfernen
@@ -44,11 +50,34 @@ public static unsafe class GameStateHelper
     {
         return state.TerritoryTroops[territoryId];
     }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddTerritoryTroops(ref GameState state, int territoryId,byte count)
+    {
+        byte currentTroops = GetTerritoryTroops(state, territoryId);
+
+        if (currentTroops + count > byte.MaxValue)
+            state.TerritoryTroops[territoryId] = byte.MaxValue;
+
+   
+        state.TerritoryTroops[territoryId] = (byte) (currentTroops + count);
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SubTerritoryTroops(ref GameState state, int territoryId,byte count)
+    {
+        byte currentTroops = GetTerritoryTroops(state, territoryId);
+
+        if (currentTroops - count < byte.MinValue)
+            state.TerritoryTroops[territoryId] = 0;
+
+   
+        state.TerritoryTroops[territoryId] = (byte) (currentTroops - count);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SetTerritoryTroops(ref GameState state, int territoryId, byte count)
     {
-        state.TerritoryTroops[territoryId] = count;
+        state.TerritoryTroops[territoryId] = Math.Min(byte.MaxValue,count);
     }
 
     /// <summary>
@@ -86,11 +115,38 @@ public static unsafe class GameStateHelper
     {
         return state.PlayerTroopsToPlace[player];
     }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddPlayerTroopsToPlace(ref GameState state, byte playerId,byte count)
+    {
+        byte currentTroops = GetPlayerTroopsToPlace(state, playerId);
+
+        if (currentTroops + count > byte.MaxValue)
+            state.PlayerTroopsToPlace[playerId] = byte.MaxValue;
+
+
+        state.PlayerTroopsToPlace[playerId] = (byte) (currentTroops + count);
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SubPlayerTroopsToPlace(ref GameState state, byte playerId,byte count)
+    {
+        byte currentTroops = GetPlayerTroopsToPlace(state, playerId);
+
+
+        if (currentTroops - count < byte.MinValue)
+            state.PlayerTroopsToPlace[playerId] = 0;
+
+        state.PlayerTroopsToPlace[playerId] = (byte) (currentTroops - count);
+    }
+
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SetPlayerTroopsToPlace(ref GameState state, byte player, byte count)
     {
-        state.PlayerTroopsToPlace[player] = count;
+        if(count<0)
+            state.PlayerTroopsToPlace[player] = 0;
+        
+        state.PlayerTroopsToPlace[player] = Math.Min(byte.MaxValue,count);
     }
 
     // ==========================================

@@ -25,14 +25,15 @@ public static class ReinforceExecutor
         state.CurrentPhase = GamePhase.Reinforce;
 
         // Calculate reinforcement troops based on current game state.
-        var totalTroops = ReinforcementCalculator.CalculateTroops(in state, layout.Map,state.PlayerTurn);
+        var totalReinforcement = ReinforcementCalculator.CalculateTroops(in state, layout.Map,state.PlayerTurn);
 
+        var currentTroopsToPlace = GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn);
         // Store available troops for the current player.
-        GameStateHelper.SetPlayerTroopsToPlace(ref state, state.PlayerTurn, totalTroops);
+        GameStateHelper.SetPlayerTroopsToPlace(ref state, state.PlayerTurn, (byte)(currentTroopsToPlace+totalReinforcement));
 
         // Upper bound safety limit based on total troops to place.
         // Each valid action places at least 1 troop.
-        var maxIterations = totalTroops + 10;
+        var maxIterations = totalReinforcement + 10;
         var iterationCount = 0;
 
         while (GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn) > 0)
@@ -46,7 +47,7 @@ public static class ReinforceExecutor
 
                 throw new InvalidGameActionException(
                     $"Reinforcement phase exceeded maximum iteration limit ({maxIterations}) for Player {state.PlayerTurn}!\n" +
-                    $"  • Initial Troops to Place: {totalTroops}\n" +
+                    $"  • Initial Troops to Place: {totalReinforcement}\n" +
                     $"  • Remaining Troops:         {remaining}"
                 );
             }

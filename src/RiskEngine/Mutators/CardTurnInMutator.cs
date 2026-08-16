@@ -19,8 +19,7 @@ public static class CardTurnInMutator
 
         // 3. Add base reinforcement bonus from card trade to player's placement pool
         var baseBonus = CalculateBonus(state.CardSetsTradedCount);
-        var currentTroopsToPlace = GameStateHelper.GetPlayerTroopsToPlace(in state, player);
-        GameStateHelper.SetPlayerTroopsToPlace(ref state, player, (byte)(currentTroopsToPlace + baseBonus));
+        GameStateHelper.AddPlayerTroopsToPlace(ref state, player, baseBonus);
 
         // 4. Check for territory ownership bonus (+2 troops directly onto the owned territory)
         ApplyTerritoryCardBonusIfOwned(ref state, player, action.Card1);
@@ -34,9 +33,8 @@ public static class CardTurnInMutator
         // If the card matches a territory currently owned by the player, add +2 troops directly to that territory
         if (GameStateHelper.GetTerritoryOwner(in state, cardTerritoryId) == player)
         {
-            var currentTroops = GameStateHelper.GetTerritoryTroops(in state, cardTerritoryId);
-            GameStateHelper.SetTerritoryTroops(ref state, cardTerritoryId,
-                (byte)(currentTroops + EngineConstants.CARD_TERRITORY_BONUS_TROOPS));
+            GameStateHelper.AddTerritoryTroops(ref state,cardTerritoryId,EngineConstants.CARD_TERRITORY_BONUS_TROOPS);
+            
         }
     }
 

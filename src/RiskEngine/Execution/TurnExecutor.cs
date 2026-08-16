@@ -11,10 +11,7 @@ public static class TurnExecutor
     /// <summary>
     /// Executes all phases of the current player's turn.
     /// </summary>
-    public static void ExecuteTurn(
-        ref GameState state,
-        IRiskPlayer[] players,
-        GameLayout layout,
+    public static void ExecuteTurn(ref GameState state, IRiskPlayer[] players, GameLayout layout, 
         ref EngineRandom rng,
         IGameObserver? observer = null)
     {

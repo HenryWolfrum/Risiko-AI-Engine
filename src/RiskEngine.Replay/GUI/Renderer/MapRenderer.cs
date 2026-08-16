@@ -49,7 +49,6 @@ public class MapRenderer : ISectionRenderer
         var action = currentFrame.Action; // Assuming this holds your action data or is null/empty
 
         // --- LAYER 2: ACTION HIGHLIGHTS & ARROWS (Underneath circles) ---
-        // We draw arrows and highlights first so they sit cleanly under the territory circles.
         if (action != null)
         {
             switch (action.Value.Type)
@@ -71,10 +70,6 @@ public class MapRenderer : ISectionRenderer
                 case ActionType.Conquer:
                     Vector2 conquerTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth, renderHeight);
                     DrawTerritoryHighlight(conquerTarget, radius, Color.Yellow);
-                    
-                    // If your action also provides a SourceTerritory for Conquer, you can uncomment this:
-                    // Vector2 conquerSource = GetScreenPos(action.SourceTerritory, renderOffset, renderWidth, renderHeight);
-                    // DrawActionArrow(conquerSource, conquerTarget, radius, Color.Yellow, 3f);
                     break;
 
                 case ActionType.Fortify:
@@ -85,10 +80,8 @@ public class MapRenderer : ISectionRenderer
                     DrawTerritoryHighlight(fortifyTarget, radius, Color.SkyBlue);
                     DrawActionArrow(fortifySource, fortifyTarget, radius, Color.SkyBlue, 3f);
                     break;
-                    
+
                 case ActionType.TurnInCards:
-                    // Card turn-in usually doesn't affect a specific territory visually.
-                    // Could trigger a UI effect elsewhere.
                     break;
             }
         }
@@ -96,29 +89,20 @@ public class MapRenderer : ISectionRenderer
         // --- LAYER 3: TERRITORY CIRCLES & TROOP COUNTS ---
         for (int i = 0; i < TerritoryLayout.Entries.Length; i++)
         {
-            var entry = TerritoryLayout.Entries[i];
-
-            // Calculate relative coordinates to absolute screen positions
             Vector2 center = GetScreenPos(i, renderOffset, renderWidth, renderHeight);
 
-            // Fetch state data for the current territory
             int troops = GameStateHelper.GetTerritoryTroops(currentFrame.State, i);
             Color playerColor = ReplayViewer.GetPlayerColor(GameStateHelper.GetTerritoryOwner(currentFrame.State, i));
 
-            // A) Black outline for maximum contrast
             Raylib.DrawCircleV(center, radius + 2f, Color.Black);
-
-            // B) Player colored fill
             Raylib.DrawCircleV(center, radius, playerColor);
 
-            // C) Centered troop count
             string text = troops.ToString();
             int textWidth = Raylib.MeasureText(text, fontSize);
             Raylib.DrawText(text, (int)(center.X - textWidth / 2f), (int)(center.Y - fontSize / 2f), fontSize, Color.White);
         }
 
-        // --- LAYER 4: ACTION BADGES (On top of everything) ---
-        // Drawn last to ensure numbers/dice are never covered by adjacent territory circles.
+        // --- LAYER 4: ACTION BADGES ---
         if (action != null)
         {
             switch (action.Value.Type)
@@ -133,7 +117,6 @@ public class MapRenderer : ISectionRenderer
                     Vector2 atkTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth, renderHeight);
                     Vector2 midAtk = (atkSource + atkTarget) / 2f;
                     
-                    // Displays the dice count in the middle of the arrow (e.g. "3 v 2")
                     DrawBadge(midAtk, $"{action.Value.ChosenAttackerDiceCount} v {action.Value.ChosenDefenderDiceCount}", Color.Red, Color.White);
                     break;
 
@@ -158,13 +141,12 @@ public class MapRenderer : ISectionRenderer
             var layout = context.Player._replay.Header.Layout;
             byte activePlayerId = (byte)currentFrame.State.PlayerTurn;
 
-            // Text über deinen Translator generieren
             string actionText = ActionTranslator.TranslateAction(action.Value, layout, activePlayerId);
-
-            // Banner unten links zeichnen
             DrawActionBanner(bounds, actionText, activePlayerId);
         }
-    
+
+        // --- LAYER 6: GAME STATS / HUD (Oben Rechts) ---
+        DrawTradedCardSetsHUD(bounds, currentFrame.State.CardSetsTradedCount);
     }
 
     private void LoadMapTexture()
@@ -181,18 +163,12 @@ public class MapRenderer : ISectionRenderer
 
     // --- HELPER METHODS ---
 
-    /// <summary>
-    /// Calculates the screen position for a given territory ID based on map scaling.
-    /// </summary>
     private static Vector2 GetScreenPos(int territoryId, Vector2 offset, float width, float height)
     {
         var entry = TerritoryLayout.Entries[territoryId];
         return offset + new Vector2(entry.ScaleX * width, entry.ScaleY * height);
     }
 
-    /// <summary>
-    /// Draws concentric circles around a territory to highlight it during an action.
-    /// </summary>
     private static void DrawTerritoryHighlight(Vector2 position, float baseRadius, Color color)
     {
         Raylib.DrawCircleLinesV(position, baseRadius + 4f, color);
@@ -200,24 +176,18 @@ public class MapRenderer : ISectionRenderer
         Raylib.DrawCircleLinesV(position, baseRadius + 6f, color);
     }
 
-    /// <summary>
-    /// Draws an arrow between two territories, automatically calculating gaps so it doesn't overlap the circles.
-    /// </summary>
     private static void DrawActionArrow(Vector2 start, Vector2 end, float circleRadius, Color color, float thickness)
     {
         Vector2 direction = Vector2.Normalize(end - start);
         float distance = Vector2.Distance(start, end);
 
-        // Do not draw if territories are too close to each other
         if (distance < circleRadius * 2.5f) return;
 
-        // Offset start and end positions to perfectly touch the outer edge of the territory circles
         Vector2 p1 = start + direction * (circleRadius + 7f);
         Vector2 p2 = end - direction * (circleRadius + 9f);
 
         Raylib.DrawLineEx(p1, p2, thickness, color);
 
-        // Draw arrow head (triangle)
         float arrowSize = 10f;
         Vector2 right = new(-direction.Y, direction.X);
 
@@ -227,9 +197,6 @@ public class MapRenderer : ISectionRenderer
         Raylib.DrawTriangle(p2, headRight, headLeft, color);
     }
 
-    /// <summary>
-    /// Draws a small rounded rectangle badge with text (used for troop counts or dice results).
-    /// </summary>
     private static void DrawBadge(Vector2 position, string text, Color bgColor, Color textColor)
     {
         int fontSize = 14;
@@ -247,21 +214,14 @@ public class MapRenderer : ISectionRenderer
             rectHeight
         );
 
-        // Black border/shadow
         Raylib.DrawRectangleRounded(rect, 0.4f, 4, Color.Black); 
         
-        // Inner colored background
         Rectangle innerRect = new(rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2);
         Raylib.DrawRectangleRounded(innerRect, 0.4f, 4, bgColor);
 
-        // Centered Text
         Raylib.DrawText(text, (int)(position.X - textWidth / 2f), (int)(position.Y - fontSize / 2f), fontSize, textColor);
     }
     
-    
-    /// <summary>
-    /// Zeichnet ein semi-transparentes Banner mit dem Text der letzten Aktion unten links auf der Karte.
-    /// </summary>
     private static void DrawActionBanner(Rectangle bounds, string text, byte playerId)
     {
         int fontSize = 15;
@@ -274,7 +234,6 @@ public class MapRenderer : ISectionRenderer
 
         float margin = 15f;
         
-        // Positionierung unten links im Viewport der Map
         Rectangle box = new(
             bounds.X + margin,
             bounds.Y + bounds.Height - boxHeight - margin,
@@ -283,13 +242,44 @@ public class MapRenderer : ISectionRenderer
         );
 
         Color playerColor = ReplayViewer.GetPlayerColor(playerId);
-        Color boxBg = new(20, 24, 32, 220); // Semi-transparentes Dunkelgrau
+        Color boxBg = new(20, 24, 32, 220);
 
-        // Hintergrund & Akzent-Rahmen in Spielerfarbe
         Raylib.DrawRectangleRounded(box, 0.25f, 4, boxBg);
         Raylib.DrawRectangleRoundedLinesEx(box, 0.25f, 4, 1.5f, playerColor);
 
-        // Text rendern
+        Raylib.DrawText(text, (int)(box.X + paddingX), (int)(box.Y + paddingY), fontSize, Color.White);
+    }
+
+    /// <summary>
+    /// Zeichnet eine kleine HUD-Anzeige oben rechts auf der Karte für eingelöste Kartensets.
+    /// </summary>
+    private static void DrawTradedCardSetsHUD(Rectangle bounds, byte cardSetsTradedCount)
+    {
+        string text = $"Traded Card Sets: {cardSetsTradedCount}";
+        int fontSize = 14;
+        int textWidth = Raylib.MeasureText(text, fontSize);
+
+        float paddingX = 12f;
+        float paddingY = 8f;
+        float boxWidth = textWidth + (paddingX * 2);
+        float boxHeight = fontSize + (paddingY * 2);
+
+        float margin = 15f;
+
+        // Oben rechts positionieren
+        Rectangle box = new(
+            bounds.X + bounds.Width - boxWidth - margin,
+            bounds.Y + margin,
+            boxWidth,
+            boxHeight
+        );
+
+        Color boxBg = new(20, 24, 32, 220); // Semi-transparentes Dunkelgrau
+        Color accentColor = new(240, 200, 40, 255); // Gold/Gelb als Akzentfarbe für Karten
+
+        Raylib.DrawRectangleRounded(box, 0.25f, 4, boxBg);
+        Raylib.DrawRectangleRoundedLinesEx(box, 0.25f, 4, 1.5f, accentColor);
+
         Raylib.DrawText(text, (int)(box.X + paddingX), (int)(box.Y + paddingY), fontSize, Color.White);
     }
 }
