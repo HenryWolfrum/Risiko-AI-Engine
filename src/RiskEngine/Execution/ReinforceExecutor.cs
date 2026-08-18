@@ -22,13 +22,11 @@ public static class ReinforceExecutor
         // Calculate reinforcement troops based on current game state.
         var totalReinforcement = ReinforcementCalculator.CalculateTroops(in state, layout.Map,state.PlayerTurn);
         
-        var currentTroopsToPlace = GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn);
-        // Store available troops for the current player.
-        GameStateHelper.SetPlayerTroopsToPlace(ref state, state.PlayerTurn, (byte)(currentTroopsToPlace+totalReinforcement));
-
+        GameStateHelper.AddPlayerTroopsToPlace(ref state,  state.PlayerTurn, totalReinforcement);
+  
         // Upper bound safety limit based on total troops to place.
         // Each valid action places at least 1 troop.
-        var maxIterations = currentTroopsToPlace+totalReinforcement;
+        var maxIterations = GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn);
         var iterationCount = 0;
 
         while (GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn) > 0)

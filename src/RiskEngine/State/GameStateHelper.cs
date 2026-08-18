@@ -59,8 +59,12 @@ public static unsafe class GameStateHelper
         if (currentTroops + count > byte.MaxValue)
             state.TerritoryTroops[territoryId] = byte.MaxValue;
 
+        else
+        {
+            state.TerritoryTroops[territoryId] = (byte) (currentTroops + count);
+        }
    
-        state.TerritoryTroops[territoryId] = (byte) (currentTroops + count);
+      
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SubTerritoryTroops(ref GameState state, int territoryId,byte count)
@@ -70,8 +74,11 @@ public static unsafe class GameStateHelper
         if (currentTroops - count < byte.MinValue)
             state.TerritoryTroops[territoryId] = 0;
 
-   
-        state.TerritoryTroops[territoryId] = (byte) (currentTroops - count);
+
+        else
+        {
+            state.TerritoryTroops[territoryId] = (byte) (currentTroops - count);
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
