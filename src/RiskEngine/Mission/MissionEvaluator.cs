@@ -19,7 +19,7 @@ public static class MissionEvaluator
             MissionType.WorldDomination => CheckWorldDomination(in state, in layout, playerIndex),
             MissionType.ConquerTerritories => CheckTerritories(in state, in layout, playerIndex, in mission),
             MissionType.ConquerContinents => CheckContinents(in state, in layout, playerIndex, in mission),
-            MissionType.EliminatePlayer => CheckElimination(in state, in layout, playerIndex, in mission),
+            MissionType.EliminatePlayer => CheckElimination(in state, in mission),
             _ => false
         };
 
@@ -28,27 +28,25 @@ public static class MissionEvaluator
     }
 
     /// <summary>
-    /// Triggered ONLY when a player territory count drops to 0 during the conquer phase (Event-Driven).
-    /// Checks if ANY player (active or passive) held an elimination mission targeting the victim.
+    /// Checks if any player has won due to Territory change
     /// </summary>
-    public static bool CheckEliminationWin(in GameState state, in GameLayout layout, byte eliminatedPlayerId, out byte winnerId)
+    public static bool CheckEliminationWin(in GameState state, in GameLayout layout, byte attackerId,out byte winnerId)
     {
         for (byte i = 0; i < layout.Config.PlayerCount; i++)
         {
-            if (!GameStateHelper.IsPlayerAlive(in state, i))
+            if (layout.Missions[MissionHelper.GetPlayerMission(in state, i)].Type != MissionType.EliminatePlayer && i!= attackerId)
+            {
                 continue;
-
-            byte missionId = MissionHelper.GetPlayerMission(in state, i);
-            ref readonly var mission = ref layout.Missions[missionId];
-
-            if (mission.Type == MissionType.EliminatePlayer && mission.TargetPlayerId == eliminatedPlayerId)
+            }
+            
+            if (IsFulfilled(in state, in layout, i))
             {
                 winnerId = i;
                 return true;
             }
         }
 
-        winnerId = 0;
+        winnerId = EngineConstants.NO_VALUE;
         return false;
     }
 
@@ -81,8 +79,7 @@ public static class MissionEvaluator
         return true;
     }
 
-    private static bool CheckElimination(in GameState state, in GameLayout layout, byte player,
-        in MissionDefinition mission)
+    private static bool CheckElimination(in GameState state, in MissionDefinition mission)
     {
         // Is target still alive
         return !GameStateHelper.IsPlayerAlive(in state, mission.TargetPlayerId);

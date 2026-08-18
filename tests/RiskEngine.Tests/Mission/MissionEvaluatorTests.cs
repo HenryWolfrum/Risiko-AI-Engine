@@ -259,7 +259,7 @@ public class MissionEvaluatorTests
 
         // Player 1's mission does NOT target player 2 -> must not falsely win.
         bool eliminatedIsPlayer2 = RiskEngine.Mission.MissionEvaluator.CheckEliminationWin(
-            in state, in customLayout, eliminatedPlayerId: 2, out byte winnerId);
+            in state, in customLayout, 0 ,out byte winnerId);
 
         Assert.True(eliminatedIsPlayer2);
         Assert.Equal(0, winnerId); // only player 0's mission targets player 2

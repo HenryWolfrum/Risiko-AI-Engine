@@ -72,6 +72,11 @@ public static class ConquerExecutor
         CheckPlayerElimination(ref state, in layout, defenderId);
 
 
+        //Check if any player has won
+        if (MissionEvaluator.CheckEliminationWin(in state, in layout, state.PlayerTurn, out byte winnerId))
+        {
+            GameStateHelper.Terminate(ref state, winnerId);
+        }
 
     }
 
@@ -96,10 +101,6 @@ public static class ConquerExecutor
         CardHelper.EliminateAndTransferCards(ref state, attackerId, defenderId);
 
 
-        // Immediate event check: did any player win due to elimination?
-        if (MissionEvaluator.CheckEliminationWin(in state, in layout, defenderId, out byte winnerId))
-        {
-            GameStateHelper.Terminate(ref state, winnerId);
-        }
+        
     }
 }

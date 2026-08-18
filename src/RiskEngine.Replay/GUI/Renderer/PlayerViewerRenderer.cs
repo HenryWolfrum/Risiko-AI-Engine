@@ -350,7 +350,6 @@ currentY += 132f;
     {
         float startX = box.X + 12f;
         float startY = box.Y + 9f;
-        float lineHeight = 20f;
 
         switch (config)
         {
