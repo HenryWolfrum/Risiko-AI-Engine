@@ -80,10 +80,7 @@ public static class ConquerExecutor
     /// <summary>
     /// Removes eliminated players and transfers their cards.
     /// </summary>
-    private static void CheckPlayerElimination(
-        ref GameState state,
-        in GameLayout layout,
-        byte defenderId)
+    private static void CheckPlayerElimination(ref GameState state, in GameLayout layout, byte defenderId)
     {
         // Defender still owns territories.
         if (GameStateHelper.GetOwnedTerritoryCount(in state, defenderId) > 0)
@@ -96,22 +93,13 @@ public static class ConquerExecutor
 
 
         // Transfer cards and remove defender from active players.
-        CardHelper.EliminateAndTransferCards(
-            ref state,
-            attackerId,
-            defenderId);
+        CardHelper.EliminateAndTransferCards(ref state, attackerId, defenderId);
 
 
         // Immediate event check: did any player win due to elimination?
-        if (MissionEvaluator.CheckEliminationWin(
-                in state,
-                in layout,
-                defenderId,
-                out byte winnerId))
+        if (MissionEvaluator.CheckEliminationWin(in state, in layout, defenderId, out byte winnerId))
         {
-            GameStateHelper.Terminate(
-                ref state,
-                winnerId);
+            GameStateHelper.Terminate(ref state, winnerId);
         }
     }
 }

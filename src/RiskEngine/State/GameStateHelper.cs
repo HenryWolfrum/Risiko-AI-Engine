@@ -124,8 +124,11 @@ public static unsafe class GameStateHelper
         if (currentTroops + count > byte.MaxValue)
             state.PlayerTroopsToPlace[playerId] = byte.MaxValue;
 
-
-        state.PlayerTroopsToPlace[playerId] = (byte) (currentTroops + count);
+        else
+        {
+            state.PlayerTroopsToPlace[playerId] = (byte) (currentTroops + count);
+        }
+        
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SubPlayerTroopsToPlace(ref GameState state, byte playerId,byte count)
@@ -136,16 +139,16 @@ public static unsafe class GameStateHelper
         if (currentTroops - count < byte.MinValue)
             state.PlayerTroopsToPlace[playerId] = 0;
 
-        state.PlayerTroopsToPlace[playerId] = (byte) (currentTroops - count);
+        else
+        {
+            state.PlayerTroopsToPlace[playerId] = (byte) (currentTroops - count);
+        }
     }
 
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SetPlayerTroopsToPlace(ref GameState state, byte player, byte count)
     {
-        if(count<0)
-            state.PlayerTroopsToPlace[player] = 0;
-        
         state.PlayerTroopsToPlace[player] = Math.Min(byte.MaxValue,count);
     }
 

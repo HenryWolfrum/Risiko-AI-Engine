@@ -15,25 +15,20 @@ public static class ReinforceExecutor
     /// <summary>
     /// Executes the reinforcement phase for the current player.
     /// </summary>
-    public static void Execute(
-        ref GameState state,
-        IRiskPlayer player,
-        GameLayout layout,
-        ref EngineRandom rng,
-        IGameObserver? observer = null)
+    public static void Execute(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng, IGameObserver? observer = null)
     {
         state.CurrentPhase = GamePhase.Reinforce;
 
         // Calculate reinforcement troops based on current game state.
         var totalReinforcement = ReinforcementCalculator.CalculateTroops(in state, layout.Map,state.PlayerTurn);
-
+        
         var currentTroopsToPlace = GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn);
         // Store available troops for the current player.
         GameStateHelper.SetPlayerTroopsToPlace(ref state, state.PlayerTurn, (byte)(currentTroopsToPlace+totalReinforcement));
 
         // Upper bound safety limit based on total troops to place.
         // Each valid action places at least 1 troop.
-        var maxIterations = totalReinforcement + 10;
+        var maxIterations = currentTroopsToPlace+totalReinforcement;
         var iterationCount = 0;
 
         while (GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn) > 0)
@@ -41,9 +36,7 @@ public static class ReinforceExecutor
             // Guard against infinite loops caused by stuck bots or state mutation bugs.
             if (++iterationCount > maxIterations)
             {
-                var remaining = GameStateHelper.GetPlayerTroopsToPlace(
-                    in state,
-                    state.PlayerTurn);
+                var remaining = GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn);
 
                 throw new InvalidGameActionException(
                     $"Reinforcement phase exceeded maximum iteration limit ({maxIterations}) for Player {state.PlayerTurn}!\n" +
