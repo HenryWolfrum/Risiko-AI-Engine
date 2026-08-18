@@ -9,7 +9,7 @@ namespace RiskEngine.State;
 /// </summary>
 public static class GameRunner
 {
-    public static GameState PlayGame(GameLayout layout, IRiskPlayer[] players, int seed, IGameObserver? observer = null)
+    public static GameState PlayGame(GameLayout layout, IRiskPlayer[] players, ulong seed, IGameObserver? observer = null)
     {
         // Create deterministic random generator.
         var rng = new EngineRandom(seed);

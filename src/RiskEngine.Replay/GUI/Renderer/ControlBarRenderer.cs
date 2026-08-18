@@ -35,7 +35,7 @@ public class ControlBarRenderer : ISectionRenderer
         RenderRightControls(rightArea, context);
     }
 
-    private static void RenderLeftMetaInfo(Rectangle bounds, int seed, int currentFrameIndex, int totalFrames)
+    private static void RenderLeftMetaInfo(Rectangle bounds, ulong seed, int currentFrameIndex, int totalFrames)
     {
         // Middle Half of height
         float middleHalfY = bounds.Y + (bounds.Height * 0.25f);

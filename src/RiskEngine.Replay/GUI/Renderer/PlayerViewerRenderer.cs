@@ -57,7 +57,7 @@ public class PlayerViewerRenderer : ISectionRenderer
         var player = context.Player;
         var frame = player.CurrentFrame;
         var state = frame.State;
-        int seed = player._replay.Header.Seed;
+        ulong seed = player._replay.Header.Seed;
         Vector2 mousePos = Raylib.GetMousePosition();
 
         // 1. Automatisch dem aktiven Spieler folgen bei neuem Zug
@@ -109,7 +109,7 @@ public class PlayerViewerRenderer : ISectionRenderer
         }
     }
 
-    private static void RenderSinglePlayerDossier(Rectangle bounds,ReplayPlayer player, int playerId, in GameState state, int seed, bool isActiveTurn)
+    private static void RenderSinglePlayerDossier(Rectangle bounds,ReplayPlayer player, int playerId, in GameState state, ulong seed, bool isActiveTurn)
     {
      
         

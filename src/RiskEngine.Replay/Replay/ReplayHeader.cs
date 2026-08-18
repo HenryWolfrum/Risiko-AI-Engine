@@ -11,7 +11,7 @@ public readonly struct ReplayHeader
     /// <summary>
     /// Random seed used to initialize the simulation.
     /// </summary>
-    public int Seed { get; init; }
+    public ulong Seed { get; init; }
 
     /// <summary>
     /// Game layout used for the simulation.

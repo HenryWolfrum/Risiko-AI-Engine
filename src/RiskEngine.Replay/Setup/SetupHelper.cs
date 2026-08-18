@@ -27,7 +27,7 @@ public static class SetupHelper
         }
     }
 
-    public static int AskInt(string question, int min, int max)
+    public static ulong AskRange(string question, ulong min, ulong max)
     {
         while (true)
         {
@@ -35,7 +35,7 @@ public static class SetupHelper
 
             string? input = Console.ReadLine();
 
-            if (int.TryParse(input, out int value) &&
+            if (ulong.TryParse(input, out ulong value) &&
                 value >= min &&
                 value <= max)
             {

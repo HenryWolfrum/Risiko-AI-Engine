@@ -17,7 +17,7 @@ public static class ReplaySetup
        PlayerConfiguration[] playerConfigs = ConfigurePlayerConfigs(config.PlayerCount);
        
        //Select a game seed
-       int seed = ConfigureGameSeed();
+       ulong seed = ConfigureGameSeed();
        
        
        return new ReplayHeader
@@ -49,18 +49,18 @@ public static class ReplaySetup
         }
         
         //1. Get player count
-        byte playerCount =(byte) SetupHelper.AskInt("Number of players", EngineConstants.MIN_PLAYERS,EngineConstants.MAX_PLAYERS);
+        byte playerCount =(byte) SetupHelper.AskRange("Number of players", EngineConstants.MIN_PLAYERS,EngineConstants.MAX_PLAYERS);
         
         //2. Get max Rounds
-        ushort maxRounds = (ushort)SetupHelper.AskInt("Maximum Rounds",EngineConstants.MIN_ROUNDS,EngineConstants.MAX_ROUNDS);
+        ushort maxRounds = (ushort)SetupHelper.AskRange("Maximum Rounds",EngineConstants.MIN_ROUNDS,EngineConstants.MAX_ROUNDS);
         
         return new EngineConfig(playerCount, maxRounds);
     }
 
     
-    private static int ConfigureGameSeed()
+    private static ulong ConfigureGameSeed()
     {
-        return SetupHelper.AskInt("Seed of Game", 0, int.MaxValue);
+        return SetupHelper.AskRange("Seed of Game", 0, int.MaxValue);
       
     }
     
@@ -88,7 +88,7 @@ public static class ReplaySetup
             Console.WriteLine("Select player type:");
             Console.WriteLine("1. RandomBot");
 
-            int selection = SetupHelper.AskInt("Selection", 1, 1);
+            ulong selection = SetupHelper.AskRange("Selection", 1, 1);
 
             switch (selection)
             {
@@ -105,10 +105,10 @@ public static class ReplaySetup
         Console.WriteLine();
         Console.WriteLine("RandomBot Configuration");
 
-        int seed = SetupHelper.AskInt(
+        ulong seed = SetupHelper.AskRange(
             "Random seed",
-            int.MinValue,
-            int.MaxValue);
+            ulong.MinValue,
+            ulong.MaxValue);
 
         return new RandomBotConfiguration
         {

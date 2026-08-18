@@ -2,5 +2,5 @@
 
 public sealed class RandomBotConfiguration : PlayerConfiguration
 {
-    public required int Seed { get; init; }
+    public required ulong Seed { get; init; }
 }

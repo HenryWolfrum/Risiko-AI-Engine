@@ -8,7 +8,7 @@ namespace RiskEngine.Simulations;
 
 public static class Arena
 {
-    public static void RunTournament(int numberOfGames, byte playerCount = 4)
+    public static void RunTournament(ulong numberOfGames, byte playerCount = 4)
     {
         Console.WriteLine($"=== STARTING ARENA TOURNAMENT ({numberOfGames} Games, {playerCount} Players) ===");
 
@@ -20,9 +20,9 @@ public static class Arena
 
         Stopwatch sw = Stopwatch.StartNew();
 
-        for (int game = 0; game < numberOfGames; game++)
+        for (ulong game = 0; game < numberOfGames; game++)
         {
-            int gameSeed = game + 133799;
+            ulong gameSeed = game+ 42;
 
             IRiskPlayer[] players = new IRiskPlayer[playerCount];
 
