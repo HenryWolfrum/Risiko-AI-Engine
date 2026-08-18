@@ -347,7 +347,7 @@ public class GameStateHelperTests
 
         // Assert
         Assert.Equal(EngineConstants.NO_VALUE, state.CurrentRound);
-        Assert.Equal(GamePhase.Default, state.CurrentPhase);
+        Assert.Equal(GamePhase.Start, state.CurrentPhase);
     }
     
     /*

@@ -207,7 +207,7 @@ public static unsafe class GameStateHelper
         GameState state = default;
 
         state.CurrentRound = EngineConstants.NO_VALUE;
-        state.CurrentPhase = GamePhase.Default;
+        state.CurrentPhase = GamePhase.Start;
         state.PlayersAliveBitboard = (byte)((1 << playerCount) - 1);
         state.WinnerId = EngineConstants.NO_VALUE;
         state.AttackerTerritory = EngineConstants.NO_VALUE;

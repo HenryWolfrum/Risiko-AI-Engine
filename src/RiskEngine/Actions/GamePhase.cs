@@ -2,7 +2,7 @@
 
 public enum GamePhase : byte
 {
-    Default = 0,
+    Start = 0,
     CardTurnIn = 1,
     Reinforce = 2,
     Attack = 3,

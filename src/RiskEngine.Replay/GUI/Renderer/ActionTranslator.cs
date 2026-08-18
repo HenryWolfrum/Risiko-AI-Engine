@@ -26,7 +26,7 @@ public static class ActionTranslator
             case ActionType.Attack:
                 string attacker = GetTerritoryName(names, action.SourceTerritory);
                 string defender = GetTerritoryName(names, action.TargetTerritory);
-                return $"({playerTag}) attacks: {attacker} -> {defender} ({action.TroopCount} troops)";
+                return $"({playerTag}) attacks: {attacker} -> {defender}";
 
             case ActionType.Conquer:
                 string conquered = GetTerritoryName(names, action.TargetTerritory);

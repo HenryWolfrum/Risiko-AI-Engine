@@ -9,26 +9,18 @@ namespace RiskEngine.State;
 /// </summary>
 public static class GameRunner
 {
-    public static GameState PlayGame(
-        GameLayout layout,
-        IRiskPlayer[] players,
-        int seed,
-        IGameObserver? observer = null)
+    public static GameState PlayGame(GameLayout layout, IRiskPlayer[] players, int seed, IGameObserver? observer = null)
     {
         // Create deterministic random generator.
         var rng = new EngineRandom(seed);
 
 
         // Create initial game state.
-        var state = GameInitializer.CreateInitialState(
-            layout,
-            ref rng,
-            observer);
+        var state = GameInitializer.CreateInitialState(layout, ref rng, observer);
 
 
         // Main game loop.
-        while (state.CurrentRound <= layout.Config.MaxRounds &&
-               state.CurrentPhase != GamePhase.Terminated)
+        while (state.CurrentRound <= layout.Config.MaxRounds && state.CurrentPhase != GamePhase.Terminated)
         {
             var currentPlayer = state.PlayerTurn;
 
@@ -57,44 +49,29 @@ public static class GameRunner
                 }
 
 
-                AdvanceToNextTurn(
-                    ref state,
-                    layout.Config.PlayerCount);
-
+                AdvanceToNextTurn(ref state, layout.Config.PlayerCount);
                 continue;
             }
 
 
             // Execute complete player turn.
-            Execution.TurnExecutor.ExecuteTurn(
-                ref state,
-                players,
-                layout,
-                ref rng,
-                observer);
-
+            Execution.TurnExecutor.ExecuteTurn(ref state, players, layout, ref rng, observer);
 
             // Check victory condition.
             if (HasPlayerWon(in state, in layout, currentPlayer))
             {
                 GameStateHelper.Terminate(ref state, currentPlayer);
-
-                
-
                 return state;
             }
 
 
             // Move to next player.
-            AdvanceToNextTurn(
-                ref state,
-                layout.Config.PlayerCount);
+            AdvanceToNextTurn(ref state, layout.Config.PlayerCount);
         }
 
 
         // Maximum round limit reached.
         GameStateHelper.Terminate(ref state, EngineConstants.NO_VALUE);
-
         return state;
     }
 
@@ -102,9 +79,7 @@ public static class GameRunner
     /// <summary>
     /// Advances the turn counter and updates round number.
     /// </summary>
-    private static void AdvanceToNextTurn(
-        ref GameState state,
-        byte playerCount)
+    private static void AdvanceToNextTurn(ref GameState state, byte playerCount)
     {
         // Move to next player.
         state.PlayerTurn = (byte)((state.PlayerTurn + 1) % playerCount);
@@ -121,14 +96,8 @@ public static class GameRunner
     /// <summary>
     /// Checks whether the current player's mission is fulfilled.
     /// </summary>
-    private static bool HasPlayerWon(
-        in GameState state,
-        in GameLayout layout,
-        byte player)
+    private static bool HasPlayerWon(in GameState state, in GameLayout layout, byte player)
     {
-        return MissionEvaluator.IsFulfilled(
-            state,
-            layout,
-            player);
+        return MissionEvaluator.IsFulfilled(state, layout, player);
     }
 }

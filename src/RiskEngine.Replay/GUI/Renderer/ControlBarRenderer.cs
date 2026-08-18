@@ -50,8 +50,10 @@ public class ControlBarRenderer : ISectionRenderer
         Raylib.DrawText(seedText, (int)(bounds.X + paddingLeft), (int)middleHalfY, fontSize, textColor);
 
         // Frame
-        string frameText = $"Frame: {currentFrameIndex} / {totalFrames}";
+        string frameText = $"Frame: {currentFrameIndex+1} / {totalFrames}";
         Raylib.DrawText(frameText, (int)(bounds.X + paddingLeft), (int)(middleHalfY + lineSpacing), fontSize, Color.LightGray);
+        
+      
     }
 
     private static void RenderCenterGameStatus(Rectangle bounds, ReplayFrame frame)
