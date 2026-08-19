@@ -331,40 +331,26 @@ currentY += 132f;
             : "None";
     }
     
-    /// <summary>
-    /// Berechnet die Höhe des Panels abhängig davon, wie viele Zeilen die Config benötigt.
-    /// </summary>
-    private static float GetConfigPanelHeight(PlayerConfiguration config)
+  
+    private static float GetConfigPanelHeight(PlayerConfiguration config) => config.Type switch
     {
-        return config switch
-        {
-            RandomBotConfiguration => 34f,      // Type + Seed in 1 Zeile
-            _ => 34f                            // Fallback
-        };
-    }
-
-    /// <summary>
-    /// Rendert die spezifischen Eigenschaften je nach Config-Klasse.
-    /// </summary>
+        AgentType.RandomBot => 34f,
+        _                => 34f
+    };
+    
     private static void RenderPlayerConfigDetails(Rectangle box, PlayerConfiguration config)
     {
         float startX = box.X + 12f;
         float startY = box.Y + 9f;
 
-        switch (config)
+        switch (config.Type)
         {
-            case RandomBotConfiguration randomBot:
-                // Bot Typ links, Seed rechts
+            case AgentType.RandomBot when config is RandomBotConfiguration randomBot:
                 Raylib.DrawText("Type: RandomBot", (int)startX, (int)startY, 14, TextMutedColor);
                 Raylib.DrawText($"Seed: {randomBot.Seed}", (int)(box.X + box.Width - 110f), (int)startY, 14, TextMutedColor);
                 break;
-
-      
-
             default:
-                // Fallback für unbekannte oder Basis-Player
-                string typeName = config.GetType().Name.Replace("Configuration", "");
-                Raylib.DrawText($"Type: {typeName}", (int)startX, (int)startY, 14, TextMutedColor);
+                Raylib.DrawText($"Type: {config.Type}", (int)startX, (int)startY, 14, TextMutedColor);
                 break;
         }
     }

@@ -1,4 +1,6 @@
-﻿using RiskEngine.AI.Bots;
+﻿using System;
+using System.Collections;
+using RiskEngine.AI.Bots;
 using RiskEngine.AI.Configuration;
 using RiskEngine.State;
 
@@ -15,9 +17,11 @@ public static class PlayerFactory
             _ => throw new NotSupportedException($"Unsupported configuration type: {configuration.GetType().Name}")
         };
     }
-    
-    //Create multiple players
-    public static IRiskPlayer[] Create(PlayerConfiguration[] configurations)
+
+    /// <summary>
+    /// Creates multiple players from a span of configurations.
+    /// </summary>
+    public static IRiskPlayer[] Create(ReadOnlySpan<PlayerConfiguration> configurations)
     {
         IRiskPlayer[] players = new IRiskPlayer[configurations.Length];
 

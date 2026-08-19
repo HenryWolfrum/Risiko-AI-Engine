@@ -7,5 +7,6 @@
 /// </summary>
 public abstract class PlayerConfiguration
 {
-    
+    public abstract AgentType Type { get;}
+ 
 }
