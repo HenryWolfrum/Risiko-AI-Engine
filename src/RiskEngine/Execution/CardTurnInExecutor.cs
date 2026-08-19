@@ -41,17 +41,15 @@ public static class CardTurnInExecutor
     /// <summary>
     /// Forces card exchanges while the player exceeds the maximum hand size.
     /// </summary>
-    private static void ExecuteMandatoryTradeIn(
-        ref GameState state,
-        IRiskPlayer player,
-        GameLayout layout,
-        ref EngineRandom rng,
-        IGameObserver? observer = null)
+    public static void ExecuteMandatoryTradeIn(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng, IGameObserver? observer = null)
     {
+        
         var iterationCount = 0;
 
         while (CardHelper.GetPlayerCardCount(in state, state.PlayerTurn) >= EngineConstants.FORCE_TRADE_CARD_COUNT)
         {
+            state.CurrentPhase = GamePhase.CardTurnIn;
+            
             if (++iterationCount > MAX_TRADE_ITERATIONS)
             {
                 throw new InvalidGameActionException(
@@ -105,12 +103,7 @@ public static class CardTurnInExecutor
     /// <summary>
     /// Allows the player to voluntarily exchange valid card sets.
     /// </summary>
-    private static void ExecuteOptionalTradeIn(
-        ref GameState state,
-        IRiskPlayer player,
-        GameLayout layout,
-        ref EngineRandom rng,
-        IGameObserver? observer = null)
+    private static void ExecuteOptionalTradeIn(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng, IGameObserver? observer = null)
     {
         if (CardHelper.HasValidSet(in state, state.PlayerTurn, layout.Deck))
         {

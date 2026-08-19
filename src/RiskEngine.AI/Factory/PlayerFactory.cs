@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using RiskEngine.AI.Bots;
+﻿using RiskEngine.AI.Bots;
 using RiskEngine.AI.Configuration;
 using RiskEngine.State;
 
@@ -13,6 +11,7 @@ public static class PlayerFactory
         return configuration switch
         {
             RandomBotConfiguration random => new RandomBot(new EngineRandom(random.Seed)),
+            AggroBotConfiguration aggro => new AggroBot(),
 
             _ => throw new NotSupportedException($"Unsupported configuration type: {configuration.GetType().Name}")
         };

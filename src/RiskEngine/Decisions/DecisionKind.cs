@@ -5,7 +5,6 @@
 /// </summary>
 public enum DecisionKind : byte
 {
-    None = 0,
     CardTurnIn,
     Reinforce,
     Attack,

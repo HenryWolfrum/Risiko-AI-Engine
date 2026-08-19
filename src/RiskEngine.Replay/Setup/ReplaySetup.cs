@@ -80,39 +80,43 @@ public static class ReplaySetup
 
         return configs;
     }
-
+    
     private static PlayerConfiguration ConfigurePlayer()
     {
-        while (true)
+        AgentType[] agentTypes = Enum.GetValues<AgentType>();
+
+        Console.WriteLine("Select player type:");
+        for (int i = 0; i < agentTypes.Length; i++)
         {
-            Console.WriteLine("Select player type:");
-            Console.WriteLine("1. RandomBot");
-
-            ulong selection = SetupHelper.AskRange("Selection", 1, 1);
-
-            switch (selection)
-            {
-                case 1:
-                    return ConfigureRandomBot();
-            }
-
-            Console.WriteLine("Unsupported player type.");
+            Console.WriteLine($"{i + 1}. {agentTypes[i]}Bot");
         }
+
+        ulong selection = SetupHelper.AskRange("Selection", 1, (ulong)agentTypes.Length);
+        AgentType selectedType = agentTypes[selection - 1];
+
+        return ConfigureByAgentType(selectedType);
     }
+
+    private static PlayerConfiguration ConfigureByAgentType(AgentType type) => type switch
+    {
+        AgentType.Random => ConfigureRandomBot(),
+        AgentType.Aggro  => ConfigureAggroBot(),
+        _                => throw new NotSupportedException($"Configuration for {type} is not implemented.")
+    };
 
     private static RandomBotConfiguration ConfigureRandomBot()
     {
-        Console.WriteLine();
-        Console.WriteLine("RandomBot Configuration");
+        Console.WriteLine("\n--- RandomBot Configuration ---");
+        ulong seed = SetupHelper.AskRange("Random seed", ulong.MinValue, ulong.MaxValue);
 
-        ulong seed = SetupHelper.AskRange(
-            "Random seed",
-            ulong.MinValue,
-            ulong.MaxValue);
-
-        return new RandomBotConfiguration
-        {
-            Seed = seed
-        };
+        return new RandomBotConfiguration { Seed = seed };
     }
+
+    private static AggroBotConfiguration ConfigureAggroBot()
+    {
+        Console.WriteLine("\n--- AggroBot Selected ---");
+        return new AggroBotConfiguration();
+    }
+
+   
 }

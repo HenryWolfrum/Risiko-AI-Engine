@@ -334,7 +334,7 @@ currentY += 132f;
   
     private static float GetConfigPanelHeight(PlayerConfiguration config) => config.Type switch
     {
-        AgentType.RandomBot => 34f,
+        AgentType.Random => 34f,
         _                => 34f
     };
     
@@ -345,7 +345,7 @@ currentY += 132f;
 
         switch (config.Type)
         {
-            case AgentType.RandomBot when config is RandomBotConfiguration randomBot:
+            case AgentType.Random when config is RandomBotConfiguration randomBot:
                 Raylib.DrawText("Type: RandomBot", (int)startX, (int)startY, 14, TextMutedColor);
                 Raylib.DrawText($"Seed: {randomBot.Seed}", (int)(box.X + box.Width - 110f), (int)startY, 14, TextMutedColor);
                 break;

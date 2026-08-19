@@ -65,10 +65,7 @@ public static unsafe class CardHelper
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void EliminateAndTransferCards(
-        ref GameState state,
-        byte attacker,
-        byte defender)
+    public static void EliminateAndTransferCards(ref GameState state, byte attacker, byte defender)
     {
         state.PlayerCardsBitboard[attacker] |= state.PlayerCardsBitboard[defender];
         state.PlayerCardsBitboard[defender] = 0;

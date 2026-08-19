@@ -3,6 +3,6 @@
 public sealed class RandomBotConfiguration : PlayerConfiguration
 {
 
-    public override AgentType Type => AgentType.RandomBot;
+    public override AgentType Type => AgentType.Random;
     public required ulong Seed { get; init; }
 }
