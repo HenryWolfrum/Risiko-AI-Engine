@@ -20,7 +20,7 @@ public static class GameRunner
 
 
         // Main game loop.
-        while (state.CurrentRound <= layout.Config.MaxRounds && state.CurrentPhase != GamePhase.Terminated)
+        while (state.CurrentRound < layout.Config.MaxRounds && state.CurrentPhase != GamePhase.Terminated)
         {
             var currentPlayer = state.PlayerTurn;
 
@@ -43,8 +43,7 @@ public static class GameRunner
                     }
 
                     GameStateHelper.Terminate(ref state, winner);
-                    
-
+                    observer?.Record(in state, null);
                     return state;
                 }
 
@@ -61,6 +60,7 @@ public static class GameRunner
             if (HasPlayerWon(in state, in layout, currentPlayer))
             {
                 GameStateHelper.Terminate(ref state, currentPlayer);
+                observer?.Record(in state, null);
                 return state;
             }
 
@@ -72,6 +72,7 @@ public static class GameRunner
 
         // Maximum round limit reached.
         GameStateHelper.Terminate(ref state, EngineConstants.NO_VALUE);
+        observer?.Record(in state, null);
         return state;
     }
 

@@ -1,6 +1,7 @@
 using System.Numerics;
 using Raylib_cs;
 using RiskEngine.Replay.GUI.Controls;
+using RiskEngine.State;
 
 namespace RiskEngine.Replay.GUI;
 
@@ -29,13 +30,13 @@ public class ControlBarRenderer : ISectionRenderer
         Rectangle centerArea = new(bounds.X + leftWidth, bounds.Y, centerWidth, bounds.Height);
         Rectangle rightArea = new(bounds.X + leftWidth + centerWidth, bounds.Y, rightWidth, bounds.Height);
 
-        // Render sub Areas
-        RenderLeftMetaInfo(leftArea, player._replay.Header.Seed, player.CurrentFrameIndex, player.FrameCount);
+        // Render sub Areas (passing 'player' instance so we can inspect frames/winner)
+        RenderLeftMetaInfo(leftArea, player, player._replay.Header.Seed, player.CurrentFrameIndex, player.FrameCount);
         RenderCenterGameStatus(centerArea, frame);
         RenderRightControls(rightArea, context);
     }
 
-    private static void RenderLeftMetaInfo(Rectangle bounds, ulong seed, int currentFrameIndex, int totalFrames)
+    private static void RenderLeftMetaInfo(Rectangle bounds, ReplayPlayer player, ulong seed, int currentFrameIndex, int totalFrames)
     {
         // Middle Half of height
         float middleHalfY = bounds.Y + (bounds.Height * 0.25f);
@@ -50,10 +51,37 @@ public class ControlBarRenderer : ISectionRenderer
         Raylib.DrawText(seedText, (int)(bounds.X + paddingLeft), (int)middleHalfY, fontSize, textColor);
 
         // Frame
-        string frameText = $"Frame: {currentFrameIndex+1} / {totalFrames}";
+        string frameText = $"Frame: {currentFrameIndex + 1} / {totalFrames}";
         Raylib.DrawText(frameText, (int)(bounds.X + paddingLeft), (int)(middleHalfY + lineSpacing), fontSize, Color.LightGray);
         
-      
+        // Outcome & Stalemate Check
+        var lastFrame = player.GetFrame(player.FrameCount - 1);
+        var winnerId = lastFrame.State.WinnerId;
+        
+        
+        if (winnerId == EngineConstants.NO_VALUE)
+        {
+           
+            Raylib.DrawText("Result: Stalemate", (int)(bounds.X + paddingLeft), (int)(middleHalfY + (lineSpacing * 2)), fontSize, Color.Gold);
+        }
+        else
+        {
+            string prefixText = "Result: ";
+            string winnerText = $"Player {winnerId} won!";
+    
+            int startX = (int)(bounds.X + paddingLeft);
+            int startY = (int)(middleHalfY + (lineSpacing * 2));
+
+     
+            Raylib.DrawText(prefixText, startX, startY, fontSize, Color.LightGray);
+
+
+            int prefixWidth = Raylib.MeasureText(prefixText, fontSize);
+            Color playerColor = ReplayViewer.GetPlayerColor(winnerId);
+
+   
+            Raylib.DrawText(winnerText, startX + prefixWidth, startY, fontSize, playerColor);
+        }
     }
 
     private static void RenderCenterGameStatus(Rectangle bounds, ReplayFrame frame)
