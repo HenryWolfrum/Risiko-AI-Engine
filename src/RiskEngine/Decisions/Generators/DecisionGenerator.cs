@@ -2,8 +2,8 @@ using System;
  using System.Collections.Generic;
  using System.Runtime.InteropServices;
  using RiskEngine.Decisions;
- using RiskEngine.State;
- using RiskEngine.State.Generation;
+ using RiskEngine.Cards;
+ using RiskEngine.Cards.Generation;
  
  namespace RiskEngine.Domain.Generators;
  

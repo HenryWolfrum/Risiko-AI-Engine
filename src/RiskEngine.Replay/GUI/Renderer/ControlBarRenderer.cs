@@ -1,7 +1,7 @@
 using System.Numerics;
 using Raylib_cs;
 using RiskEngine.Replay.GUI.Controls;
-using RiskEngine.State;
+using RiskEngine.Cards;
 
 namespace RiskEngine.Replay.GUI;
 

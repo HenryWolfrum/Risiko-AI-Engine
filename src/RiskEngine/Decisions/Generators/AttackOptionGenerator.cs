@@ -2,7 +2,7 @@ using System;
 using System.Numerics;
 using RiskEngine.Decisions;
 
-namespace RiskEngine.State.Generation;
+namespace RiskEngine.Cards.Generation;
 
 public static class AttackOptionGenerator
 {

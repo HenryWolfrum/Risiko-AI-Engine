@@ -1,8 +1,8 @@
 ﻿using RiskEngine.Mission;
 
-namespace RiskEngine.State.Tests.TestInfrastructure;
+namespace RiskEngine.Cards.Tests.TestInfrastructure;
 
-using RiskEngine.State;
+using Cards;
 
 /// <summary>
 /// Fluent builder for creating deterministic GameState instances in unit tests.

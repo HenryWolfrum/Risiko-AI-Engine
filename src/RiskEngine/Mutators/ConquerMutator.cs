@@ -1,4 +1,4 @@
-namespace RiskEngine.State.Mutation;
+namespace RiskEngine.Cards.Mutation;
 
 /// <summary>
 /// Applies the state changes caused by conquering a territory.

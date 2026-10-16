@@ -1,5 +1,5 @@
-﻿using RiskEngine.State;
-using RiskEngine.State.Generation;
+﻿using RiskEngine.Cards;
+using RiskEngine.Cards.Generation;
 
 namespace RiskEngine.Tests.Decisions.Generators;
 

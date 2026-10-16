@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.State.Mutation;
+﻿namespace RiskEngine.Cards.Mutation;
 
 public static class FortifyMutator
 {

@@ -1,16 +1,17 @@
-﻿namespace RiskEngine.State;
+﻿namespace RiskEngine.Cards;
 
+/// <summary>
+/// Is used to keep track of the current game phase in order to process the next simulation steps
+/// </summary>
 public enum GamePhase : byte
 {
-    Start = 0,
-    CardTurnIn = 1,
-    Reinforce = 2,
-    Attack = 3,
-    Defend = 4,
-    Conquer = 5,
-    Fortify = 6,
-    Terminated = 7, //Game is decided
-
-
-    Error = byte.MaxValue
+    Start,
+    CardTurnIn,
+    Reinforce,
+    Attack,
+    Defend,
+    Conquer,
+    Fortify,
+    Terminated,
+    
 }

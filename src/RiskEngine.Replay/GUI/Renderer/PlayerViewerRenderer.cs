@@ -4,7 +4,7 @@ using Raylib_cs;
 using RiskEngine.AI.Configuration;
 using RiskEngine.Mission;
 using RiskEngine.Replay.GUI.Controls;
-using RiskEngine.State;
+using RiskEngine.Cards;
 
 namespace RiskEngine.Replay.GUI;
 

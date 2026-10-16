@@ -1,5 +1,5 @@
 ﻿using RiskEngine.Observer;
-using RiskEngine.State;
+using RiskEngine.Cards;
 
 namespace RiskEngine.Replay.Recording;
 

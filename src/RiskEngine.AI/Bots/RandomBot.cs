@@ -1,6 +1,6 @@
 using System;
 using RiskEngine.Decisions;
-using RiskEngine.State;
+using RiskEngine.Cards;
 
 namespace RiskEngine.AI.Bots;
 

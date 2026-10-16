@@ -1,8 +1,8 @@
 ﻿using RiskEngine.Mission;
 
-namespace RiskEngine.State.Tests.Helpers;
+namespace RiskEngine.Cards.Tests.Helpers;
 
-using RiskEngine.State;
+using Cards;
 
 /// <summary>
 /// Fluent builder for creating deterministic GameLayout instances for unit tests.

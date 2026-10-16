@@ -1,7 +1,7 @@
 using System;
 using RiskEngine.Exceptions;
 
-namespace RiskEngine.State;
+namespace RiskEngine.Cards;
 
 /// <summary>
 /// Applies combat casualties (losses) to both source and target territories.

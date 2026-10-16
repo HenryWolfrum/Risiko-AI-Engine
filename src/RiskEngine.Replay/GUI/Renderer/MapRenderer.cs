@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Numerics;
 using Raylib_cs;
-using RiskEngine.State;
+using RiskEngine.Cards;
 
 namespace RiskEngine.Replay.GUI;
 

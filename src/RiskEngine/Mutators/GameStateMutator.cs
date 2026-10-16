@@ -1,8 +1,8 @@
+using RiskEngine.Combat;
 using RiskEngine.Exceptions;
 using RiskEngine.Observer;
-using RiskEngine.State.Resolution;
 
-namespace RiskEngine.State.Mutation;
+namespace RiskEngine.Cards.Mutation;
 
 /// <summary>
 /// Central mutation dispatcher.
@@ -21,7 +21,7 @@ public static class GameStateMutator
             case ActionType.Attack:
             {
                 // Resolve combat first, then apply troop losses.
-                var result = CombatResolver.Resolve(in state, in action, ref rng);
+                var result = CombatResolver.Resolve(in action, ref rng);
 
                 AttackMutator.Apply(ref state, in action, in result);
                 break;

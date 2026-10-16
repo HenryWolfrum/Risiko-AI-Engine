@@ -1,8 +1,8 @@
-﻿using RiskEngine.State.Resolution;
+﻿using RiskEngine.Combat;
 
-namespace RiskEngine.State.Tests.Resolution;
+namespace RiskEngine.Cards.Tests.Resolution;
 
-using RiskEngine.State;
+using Cards;
 using Xunit;
 
 public class CombatResolverTests
@@ -34,7 +34,7 @@ public class CombatResolverTests
 
 
         // Act
-        var result = CombatResolver.Resolve(in state, in action, ref rng);
+        var result = CombatResolver.Resolve(in action, ref rng);
 
 
         // Assert
@@ -70,7 +70,7 @@ public class CombatResolverTests
 
 
         // Act
-        var result = CombatResolver.Resolve(in state, in action, ref rng);
+        var result = CombatResolver.Resolve(in action, ref rng);
 
 
         // Assert
@@ -89,9 +89,6 @@ public class CombatResolverTests
     [Fact]
     public void COMBAT_005_SameSeed_ShouldProduceSameCombatResult()
     {
-        // Arrange
-        var state = GameStateHelper.CreateEmpty(2);
-
         var action = new GameAction
         {
             Type = ActionType.Attack,
@@ -105,9 +102,9 @@ public class CombatResolverTests
 
 
         // Act
-        var result1 = CombatResolver.Resolve(in state, in action, ref rng1);
+        var result1 = CombatResolver.Resolve(in action, ref rng1);
 
-        var result2 = CombatResolver.Resolve(in state, in action, ref rng2);
+        var result2 = CombatResolver.Resolve(in action, ref rng2);
 
 
         // Assert
@@ -129,9 +126,6 @@ public class CombatResolverTests
     [Fact]
     public void COMBAT_006_ShouldRespectSelectedDiceCounts()
     {
-        // Arrange
-        var state = GameStateHelper.CreateEmpty(2);
-
         var action = new GameAction
         {
             Type = ActionType.Attack,
@@ -143,7 +137,7 @@ public class CombatResolverTests
 
 
         // Act
-        var result = CombatResolver.Resolve(in state, in action, ref rng);
+        var result = CombatResolver.Resolve(in action, ref rng);
 
 
         // Assert
@@ -167,14 +161,8 @@ public class CombatResolverTests
     [InlineData(3, 1, 1)]
     [InlineData(2, 2, 2)]
     [InlineData(3, 2, 2)]
-    public void COMBAT_007_ShouldResolveCorrectNumberOfComparisons(
-        byte attackerDice,
-        byte defenderDice,
-        byte expectedComparisons)
+    public void COMBAT_007_ShouldResolveCorrectNumberOfComparisons(byte attackerDice, byte defenderDice, byte expectedComparisons)
     {
-        // Arrange
-        var state = GameStateHelper.CreateEmpty(2);
-
         var action = new GameAction
         {
             Type = ActionType.Attack,
@@ -185,7 +173,7 @@ public class CombatResolverTests
         var rng = new EngineRandom(seed: 123);
 
         // Act
-        var result = CombatResolver.Resolve(in state, in action, ref rng);
+        var result = CombatResolver.Resolve(in action, ref rng);
 
         // Assert
         Assert.Equal(
@@ -210,13 +198,8 @@ public class CombatResolverTests
     [InlineData(3, 1)]
     [InlineData(2, 2)]
     [InlineData(3, 2)]
-    public void COMBAT_008_CombatLosses_ShouldRemainWithinBounds(
-        byte attackerDice,
-        byte defenderDice)
+    public void COMBAT_008_CombatLosses_ShouldRemainWithinBounds(byte attackerDice, byte defenderDice)
     {
-        // Arrange
-        var state = GameStateHelper.CreateEmpty(2);
-
         var action = new GameAction
         {
             Type = ActionType.Attack,
@@ -227,14 +210,12 @@ public class CombatResolverTests
         var rng = new EngineRandom(seed: 42);
 
         // Act
-        var result = CombatResolver.Resolve(in state, in action, ref rng);
+        var result = CombatResolver.Resolve(in action, ref rng);
 
         // Assert
         Assert.InRange(result.AttackerLosses, 0, attackerDice);
         Assert.InRange(result.DefenderLosses, 0, defenderDice);
 
-        Assert.Equal(
-            Math.Min(attackerDice, defenderDice),
-            result.AttackerLosses + result.DefenderLosses);
+        Assert.Equal(Math.Min(attackerDice, defenderDice), result.AttackerLosses + result.DefenderLosses);
     }
 }

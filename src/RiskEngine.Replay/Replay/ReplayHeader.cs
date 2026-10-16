@@ -1,5 +1,5 @@
 ﻿using RiskEngine.AI.Configuration;
-using RiskEngine.State;
+using RiskEngine.Cards;
 
 namespace RiskEngine.Replay;
 

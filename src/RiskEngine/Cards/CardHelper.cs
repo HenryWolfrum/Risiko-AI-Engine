@@ -1,18 +1,16 @@
-using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace RiskEngine.State;
+namespace RiskEngine.Cards;
 
+/// <summary>
+/// Provides helper methods for managing player cards using bitboards,
+/// including drawing, transferring, and validating card sets.
+/// </summary>
 public static unsafe class CardHelper
 {
-    // ==========================================
-    // --- CARDS -------------------------------
-    // ==========================================
-
     /// <summary>
-    /// Berechnet die aktuell im Nachziehstapel verbleibenden Karten:
-    /// DrawPile = Deck - Owned - Discard
+    /// Calculates the remaining cards in the draw pile
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong GetAvailableCards(in GameState state, DeckLayout deck)
@@ -27,26 +25,21 @@ public static unsafe class CardHelper
 
         return allCards & ~ownedCards & ~state.DiscardCardsBitboard;
     }
-
+    
     /// <summary>
-    /// Zieht eine zufällige Karte aus dem Nachziehstapel.
-    /// Ist der Nachziehstapel leer (DrawPile == 0), wird der Ablagestapel
-    /// zurückgesetzt (DiscardPile = 0) und somit aus (Deck - Owned) gezogen.
+    /// Draws a random card for the player, recycling the discard pile if necessary.
     /// </summary>
     public static void GiveBonusCard(ref GameState state, byte player, ref EngineRandom rng, DeckLayout deck)
     {
         ulong available = GetAvailableCards(in state, deck);
 
-        // Nachziehstapel ist leer (DrawPile == 0)
+        
         if (available == 0)
         {
-            // Ablagestapel neu einmischen
             state.DiscardCardsBitboard = 0UL;
-
-            // Nachziehpool ist jetzt exakt: (Deck - Owned)
+            
             available = GetAvailableCards(in state, deck);
-
-            // Edge Case: Wirklich ALLE Karten des Decks befinden sich auf Spielerhänden
+            
             if (available == 0)
                 return;
         }
@@ -64,6 +57,9 @@ public static unsafe class CardHelper
         state.PlayerCardsBitboard[player] |= 1UL << cardId;
     }
 
+    /// <summary>
+    /// Transfers the defender's cards to the attacker and eliminates the defender.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void EliminateAndTransferCards(ref GameState state, byte attacker, byte defender)
     {
@@ -72,20 +68,18 @@ public static unsafe class CardHelper
         GameStateHelper.EliminatePlayer(ref state, defender);
     }
 
+   
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ulong GetPlayerCardsBitboard(
-        in GameState state,
-        byte player)
+    public static ulong GetPlayerCardsBitboard(in GameState state, byte player)
     {
         return state.PlayerCardsBitboard[player];
     }
 
+    /// <summary>
+    /// Checks whether player owns the card (by Id)
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool PlayerHasCard(
-        in GameState state,
-        byte player,
-        byte cardId,
-        DeckLayout deck)
+    public static bool PlayerHasCard(in GameState state, byte player, byte cardId, DeckLayout deck)
     {
         if (cardId >= deck.CardCount)
             return false;
@@ -93,44 +87,43 @@ public static unsafe class CardHelper
         return (state.PlayerCardsBitboard[player] & (1UL << cardId)) != 0;
     }
 
+    /// <summary>
+    /// Adds a card to the player's hand and removes it from the discard pile.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void AddCardToPlayer(
-        ref GameState state,
-        byte player,
-        byte cardId,
-        DeckLayout deck)
+    public static void AddCardToPlayer(ref GameState state, byte player, byte cardId, DeckLayout deck)
     {
         if (cardId >= deck.CardCount)
             return;
 
         ulong mask = 1UL << cardId;
         state.PlayerCardsBitboard[player] |= mask;
-        state.DiscardCardsBitboard &= ~mask; // Falls die Karte vorher auf dem Ablagestapel lag
+        state.DiscardCardsBitboard &= ~mask; 
     }
 
+    /// <summary>
+    /// Removes a card from the player's hand and adds it to the discard pile.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void RemoveCardFromPlayer(
-        ref GameState state,
-        byte player,
-        byte cardId,
-        DeckLayout deck)
+    public static void RemoveCardFromPlayer(ref GameState state, byte player, byte cardId, DeckLayout deck)
     {
         if (cardId >= deck.CardCount)
             return;
 
         ulong mask = 1UL << cardId;
         state.PlayerCardsBitboard[player] &= ~mask;
-        state.DiscardCardsBitboard |= mask; // Wandert auf den Ablagestapel
+        state.DiscardCardsBitboard |= mask;
     }
-
+    
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetPlayerCardCount(
-        in GameState state,
-        byte player)
+    public static int GetPlayerCardCount(in GameState state, byte player)
     {
         return BitOperations.PopCount(state.PlayerCardsBitboard[player]);
     }
 
+    /// <summary>
+    /// Extracts the IDs of all cards represented by set bits in the bitboard.
+    /// </summary>
     public static int ExtractCardIds(ulong bitboard, Span<byte> buffer)
     {
         int count = 0;

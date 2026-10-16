@@ -1,6 +1,6 @@
-using RiskEngine.State.Mutation;
+using RiskEngine.Cards.Mutation;
 
-namespace RiskEngine.State.Tests.Mutation;
+namespace RiskEngine.Cards.Tests.Mutation;
 
 public class FortifyMutatorTests
 {

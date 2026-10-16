@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 using RiskEngine.Decisions;
-using RiskEngine.State;
+using RiskEngine.Cards;
 
 
 public static class ReinforcementOptionGenerator

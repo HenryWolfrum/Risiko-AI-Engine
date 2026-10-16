@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using RiskEngine.Mission;
-using RiskEngine.State;
+using RiskEngine.Cards;
 
 namespace RiskEngine.Replay.GUI;
 

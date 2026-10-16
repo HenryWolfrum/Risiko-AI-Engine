@@ -1,8 +1,8 @@
+using RiskEngine.Cards.Rules;
+using RiskEngine.Cards.Tests.Helpers;
 using Xunit;
-using RiskEngine.State.Rules;
-using RiskEngine.State.Tests.Helpers;
 
-namespace RiskEngine.State.Tests.Validation;
+namespace RiskEngine.Cards.Tests.Validation;
 
 public class ConquerRulesTests
 {

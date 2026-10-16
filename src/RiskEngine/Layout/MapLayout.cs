@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.State;
+﻿namespace RiskEngine.Cards;
 
 // Abstract Scheme of a Risk based Map
 public class MapLayout

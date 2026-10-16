@@ -2,7 +2,7 @@
 using RiskEngine.Decisions;
 using RiskEngine.Exceptions;
 
-namespace RiskEngine.State.Generation;
+namespace RiskEngine.Cards.Generation;
 
 public static class ConquerOptionGenerator
 {

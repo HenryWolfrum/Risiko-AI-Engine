@@ -1,6 +1,6 @@
-using RiskEngine.State.Tests.Helpers;
+using RiskEngine.Cards.Tests.Helpers;
 
-namespace RiskEngine.State.Tests.State;
+namespace RiskEngine.Cards.Tests.State;
 
 public class CardHelperTests
 {

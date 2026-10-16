@@ -1,5 +1,5 @@
 ﻿using System;
-using RiskEngine.State;
+using RiskEngine.Cards;
 
 namespace RiskEngine.Replay.GUI;
 

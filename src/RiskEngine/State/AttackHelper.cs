@@ -1,4 +1,4 @@
-namespace RiskEngine.State;
+namespace RiskEngine.Cards;
 
 public static class AttackHelper
 {

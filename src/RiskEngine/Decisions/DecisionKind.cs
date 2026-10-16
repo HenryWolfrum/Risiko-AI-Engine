@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.State.Generation;
+﻿namespace RiskEngine.Cards.Generation;
 
 /// <summary>
 /// Defines the categories of decisions presented to an external decision-maker (AI, UI, Network Client).

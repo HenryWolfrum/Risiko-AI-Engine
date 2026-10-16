@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace RiskEngine.State.Validation;
+namespace RiskEngine.Cards.Validation;
 
 public static class AttackRules
 {

@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.State;
+﻿namespace RiskEngine.Cards;
 
 /// <summary>
 /// Immutable configuration used to create a game.

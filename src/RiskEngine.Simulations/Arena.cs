@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using RiskEngine.AI.Configuration;
 using RiskEngine.AI.Factory;
-using RiskEngine.State;
+using RiskEngine.Cards;
 
 namespace RiskEngine.Simulations;
 

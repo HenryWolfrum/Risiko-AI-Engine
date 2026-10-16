@@ -1,7 +1,7 @@
 namespace RiskEngine.Mission;
 
 using System.Runtime.CompilerServices;
-using RiskEngine.State;
+using Cards;
 public static unsafe class MissionHelper
 {
     /// <summary>

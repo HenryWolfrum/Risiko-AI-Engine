@@ -1,7 +1,7 @@
 ﻿using RiskEngine.AI.Configuration;
 using RiskEngine.AI.Factory;
 using RiskEngine.Replay.Recording;
-using RiskEngine.State;
+using RiskEngine.Cards;
 
 namespace RiskEngine.Replay.Runner;
 

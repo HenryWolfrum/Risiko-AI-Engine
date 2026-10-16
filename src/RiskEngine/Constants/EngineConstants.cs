@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.State;
+﻿namespace RiskEngine.Cards;
 
 /// <summary>
 /// Global engine limits and default values.

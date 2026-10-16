@@ -2,7 +2,7 @@ using RiskEngine.Mission;
 
 namespace RiskEngine.Mission;
 
-using RiskEngine.State;
+using Cards;
 
 public static class MissionEvaluator
 {

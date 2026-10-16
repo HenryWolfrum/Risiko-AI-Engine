@@ -1,10 +1,10 @@
 using System;
 using RiskEngine.Exceptions;
 using RiskEngine.Observer;
-using RiskEngine.State.Mutation;
-using RiskEngine.State.Validation;
+using RiskEngine.Cards.Validation;
+using RiskEngine.Cards.Mutation;
 
-namespace RiskEngine.State.Execution;
+namespace RiskEngine.Cards.Execution;
 
 /// <summary>
 /// Executes the fortification phase of a player's turn.

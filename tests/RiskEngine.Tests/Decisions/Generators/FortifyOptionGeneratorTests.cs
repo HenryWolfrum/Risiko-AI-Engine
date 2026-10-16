@@ -1,6 +1,6 @@
-﻿using RiskEngine.State;
-using RiskEngine.State.Generation;
-using RiskEngine.State.Tests.Helpers;
+﻿using RiskEngine.Cards;
+using RiskEngine.Cards.Generation;
+using RiskEngine.Cards.Tests.Helpers;
 
 namespace RiskEngine.Tests.Decisions.Generators;
 

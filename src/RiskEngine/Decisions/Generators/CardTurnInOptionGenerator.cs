@@ -1,8 +1,8 @@
 ﻿using System;
-using RiskEngine.Decisions; 
-using RiskEngine.State.Rules;
+using RiskEngine.Cards.Rules;
+using RiskEngine.Decisions;
 
-namespace RiskEngine.State.Generation;
+namespace RiskEngine.Cards.Generation;
 
 public static class CardTurnInOptionGenerator
 {

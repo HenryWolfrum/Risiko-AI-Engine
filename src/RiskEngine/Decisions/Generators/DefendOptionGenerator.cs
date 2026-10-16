@@ -1,7 +1,7 @@
 ﻿using System;
 using RiskEngine.Decisions;
 
-namespace RiskEngine.State.Generation;
+namespace RiskEngine.Cards.Generation;
 
 public static class DefendOptionGenerator
 {

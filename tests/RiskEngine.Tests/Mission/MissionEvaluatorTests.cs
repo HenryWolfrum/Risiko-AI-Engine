@@ -1,10 +1,10 @@
 using RiskEngine.Mission;
-using RiskEngine.State;
-using RiskEngine.State.Tests.Helpers;
-using RiskEngine.State.Tests.TestInfrastructure;
+using RiskEngine.Cards;
+using RiskEngine.Cards.Tests.Helpers;
+using RiskEngine.Cards.Tests.TestInfrastructure;
 using Xunit;
 
-namespace RiskEngine.State.Tests.Mission;
+namespace RiskEngine.Cards.Tests.Mission;
 
 public class MissionEvaluatorTests
 {

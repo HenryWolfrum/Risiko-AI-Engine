@@ -1,19 +1,21 @@
-﻿namespace RiskEngine.State;
+﻿namespace RiskEngine.Cards;
 
-//Generic GameAction 
+/// <summary>
+/// Represents a player action with fixed fields to cover all scenarios
+/// </summary>
 public struct GameAction
 {
     public ActionType Type;
 
-    //For Card Retrieval
+   
     public byte Card1;
     public byte Card2;
     public byte Card3;
 
-    //Reinforce Troops/Conquer
+   
     public byte TroopCount;
 
-    //For Attack/Fortify
+  
     public byte ChosenAttackerDiceCount;
     public byte ChosenDefenderDiceCount;
 
@@ -21,10 +23,12 @@ public struct GameAction
     public byte TargetTerritory;
 
 
+    
     public GameAction()
     {
+        //Marks them as Engine valid but set to no value
         byte noValue = EngineConstants.NO_VALUE;
-        Type = ActionType.Default;
+        Type = ActionType.NotInitialized;
         
         Card1 = noValue;
         Card2 = noValue;
