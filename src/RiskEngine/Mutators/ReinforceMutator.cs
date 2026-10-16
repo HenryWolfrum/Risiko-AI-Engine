@@ -1,4 +1,7 @@
-namespace RiskEngine.Layout.Mutation;
+using RiskEngine.Actions;
+using RiskEngine.State;
+
+namespace RiskEngine.Mutators;
 
 public static class ReinforceMutator
 {
@@ -9,10 +12,10 @@ public static class ReinforceMutator
         var territory = action.TargetTerritory;
         var amount = action.TroopCount;
         var player = state.PlayerTurn;
-        
+
         //Add to Territory
-        GameStateHelper.AddTerritoryTroops(ref state,territory,amount);
-        
+        GameStateHelper.AddTerritoryTroops(ref state, territory, amount);
+
         //Remove from Troop Bank
         GameStateHelper.SubPlayerTroopsToPlace(ref state, player, amount);
     }

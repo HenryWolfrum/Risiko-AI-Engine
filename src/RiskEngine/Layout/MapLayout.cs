@@ -13,10 +13,9 @@ public class MapLayout
     // Static list arrays
     public readonly string[] TerritoryNames;
     public readonly byte[] TerritoryToContinent;
-    
-    public byte TerritoryCount { get; }
 
-    public MapLayout(string[] territoryNames, byte[][] adjacencies, byte[] territoryToContinentMap, Continent[] continents)
+    public MapLayout(string[] territoryNames, byte[][] adjacencies, byte[] territoryToContinentMap,
+        Continent[] continents)
     {
         TerritoryNames = territoryNames;
         Adjacencies = adjacencies;
@@ -34,6 +33,8 @@ public class MapLayout
             ContinentMasks[continentId] |= 1UL << i;
         }
     }
+
+    public byte TerritoryCount { get; }
 
     // Low Level check for Neighbors
     public bool AreNeighbors(byte territoryA, byte territoryB)

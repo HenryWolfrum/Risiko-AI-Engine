@@ -1,4 +1,7 @@
-namespace RiskEngine.Layout;
+using RiskEngine.Layout;
+using RiskEngine.State;
+
+namespace RiskEngine.Map;
 
 public static unsafe class MapTraverser
 {
@@ -52,8 +55,8 @@ public static unsafe class MapTraverser
         //Nothing found
         return false;
     }
-    
-    
+
+
     public static bool IsConnected(MapLayout map)
     {
         // Empty maps are considered invalid by the LayoutValidator.
@@ -92,36 +95,30 @@ public static unsafe class MapTraverser
 
         // Verify that every territory has been reached
         for (byte i = 0; i < map.TerritoryCount; i++)
-        {
             if (visited[i] == 0)
                 return false;
-        }
 
         return true;
     }
-    
-    
+
+
     public static bool IsUndirected(MapLayout map)
     {
         for (byte territory = 0; territory < map.TerritoryCount; territory++)
-        {
             foreach (var neighbour in map.Adjacencies[territory])
             {
-                bool found = false;
+                var found = false;
 
                 foreach (var reverse in map.Adjacencies[neighbour])
-                {
                     if (reverse == territory)
                     {
                         found = true;
                         break;
                     }
-                }
 
                 if (!found)
                     return false;
             }
-        }
 
         return true;
     }

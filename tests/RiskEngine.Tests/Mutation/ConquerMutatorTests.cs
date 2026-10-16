@@ -1,7 +1,8 @@
-using RiskEngine.Layout.Mutation;
-using RiskEngine.Layout;
+using RiskEngine.Actions;
+using RiskEngine.Mutators;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout.Tests.Mutation;
+namespace RiskEngine.Tests.Mutation;
 
 public class ConquerMutatorTests
 {
@@ -24,7 +25,7 @@ public class ConquerMutatorTests
 
         GameStateHelper.SetTerritoryTroops(ref state, 0, 8);
 
-        var action = new GameAction
+        var action = new GameAction()
         {
             SourceTerritory = 0,
             TargetTerritory = 1,
@@ -37,8 +38,8 @@ public class ConquerMutatorTests
         // Assert
         Assert.Equal(5, GameStateHelper.GetTerritoryTroops(in state, 0));
     }
-    
-    
+
+
     /*
      * MUTATE-CONQUER-002
      *
@@ -71,8 +72,8 @@ public class ConquerMutatorTests
         // Assert
         Assert.Equal(0, GameStateHelper.GetTerritoryOwner(in state, 1));
     }
-    
-    
+
+
     /*
      * MUTATE-CONQUER-003
      *
@@ -103,7 +104,7 @@ public class ConquerMutatorTests
         // Assert
         Assert.Equal(4, GameStateHelper.GetTerritoryTroops(in state, 1));
     }
-    
+
     /*
      * MUTATE-CONQUER-004
      *
@@ -139,7 +140,7 @@ public class ConquerMutatorTests
 
         Assert.Equal(4, GameStateHelper.GetTerritoryTroops(in state, 1));
     }
-    
+
     /*
      * MUTATE-CONQUER-005
      *

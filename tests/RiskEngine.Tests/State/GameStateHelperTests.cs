@@ -1,7 +1,8 @@
-﻿namespace RiskEngine.Layout.Tests.State;
+﻿using RiskEngine.Actions;
+using RiskEngine.Constants;
+using RiskEngine.State;
 
-using Layout;
-using Xunit;
+namespace RiskEngine.Tests.State;
 
 public class GameStateHelperTests
 {
@@ -57,7 +58,6 @@ public class GameStateHelperTests
         Assert.Equal(10, troops);
     }
 
-    
 
     /*
      * STATE-004
@@ -110,7 +110,7 @@ public class GameStateHelperTests
             GameStateHelper.GetPlayerTroopsToPlace(in state, 0));
     }
 
-    
+
     /*
      * STATE-007
      *
@@ -127,12 +127,10 @@ public class GameStateHelperTests
 
         // Assert
         for (byte territory = 0; territory < EngineConstants.MAX_TERRITORIES; territory++)
-        {
             Assert.Equal(EngineConstants.NO_VALUE, GameStateHelper.GetTerritoryOwner(in state, territory));
-        }
     }
-    
-                /*
+
+    /*
      * STATE-008
      *
      * Player territory bitboard must represent
@@ -147,27 +145,27 @@ public class GameStateHelperTests
     {
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
-    
+
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryOwner(ref state, 1, 1);
         GameStateHelper.SetTerritoryOwner(ref state, 2, 0);
         GameStateHelper.SetTerritoryOwner(ref state, 3, 1);
-    
-    
+
+
         // Act
         var player0Territories =
             GameStateHelper.GetPlayerTerritoriesBitboard(in state, 0);
-    
+
         var player1Territories =
             GameStateHelper.GetPlayerTerritoriesBitboard(in state, 1);
-    
-    
+
+
         // Assert
         Assert.Equal(0b0101UL, player0Territories);
         Assert.Equal(0b1010UL, player1Territories);
     }
-    
-    
+
+
     /*
      * STATE-009
      *
@@ -182,21 +180,21 @@ public class GameStateHelperTests
     {
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
-    
+
         GameStateHelper.SetTerritoryOwner(ref state, 0, 1);
         GameStateHelper.SetTerritoryOwner(ref state, 1, 1);
-    
-    
+
+
         // Act
         var count =
             GameStateHelper.GetOwnedTerritoryCount(in state, 0);
-    
-    
+
+
         // Assert
         Assert.Equal(0, count);
     }
-    
-    
+
+
     /*
      * STATE-010
      *
@@ -212,21 +210,21 @@ public class GameStateHelperTests
     {
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
-    
+
         GameStateHelper.SetTerritoryOwner(ref state, 5, 0);
         GameStateHelper.SetTerritoryOwner(ref state, 2, 0);
         GameStateHelper.SetTerritoryOwner(ref state, 8, 1);
-    
-    
+
+
         // Act
         var firstTerritory = GameStateHelper.GetFirstTerritoryOwnedBy(in state, 0);
-    
-    
+
+
         // Assert
         Assert.Equal(2, firstTerritory);
     }
-    
-    
+
+
     /*
      * STATE-011
      *
@@ -240,18 +238,18 @@ public class GameStateHelperTests
     {
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
-    
-    
+
+
         // Act
         var territory =
             GameStateHelper.GetFirstTerritoryOwnedBy(in state, 0);
-    
-    
+
+
         // Assert
         Assert.Equal(EngineConstants.NO_VALUE, territory);
     }
-    
-    
+
+
     /*
      * STATE-012
      *
@@ -267,20 +265,20 @@ public class GameStateHelperTests
     {
         // Arrange
         var state = GameStateHelper.CreateEmpty(3);
-    
-    
+
+
         // Act
         GameStateHelper.EliminatePlayer(ref state, 1);
-    
-    
+
+
         // Assert
         Assert.True(GameStateHelper.IsPlayerAlive(in state, 0));
         Assert.False(GameStateHelper.IsPlayerAlive(in state, 1));
         Assert.True(GameStateHelper.IsPlayerAlive(in state, 2));
-    
+
         Assert.Equal(2, GameStateHelper.GetActivePlayerCount(in state));
     }
-    
+
     /*
      * STATE-013
      *
@@ -305,7 +303,7 @@ public class GameStateHelperTests
         Assert.True(GameStateHelper.IsPlayerAlive(in state, 1));
         Assert.Equal(3, GameStateHelper.GetActivePlayerCount(in state));
     }
-   
+
     /*
      * STATE-014
      *
@@ -323,12 +321,10 @@ public class GameStateHelperTests
 
         // Assert
         for (byte territory = 0; territory < EngineConstants.MAX_TERRITORIES; territory++)
-        {
             Assert.Equal(EngineConstants.NO_VALUE, GameStateHelper.GetTerritoryTroops(in state, territory));
-        }
     }
-    
-    
+
+
     /*
      * STATE-015
      *
@@ -349,7 +345,7 @@ public class GameStateHelperTests
         Assert.Equal(EngineConstants.NO_VALUE, state.CurrentRound);
         Assert.Equal(GamePhase.Start, state.CurrentPhase);
     }
-    
+
     /*
      * STATE-016
      *
@@ -373,8 +369,8 @@ public class GameStateHelperTests
         // Assert
         Assert.Equal(1, GameStateHelper.GetTerritoryOwner(in state, 3));
     }
-    
-    
+
+
     /*
      * STATE-017
      *
@@ -400,7 +396,7 @@ public class GameStateHelperTests
             10,
             GameStateHelper.GetTerritoryTroops(in state, 5));
     }
-    
+
     /*
      * STATE-018
      *

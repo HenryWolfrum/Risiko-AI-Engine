@@ -1,8 +1,10 @@
-using RiskEngine.Layout.Combat;
-using RiskEngine.Layout.Exceptions;
-using RiskEngine.Layout;
+using RiskEngine.Actions;
+using RiskEngine.Combat;
+using RiskEngine.Error;
+using RiskEngine.Mutators;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout.Tests.Mutation;
+namespace RiskEngine.Tests.Mutation;
 
 public class AttackMutatorTests
 {
@@ -22,7 +24,7 @@ public class AttackMutatorTests
         var state = GameStateHelper.CreateEmpty(2);
         GameStateHelper.SetTerritoryTroops(ref state, 0, 10);
 
-        var action = new GameAction
+        var action = new GameAction()
         {
             SourceTerritory = 0,
             TargetTerritory = 1

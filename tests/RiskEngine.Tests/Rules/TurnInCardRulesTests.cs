@@ -1,11 +1,11 @@
-using RiskEngine.Layout.Rules;
-using RiskEngine.Layout.Tests.Helpers;
+using RiskEngine.Actions;
+using RiskEngine.Cards;
+using RiskEngine.Error;
+using RiskEngine.Rules;
+using RiskEngine.State;
+using RiskEngine.Tests.TestInfrastructure;
 
-namespace RiskEngine.Layout.Tests.Validation;
-
-using Layout;
-using Layout.Tests.Helpers;
-using Xunit;
+namespace RiskEngine.Tests.Rules;
 
 public class TurnInCardsRulesTests
 {
@@ -35,7 +35,7 @@ public class TurnInCardsRulesTests
         CardHelper.AddCardToPlayer(ref state, 0, 1, layout.Deck); // Cavalry
         CardHelper.AddCardToPlayer(ref state, 0, 2, layout.Deck); // Artillery
 
-        var action = new GameAction
+        var action = new GameAction()
         {
             Card1 = 0,
             Card2 = 1,

@@ -1,11 +1,12 @@
-using System;
-using RiskEngine.Layout.Decisions;
-using RiskEngine.Layout;
+using RiskEngine.Decisions;
+using RiskEngine.Player;
+using RiskEngine.Random;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout.AI.Bots;
+namespace RiskEngine.AI.Bots;
 
 /// <summary>
-/// Reference AI implementation that selects a uniformly random legal decision.
+///     Reference AI implementation that selects a uniformly random legal decision.
 /// </summary>
 public sealed class RandomBot : IRiskPlayer
 {
@@ -21,16 +22,13 @@ public sealed class RandomBot : IRiskPlayer
         if (options.IsEmpty)
             throw new InvalidOperationException("RandomBot received an empty decision option list.");
 
-        byte optionIndex = (byte)_rng.Next(0, options.Length);
+        var optionIndex = (byte)_rng.Next(0, options.Length);
 
-        ref readonly DecisionOption option = ref options[optionIndex];
+        ref readonly var option = ref options[optionIndex];
 
         byte parameter = 0;
 
-        if (!option.Parameter.IsEmpty)
-        {
-            parameter = (byte)_rng.Next(option.Parameter.Min, option.Parameter.Max + 1);
-        }
+        if (!option.Parameter.IsEmpty) parameter = (byte)_rng.Next(option.Parameter.Min, option.Parameter.Max + 1);
 
         return new DecisionSelection(optionIndex, parameter);
     }

@@ -1,15 +1,23 @@
+using RiskEngine.Actions;
+using RiskEngine.Constants;
+using RiskEngine.Execution;
+using RiskEngine.Layout;
 using RiskEngine.Mission;
-using RiskEngine.Layout.Observer;
+using RiskEngine.Observer;
+using RiskEngine.Player;
+using RiskEngine.Random;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout;
+namespace RiskEngine.Core;
 
 /// <summary>
-/// Main game loop controller.
-/// Responsible only for global game flow.
+///     Main game loop controller.
+///     Responsible only for global game flow.
 /// </summary>
 public static class GameRunner
 {
-    public static GameState PlayGame(GameLayout layout, IRiskPlayer[] players, ulong seed, IGameObserver? observer = null)
+    public static GameState PlayGame(GameLayout layout, IRiskPlayer[] players, ulong seed,
+        IGameObserver? observer = null)
     {
         // Create deterministic random generator.
         var rng = new EngineRandom(seed);
@@ -31,16 +39,14 @@ public static class GameRunner
                 // Only one player remains.
                 if (GameStateHelper.GetActivePlayerCount(in state) <= 1)
                 {
-                    byte winner = EngineConstants.NO_VALUE;
+                    var winner = EngineConstants.NO_VALUE;
 
                     for (byte p = 0; p < layout.Config.PlayerCount; p++)
-                    {
                         if (GameStateHelper.IsPlayerAlive(in state, p))
                         {
                             winner = p;
                             break;
                         }
-                    }
 
                     GameStateHelper.Terminate(ref state, winner);
                     observer?.Record(in state, null);
@@ -54,7 +60,7 @@ public static class GameRunner
 
 
             // Execute complete player turn.
-            Execution.TurnExecutor.ExecuteTurn(ref state, players, layout, ref rng, observer);
+            TurnExecutor.ExecuteTurn(ref state, players, layout, ref rng, observer);
 
             // Check victory condition.
             if (HasPlayerWon(in state, in layout, currentPlayer))
@@ -71,14 +77,14 @@ public static class GameRunner
 
 
         // Maximum round limit reached.
-        GameStateHelper.Terminate(ref state, EngineConstants.NO_VALUE);
+        GameStateHelper.Terminate(ref state);
         observer?.Record(in state, null);
         return state;
     }
 
 
     /// <summary>
-    /// Advances the turn counter and updates round number.
+    ///     Advances the turn counter and updates round number.
     /// </summary>
     private static void AdvanceToNextTurn(ref GameState state, byte playerCount)
     {
@@ -87,15 +93,12 @@ public static class GameRunner
 
 
         // New round starts after the last player.
-        if (state.PlayerTurn == 0)
-        {
-            state.CurrentRound++;
-        }
+        if (state.PlayerTurn == 0) state.CurrentRound++;
     }
 
 
     /// <summary>
-    /// Checks whether the current player's mission is fulfilled.
+    ///     Checks whether the current player's mission is fulfilled.
     /// </summary>
     private static bool HasPlayerWon(in GameState state, in GameLayout layout, byte player)
     {

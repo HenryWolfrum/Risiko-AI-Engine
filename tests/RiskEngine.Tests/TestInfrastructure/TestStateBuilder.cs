@@ -1,14 +1,15 @@
-﻿using RiskEngine.Mission;
+﻿using RiskEngine.Actions;
+using RiskEngine.Cards;
+using RiskEngine.Layout;
+using RiskEngine.Mission;
+using RiskEngine.State;
 
 namespace RiskEngine.Tests.TestInfrastructure;
 
-using Layout;
-
 /// <summary>
-/// Fluent builder for creating deterministic GameState instances in unit tests.
-///
-/// The builder intentionally does not enforce game rules.
-/// It exists to create arbitrary test scenarios, including invalid states.
+///     Fluent builder for creating deterministic GameState instances in unit tests.
+///     The builder intentionally does not enforce game rules.
+///     It exists to create arbitrary test scenarios, including invalid states.
 /// </summary>
 public sealed class TestStateBuilder
 {
@@ -26,7 +27,7 @@ public sealed class TestStateBuilder
 
 
     /// <summary>
-    /// Creates a new builder with an empty initialized game state.
+    ///     Creates a new builder with an empty initialized game state.
     /// </summary>
     public static TestStateBuilder Create(GameLayout layout)
     {
@@ -35,7 +36,7 @@ public sealed class TestStateBuilder
 
 
     /// <summary>
-    /// Sets the player whose turn it currently is.
+    ///     Sets the player whose turn it currently is.
     /// </summary>
     public TestStateBuilder WithPlayerTurn(byte player)
     {
@@ -45,7 +46,7 @@ public sealed class TestStateBuilder
 
 
     /// <summary>
-    /// Sets the current game phase.
+    ///     Sets the current game phase.
     /// </summary>
     public TestStateBuilder WithPhase(GamePhase phase)
     {
@@ -55,7 +56,7 @@ public sealed class TestStateBuilder
 
 
     /// <summary>
-    /// Sets ownership and troop count for a territory.
+    ///     Sets ownership and troop count for a territory.
     /// </summary>
     public TestStateBuilder WithTerritory(int territoryId, byte owner, byte troops)
     {
@@ -69,7 +70,7 @@ public sealed class TestStateBuilder
 
 
     /// <summary>
-    /// Assigns a mission (by catalog index) to a player.
+    ///     Assigns a mission (by catalog index) to a player.
     /// </summary>
     public TestStateBuilder WithPlayerMission(byte player, byte missionId)
     {
@@ -80,7 +81,7 @@ public sealed class TestStateBuilder
 
 
     /// <summary>
-    /// Sets the number of reinforcement troops waiting to be placed.
+    ///     Sets the number of reinforcement troops waiting to be placed.
     /// </summary>
     public TestStateBuilder WithTroopsToPlace(byte player, byte troops)
     {
@@ -91,7 +92,7 @@ public sealed class TestStateBuilder
 
 
     /// <summary>
-    /// Adds a card to a player's hand.
+    ///     Adds a card to a player's hand.
     /// </summary>
     public TestStateBuilder WithCard(byte player, byte cardId)
     {
@@ -106,26 +107,24 @@ public sealed class TestStateBuilder
 
 
     /// <summary>
-    /// Adds multiple cards to a player's hand.
+    ///     Adds multiple cards to a player's hand.
     /// </summary>
     public TestStateBuilder WithCards(byte player, params byte[] cardIds)
     {
         foreach (var cardId in cardIds)
-        {
             CardHelper.AddCardToPlayer(
                 ref _state,
                 player,
                 cardId,
                 _layout.Deck);
-        }
 
         return this;
     }
 
 
     /// <summary>
-    /// Removes a player from the active player bitboard.
-    /// Useful for elimination and GameRunner tests.
+    ///     Removes a player from the active player bitboard.
+    ///     Useful for elimination and GameRunner tests.
     /// </summary>
     public TestStateBuilder WithPlayerEliminated(byte player)
     {
@@ -136,8 +135,8 @@ public sealed class TestStateBuilder
 
 
     /// <summary>
-    /// Marks a player as alive.
-    /// Useful when constructing custom states.
+    ///     Marks a player as alive.
+    ///     Useful when constructing custom states.
     /// </summary>
     public TestStateBuilder WithPlayerAlive(byte player)
     {
@@ -148,7 +147,7 @@ public sealed class TestStateBuilder
 
 
     /// <summary>
-    /// Returns the configured GameState instance.
+    ///     Returns the configured GameState instance.
     /// </summary>
     public GameState Build()
     {
@@ -157,15 +156,13 @@ public sealed class TestStateBuilder
 
 
     /// <summary>
-    /// Ensures the territory index is valid before accessing the fixed arrays.
+    ///     Ensures the territory index is valid before accessing the fixed arrays.
     /// </summary>
     private void ValidateTerritoryId(int territoryId)
     {
         if (territoryId < 0 || territoryId >= _layout.Map.TerritoryCount)
-        {
             throw new ArgumentOutOfRangeException(
                 nameof(territoryId),
                 $"Territory ID must be between 0 and {_layout.Map.TerritoryCount - 1}.");
-        }
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace RiskEngine.Layout.Mutation;
+﻿using RiskEngine.Actions;
+using RiskEngine.State;
+
+namespace RiskEngine.Mutators;
 
 public static class FortifyMutator
 {
@@ -9,9 +12,9 @@ public static class FortifyMutator
         var troops = action.TroopCount;
 
         //Source removes a count of troops
-        GameStateHelper.SubTerritoryTroops(ref state,source,troops);
+        GameStateHelper.SubTerritoryTroops(ref state, source, troops);
 
         //Target adds a count of troops
-        GameStateHelper.AddTerritoryTroops(ref state, target,troops);
+        GameStateHelper.AddTerritoryTroops(ref state, target, troops);
     }
 }

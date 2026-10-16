@@ -1,11 +1,11 @@
-﻿using RiskEngine.Layout.AI.Factory;
-using RiskEngine.Layout.Replay.Recording;
-using RiskEngine.Layout.AI.Configuration;
-using RiskEngine.Layout;
+﻿using RiskEngine.AI.Factory;
+using RiskEngine.Core;
+using RiskEngine.Player;
+using RiskEngine.Replay.Recording;
 
-namespace RiskEngine.Layout.Replay.Runner;
+namespace RiskEngine.Replay.Runner;
 
-public static  class ReplayRunner
+public static class ReplayRunner
 {
     //Simulates the game and creates a replay
     public static Replay Run(ReplayHeader header)
@@ -14,7 +14,7 @@ public static  class ReplayRunner
         IRiskPlayer[] players = PlayerFactory.Create(header.PlayerConfigs);
 
         //Create a recorder
-        ReplayRecorder recorder = new ReplayRecorder(header);
+        var recorder = new ReplayRecorder(header);
 
         //Run the Game with created objects
         GameRunner.PlayGame(header.Layout, players, header.Seed, recorder);

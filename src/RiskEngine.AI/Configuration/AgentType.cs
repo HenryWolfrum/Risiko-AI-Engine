@@ -1,6 +1,6 @@
-namespace RiskEngine.Layout.AI.Configuration;
+namespace RiskEngine.AI.Configuration;
 
-public enum AgentType:byte
+public enum AgentType : byte
 {
     Random,
     Aggro,

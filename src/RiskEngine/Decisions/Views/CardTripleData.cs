@@ -1,4 +1,6 @@
-﻿/// <summary> Zero-allocation view for card combination decision metadata. </summary>
+﻿namespace RiskEngine.Decisions.Views;
+
+/// <summary> Zero-allocation view for card combination decision metadata. </summary>
 public readonly struct CardTripleData
 {
     public byte Card1 { get; }

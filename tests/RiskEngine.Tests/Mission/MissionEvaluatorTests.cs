@@ -1,10 +1,10 @@
+using RiskEngine.Cards;
+using RiskEngine.Core;
+using RiskEngine.Layout;
 using RiskEngine.Mission;
-using RiskEngine.Layout.Tests.Helpers;
 using RiskEngine.Tests.TestInfrastructure;
-using RiskEngine.Layout.Mutators;
-using Xunit;
 
-namespace RiskEngine.Layout.Mutators.Tests.Mission;
+namespace RiskEngine.Tests.Mission;
 
 public class MissionEvaluatorTests
 {
@@ -20,19 +20,19 @@ public class MissionEvaluatorTests
     [Fact]
     public void MISSION_001_WorldDomination_ShouldRequireEveryTerritory()
     {
-        var layout = TestLayoutBuilder.CreateSmallRiskLayout(playerCount: 2).Build();
+        var layout = TestLayoutBuilder.CreateSmallRiskLayout(2).Build();
 
         var missionId = FindMissionIndex(layout, MissionType.WorldDomination);
 
         // 5 of 6 territories owned -> not fulfilled yet
         var almostState = TestStateBuilder.Create(layout)
             .WithPlayerMission(0, missionId)
-            .WithTerritory(0, owner: 0, troops: 1)
-            .WithTerritory(1, owner: 0, troops: 1)
-            .WithTerritory(2, owner: 0, troops: 1)
-            .WithTerritory(3, owner: 0, troops: 1)
-            .WithTerritory(4, owner: 0, troops: 1)
-            .WithTerritory(5, owner: 1, troops: 1)
+            .WithTerritory(0, 0, 1)
+            .WithTerritory(1, 0, 1)
+            .WithTerritory(2, 0, 1)
+            .WithTerritory(3, 0, 1)
+            .WithTerritory(4, 0, 1)
+            .WithTerritory(5, 1, 1)
             .Build();
 
         Assert.False(MissionEvaluator.IsFulfilled(in almostState, in layout, 0));
@@ -40,12 +40,12 @@ public class MissionEvaluatorTests
         // All 6 territories owned -> fulfilled
         var fullState = TestStateBuilder.Create(layout)
             .WithPlayerMission(0, missionId)
-            .WithTerritory(0, owner: 0, troops: 1)
-            .WithTerritory(1, owner: 0, troops: 1)
-            .WithTerritory(2, owner: 0, troops: 1)
-            .WithTerritory(3, owner: 0, troops: 1)
-            .WithTerritory(4, owner: 0, troops: 1)
-            .WithTerritory(5, owner: 0, troops: 1)
+            .WithTerritory(0, 0, 1)
+            .WithTerritory(1, 0, 1)
+            .WithTerritory(2, 0, 1)
+            .WithTerritory(3, 0, 1)
+            .WithTerritory(4, 0, 1)
+            .WithTerritory(5, 0, 1)
             .Build();
 
         Assert.True(MissionEvaluator.IsFulfilled(in fullState, in layout, 0));
@@ -73,24 +73,24 @@ public class MissionEvaluatorTests
 
         var belowThreshold = TestStateBuilder.Create(layout)
             .WithPlayerMission(0, missionId)
-            .WithTerritory(0, owner: 0, troops: 1)
-            .WithTerritory(1, owner: 0, troops: 1)
-            .WithTerritory(2, owner: 0, troops: 1)
-            .WithTerritory(3, owner: 1, troops: 1)
-            .WithTerritory(4, owner: 1, troops: 1)
-            .WithTerritory(5, owner: 1, troops: 1)
+            .WithTerritory(0, 0, 1)
+            .WithTerritory(1, 0, 1)
+            .WithTerritory(2, 0, 1)
+            .WithTerritory(3, 1, 1)
+            .WithTerritory(4, 1, 1)
+            .WithTerritory(5, 1, 1)
             .Build();
 
         Assert.False(MissionEvaluator.IsFulfilled(in belowThreshold, in layout, 0));
 
         var atThreshold = TestStateBuilder.Create(layout)
             .WithPlayerMission(0, missionId)
-            .WithTerritory(0, owner: 0, troops: 1)
-            .WithTerritory(1, owner: 0, troops: 1)
-            .WithTerritory(2, owner: 0, troops: 1)
-            .WithTerritory(3, owner: 0, troops: 1)
-            .WithTerritory(4, owner: 1, troops: 1)
-            .WithTerritory(5, owner: 1, troops: 1)
+            .WithTerritory(0, 0, 1)
+            .WithTerritory(1, 0, 1)
+            .WithTerritory(2, 0, 1)
+            .WithTerritory(3, 0, 1)
+            .WithTerritory(4, 1, 1)
+            .WithTerritory(5, 1, 1)
             .Build();
 
         Assert.True(MissionEvaluator.IsFulfilled(in atThreshold, in layout, 0));
@@ -122,12 +122,12 @@ public class MissionEvaluatorTests
         // Player owns 4 territories (>= required 3), but territory 3 only has 1 troop.
         var oneWeakTerritory = TestStateBuilder.Create(layout)
             .WithPlayerMission(0, missionId)
-            .WithTerritory(0, owner: 0, troops: 2)
-            .WithTerritory(1, owner: 0, troops: 2)
-            .WithTerritory(2, owner: 0, troops: 2)
-            .WithTerritory(3, owner: 0, troops: 1)
-            .WithTerritory(4, owner: 1, troops: 1)
-            .WithTerritory(5, owner: 1, troops: 1)
+            .WithTerritory(0, 0, 2)
+            .WithTerritory(1, 0, 2)
+            .WithTerritory(2, 0, 2)
+            .WithTerritory(3, 0, 1)
+            .WithTerritory(4, 1, 1)
+            .WithTerritory(5, 1, 1)
             .Build();
 
         Assert.False(MissionEvaluator.IsFulfilled(in oneWeakTerritory, in layout, 0));
@@ -135,12 +135,12 @@ public class MissionEvaluatorTests
         // Same ownership, but every owned territory now meets the minimum.
         var allMeetMinimum = TestStateBuilder.Create(layout)
             .WithPlayerMission(0, missionId)
-            .WithTerritory(0, owner: 0, troops: 2)
-            .WithTerritory(1, owner: 0, troops: 2)
-            .WithTerritory(2, owner: 0, troops: 2)
-            .WithTerritory(3, owner: 0, troops: 2)
-            .WithTerritory(4, owner: 1, troops: 1)
-            .WithTerritory(5, owner: 1, troops: 1)
+            .WithTerritory(0, 0, 2)
+            .WithTerritory(1, 0, 2)
+            .WithTerritory(2, 0, 2)
+            .WithTerritory(3, 0, 2)
+            .WithTerritory(4, 1, 1)
+            .WithTerritory(5, 1, 1)
             .Build();
 
         Assert.True(MissionEvaluator.IsFulfilled(in allMeetMinimum, in layout, 0));
@@ -160,17 +160,17 @@ public class MissionEvaluatorTests
     [Fact]
     public void MISSION_004_ConquerContinents_ShouldRequireAllTargetContinents()
     {
-        var layout = BuildTwoContinentLayout(out byte continentAMask, out byte continentBMask);
+        var layout = BuildTwoContinentLayout(out var continentAMask, out var continentBMask);
 
         var missionId = FindMissionIndex(layout, MissionType.ConquerContinents);
 
         // Player 0 owns all of continent A, none of continent B.
         var onlyOneContinent = TestStateBuilder.Create(layout)
             .WithPlayerMission(0, missionId)
-            .WithTerritory(0, owner: 0, troops: 1) // Continent A
-            .WithTerritory(1, owner: 0, troops: 1) // Continent A
-            .WithTerritory(2, owner: 1, troops: 1) // Continent B
-            .WithTerritory(3, owner: 1, troops: 1) // Continent B
+            .WithTerritory(0, 0, 1) // Continent A
+            .WithTerritory(1, 0, 1) // Continent A
+            .WithTerritory(2, 1, 1) // Continent B
+            .WithTerritory(3, 1, 1) // Continent B
             .Build();
 
         Assert.False(MissionEvaluator.IsFulfilled(in onlyOneContinent, in layout, 0));
@@ -178,10 +178,10 @@ public class MissionEvaluatorTests
         // Player 0 now owns both continents.
         var bothContinents = TestStateBuilder.Create(layout)
             .WithPlayerMission(0, missionId)
-            .WithTerritory(0, owner: 0, troops: 1)
-            .WithTerritory(1, owner: 0, troops: 1)
-            .WithTerritory(2, owner: 0, troops: 1)
-            .WithTerritory(3, owner: 0, troops: 1)
+            .WithTerritory(0, 0, 1)
+            .WithTerritory(1, 0, 1)
+            .WithTerritory(2, 0, 1)
+            .WithTerritory(3, 0, 1)
             .Build();
 
         Assert.True(MissionEvaluator.IsFulfilled(in bothContinents, in layout, 0));
@@ -234,17 +234,19 @@ public class MissionEvaluatorTests
     [Fact]
     public void MISSION_006_CheckEliminationWin_ShouldOnlyMatchCorrectTarget()
     {
-        var layout = TestLayoutBuilder.CreateSmallRiskLayout(playerCount: 3).Build();
+        var layout = TestLayoutBuilder.CreateSmallRiskLayout(3).Build();
         var map = layout.Map;
         var deck = layout.Deck;
         var config = layout.Config;
 
         var missions = new MissionCatalog(new[]
         {
-            new MissionDefinition { Id = 0, Type = MissionType.EliminatePlayer, TargetPlayerId = 2 }, // targets player 2
-            new MissionDefinition { Id = 1, Type = MissionType.EliminatePlayer, TargetPlayerId = 0 }, // targets player 0
+            new MissionDefinition
+                { Id = 0, Type = MissionType.EliminatePlayer, TargetPlayerId = 2 }, // targets player 2
+            new MissionDefinition
+                { Id = 1, Type = MissionType.EliminatePlayer, TargetPlayerId = 0 }, // targets player 0
             new MissionDefinition { Id = 2, Type = MissionType.WorldDomination }
-        }, fallbackMissionId: 2);
+        }, 2);
 
         var customLayout = new GameLayout(map, deck, config, missions);
 
@@ -258,8 +260,8 @@ public class MissionEvaluatorTests
             .Build();
 
         // Player 1's mission does NOT target player 2 -> must not falsely win.
-        bool eliminatedIsPlayer2 = MissionEvaluator.CheckEliminationWin(
-            in state, in customLayout, 0 ,out byte winnerId);
+        var eliminatedIsPlayer2 = MissionEvaluator.CheckEliminationWin(
+            in state, in customLayout, 0, out var winnerId);
 
         Assert.True(eliminatedIsPlayer2);
         Assert.Equal(0, winnerId); // only player 0's mission targets player 2
@@ -271,9 +273,9 @@ public class MissionEvaluatorTests
 
     private static (GameLayout layout, byte missionId) BuildLayoutWithMission(MissionDefinition mission)
     {
-        var builder = TestLayoutBuilder.CreateSmallRiskLayout(playerCount: 2);
+        var builder = TestLayoutBuilder.CreateSmallRiskLayout();
 
-        var missions = new MissionCatalog(new[] { mission }, fallbackMissionId: 0);
+        var missions = new MissionCatalog(new[] { mission }, 0);
 
         var layout = new GameLayout(builder.BuildMap(), builder.BuildDeck(), builder.BuildConfig(), missions);
 
@@ -282,26 +284,22 @@ public class MissionEvaluatorTests
 
     private static byte FindMissionIndex(GameLayout layout, MissionType type)
     {
-        for (int i = 0; i < layout.Missions.Count; i++)
-        {
+        for (var i = 0; i < layout.Missions.Count; i++)
             if (layout.Missions[i].Type == type)
-            {
                 return (byte)i;
-            }
-        }
 
         throw new InvalidOperationException($"No mission of type {type} found in catalog.");
     }
 
     /// <summary>
-    /// Builds a minimal 4-territory map split into two 2-territory continents,
-    /// with a single ConquerContinents mission targeting both.
+    ///     Builds a minimal 4-territory map split into two 2-territory continents,
+    ///     with a single ConquerContinents mission targeting both.
     /// </summary>
     private static GameLayout BuildTwoContinentLayout(out byte continentAMask, out byte continentBMask)
     {
         var territoryNames = new[] { "A0", "A1", "B0", "B1" };
 
-        var adjacencies = new byte[][]
+        var adjacencies = new[]
         {
             new byte[] { 1, 2 },
             new byte[] { 0, 3 },
@@ -319,10 +317,13 @@ public class MissionEvaluatorTests
 
         var map = new MapLayout(territoryNames, adjacencies, territoryToContinent, continents);
 
-        var cardTypes = new[] { CardType.Infantry, CardType.Cavalry, CardType.Artillery, CardType.Infantry, CardType.Joker, CardType.Joker };
+        var cardTypes = new[]
+        {
+            CardType.Infantry, CardType.Cavalry, CardType.Artillery, CardType.Infantry, CardType.Joker, CardType.Joker
+        };
         var deck = new DeckLayout(cardTypes);
 
-        var config = new EngineConfig(playerCount: 2,100);
+        var config = new EngineConfig(playerCount: 2, 100);
 
         continentAMask = 0b0011; // territories 0,1
         continentBMask = 0b1100; // territories 2,3
@@ -333,9 +334,9 @@ public class MissionEvaluatorTests
             {
                 Id = 0,
                 Type = MissionType.ConquerContinents,
-                TargetContinentMask = (byte)((1 << 0) | (1 << 1))
+                TargetContinentMask = (1 << 0) | (1 << 1)
             }
-        }, fallbackMissionId: 0);
+        }, 0);
 
         return new GameLayout(map, deck, config, missions);
     }

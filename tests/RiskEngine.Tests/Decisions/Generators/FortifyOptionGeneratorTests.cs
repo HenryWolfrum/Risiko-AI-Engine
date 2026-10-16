@@ -1,8 +1,9 @@
-﻿using RiskEngine.Layout.Generation;
-using RiskEngine.Layout.Tests.Helpers;
-using RiskEngine.Layout;
+﻿using RiskEngine.Decisions;
+using RiskEngine.Decisions.Generators;
+using RiskEngine.State;
+using RiskEngine.Tests.TestInfrastructure;
 
-namespace RiskEngine.Layout.Tests.Decisions.Generators;
+namespace RiskEngine.Tests.Decisions.Generators;
 
 public class FortifyOptionGeneratorTests
 {
@@ -45,11 +46,10 @@ public class FortifyOptionGeneratorTests
         // Assert
         Assert.Equal(2, count);
 
-        bool foundFortify = false;
-        bool foundEndTurn = false;
+        var foundFortify = false;
+        var foundEndTurn = false;
 
-        for (int i = 0; i < count; i++)
-        {
+        for (var i = 0; i < count; i++)
             switch (decisions[i].Kind)
             {
                 case DecisionKind.Fortify:
@@ -72,99 +72,92 @@ public class FortifyOptionGeneratorTests
                     foundEndTurn = true;
                     break;
             }
-        }
 
         Assert.True(foundFortify);
         Assert.True(foundEndTurn);
     }
-    
-    
- /*
- * FORTIFYGEN-002
- *
- * Enemy territories should split
- * owned territory clusters and
- * prevent fortification between them.
- *
- * Guarantees:
- * - fortify is only possible through owned paths
- * - enemy territories break connectivity
- */
-[Fact]
-public void FORTIFYGEN_002_ShouldNotFortifyAcrossEnemyTerritory()
-{
-    // Arrange
-    var layout = TestLayoutBuilder
-        .Create()
-        .WithTerritories(4)
-        .Connect(0, 1)
-        .Connect(1, 2)
-        .Connect(2, 3)
-        .Build();
 
-    var state = GameStateHelper.CreateEmpty(2, 4);
 
-    state.PlayerTurn = 0;
-
-    // Player 0
-    GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
-    GameStateHelper.SetTerritoryTroops(ref state, 0, 3);
-
-    GameStateHelper.SetTerritoryOwner(ref state, 2, 0);
-    GameStateHelper.SetTerritoryTroops(ref state, 2, 3);
-
-    GameStateHelper.SetTerritoryOwner(ref state, 3, 0);
-    GameStateHelper.SetTerritoryTroops(ref state, 3, 1);
-
-    // Enemy territory splits the graph
-    GameStateHelper.SetTerritoryOwner(ref state, 1, 1);
-    GameStateHelper.SetTerritoryTroops(ref state, 1, 1);
-
-    Span<DecisionOption> decisions = stackalloc DecisionOption[16];
-
-    // Act
-    int count = FortifyOptionGenerator.Generate(in state, layout, decisions);
-
-    // Assert
-    Assert.Equal(2, count);
-
-    bool found23 = false;
-    bool foundInvalid = false;
-    bool foundEndTurn = false;
-
-    for (int i = 0; i < count; i++)
+    /*
+     * FORTIFYGEN-002
+     *
+     * Enemy territories should split
+     * owned territory clusters and
+     * prevent fortification between them.
+     *
+     * Guarantees:
+     * - fortify is only possible through owned paths
+     * - enemy territories break connectivity
+     */
+    [Fact]
+    public void FORTIFYGEN_002_ShouldNotFortifyAcrossEnemyTerritory()
     {
-        switch (decisions[i].Kind)
-        {
-            case DecisionKind.Fortify:
+        // Arrange
+        var layout = TestLayoutBuilder
+            .Create()
+            .WithTerritories(4)
+            .Connect(0, 1)
+            .Connect(1, 2)
+            .Connect(2, 3)
+            .Build();
+
+        var state = GameStateHelper.CreateEmpty(2, 4);
+
+        state.PlayerTurn = 0;
+
+        // Player 0
+        GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 0, 3);
+
+        GameStateHelper.SetTerritoryOwner(ref state, 2, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 2, 3);
+
+        GameStateHelper.SetTerritoryOwner(ref state, 3, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 3, 1);
+
+        // Enemy territory splits the graph
+        GameStateHelper.SetTerritoryOwner(ref state, 1, 1);
+        GameStateHelper.SetTerritoryTroops(ref state, 1, 1);
+
+        Span<DecisionOption> decisions = stackalloc DecisionOption[16];
+
+        // Act
+        int count = FortifyOptionGenerator.Generate(in state, layout, decisions);
+
+        // Assert
+        Assert.Equal(2, count);
+
+        var found23 = false;
+        var foundInvalid = false;
+        var foundEndTurn = false;
+
+        for (var i = 0; i < count; i++)
+            switch (decisions[i].Kind)
             {
-                var fortify = decisions[i].GetFortifyData();
-
-                if (fortify.SourceTerritory == 2 &&
-                    fortify.TargetTerritory == 3)
+                case DecisionKind.Fortify:
                 {
-                    found23 = true;
+                    var fortify = decisions[i].GetFortifyData();
+
+                    if (fortify.SourceTerritory == 2 &&
+                        fortify.TargetTerritory == 3)
+                        found23 = true;
+
+                    if (fortify.SourceTerritory == 0 ||
+                        fortify.TargetTerritory == 0)
+                        foundInvalid = true;
+
+                    break;
                 }
 
-                if (fortify.SourceTerritory == 0 ||
-                    fortify.TargetTerritory == 0)
-                {
-                    foundInvalid = true;
-                }
-
-                break;
+                case DecisionKind.EndTurn:
+                    foundEndTurn = true;
+                    break;
             }
 
-            case DecisionKind.EndTurn:
-                foundEndTurn = true;
-                break;
-        }
+        Assert.True(found23);
+        Assert.False(foundInvalid);
+        Assert.True(foundEndTurn);
     }
-
-    Assert.True(found23);
-    Assert.False(foundInvalid);
-    Assert.True(foundEndTurn);
-}
 
 
 /*
@@ -179,75 +172,69 @@ public void FORTIFYGEN_002_ShouldNotFortifyAcrossEnemyTerritory()
  * - all reachable targets are generated
  * - no reachable target is missing
  */
-[Fact]
-public void FORTIFYGEN_003_ShouldGenerateAllReachableTargets()
-{
-    // Arrange
-    var layout = TestLayoutBuilder
-        .Create()
-        .WithTerritories(3)
-        .Connect(0, 1)
-        .Connect(1, 2)
-        .Build();
-
-    var state = GameStateHelper.CreateEmpty(2, 3);
-
-    state.PlayerTurn = 0;
-
-    GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
-    GameStateHelper.SetTerritoryTroops(ref state, 0, 3);
-
-    GameStateHelper.SetTerritoryOwner(ref state, 1, 0);
-    GameStateHelper.SetTerritoryTroops(ref state, 1, 1);
-
-    GameStateHelper.SetTerritoryOwner(ref state, 2, 0);
-    GameStateHelper.SetTerritoryTroops(ref state, 2, 1);
-
-    Span<DecisionOption> decisions = stackalloc DecisionOption[8];
-
-    // Act
-    int count = FortifyOptionGenerator.Generate(in state, layout, decisions);
-
-    // Assert
-    Assert.Equal(3, count);
-
-    bool found01 = false;
-    bool found02 = false;
-    bool foundEndTurn = false;
-
-    for (int i = 0; i < count; i++)
+    [Fact]
+    public void FORTIFYGEN_003_ShouldGenerateAllReachableTargets()
     {
-        switch (decisions[i].Kind)
-        {
-            case DecisionKind.Fortify:
+        // Arrange
+        var layout = TestLayoutBuilder
+            .Create()
+            .WithTerritories(3)
+            .Connect(0, 1)
+            .Connect(1, 2)
+            .Build();
+
+        var state = GameStateHelper.CreateEmpty(2, 3);
+
+        state.PlayerTurn = 0;
+
+        GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 0, 3);
+
+        GameStateHelper.SetTerritoryOwner(ref state, 1, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 1, 1);
+
+        GameStateHelper.SetTerritoryOwner(ref state, 2, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 2, 1);
+
+        Span<DecisionOption> decisions = stackalloc DecisionOption[8];
+
+        // Act
+        int count = FortifyOptionGenerator.Generate(in state, layout, decisions);
+
+        // Assert
+        Assert.Equal(3, count);
+
+        var found01 = false;
+        var found02 = false;
+        var foundEndTurn = false;
+
+        for (var i = 0; i < count; i++)
+            switch (decisions[i].Kind)
             {
-                var fortify = decisions[i].GetFortifyData();
-
-                if (fortify.SourceTerritory == 0 &&
-                    fortify.TargetTerritory == 1)
+                case DecisionKind.Fortify:
                 {
-                    found01 = true;
+                    var fortify = decisions[i].GetFortifyData();
+
+                    if (fortify.SourceTerritory == 0 &&
+                        fortify.TargetTerritory == 1)
+                        found01 = true;
+
+                    if (fortify.SourceTerritory == 0 &&
+                        fortify.TargetTerritory == 2)
+                        found02 = true;
+
+                    break;
                 }
 
-                if (fortify.SourceTerritory == 0 &&
-                    fortify.TargetTerritory == 2)
-                {
-                    found02 = true;
-                }
-
-                break;
+                case DecisionKind.EndTurn:
+                    foundEndTurn = true;
+                    break;
             }
 
-            case DecisionKind.EndTurn:
-                foundEndTurn = true;
-                break;
-        }
+        Assert.True(found01);
+        Assert.True(found02);
+        Assert.True(foundEndTurn);
     }
-
-    Assert.True(found01);
-    Assert.True(found02);
-    Assert.True(foundEndTurn);
-}
 
 /*
  * FORTIFYGEN-004
@@ -260,64 +247,62 @@ public void FORTIFYGEN_003_ShouldGenerateAllReachableTargets()
  * - fortify requires at least two troops
  * - territories with one troop are never sources
  */
-[Fact]
-public void FORTIFYGEN_004_ShouldIgnoreSourcesWithSingleTroop()
-{
-    // Arrange
-    var layout = TestLayoutBuilder
-        .Create()
-        .WithTerritories(2)
-        .Connect(0, 1)
-        .Build();
-
-    var state = GameStateHelper.CreateEmpty(2, 2);
-
-    state.PlayerTurn = 0;
-
-    GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
-    GameStateHelper.SetTerritoryTroops(ref state, 0, 1);
-
-    GameStateHelper.SetTerritoryOwner(ref state, 1, 0);
-    GameStateHelper.SetTerritoryTroops(ref state, 1, 5);
-
-    Span<DecisionOption> decisions = stackalloc DecisionOption[8];
-
-    // Act
-    int count = FortifyOptionGenerator.Generate(in state, layout, decisions);
-
-    // Assert
-    Assert.Equal(2, count);
-
-    bool foundInvalid = false;
-    bool foundValid = false;
-    bool foundEndTurn = false;
-
-    for (int i = 0; i < count; i++)
+    [Fact]
+    public void FORTIFYGEN_004_ShouldIgnoreSourcesWithSingleTroop()
     {
-        switch (decisions[i].Kind)
-        {
-            case DecisionKind.Fortify:
+        // Arrange
+        var layout = TestLayoutBuilder
+            .Create()
+            .WithTerritories(2)
+            .Connect(0, 1)
+            .Build();
+
+        var state = GameStateHelper.CreateEmpty(2, 2);
+
+        state.PlayerTurn = 0;
+
+        GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 0, 1);
+
+        GameStateHelper.SetTerritoryOwner(ref state, 1, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 1, 5);
+
+        Span<DecisionOption> decisions = stackalloc DecisionOption[8];
+
+        // Act
+        int count = FortifyOptionGenerator.Generate(in state, layout, decisions);
+
+        // Assert
+        Assert.Equal(2, count);
+
+        var foundInvalid = false;
+        var foundValid = false;
+        var foundEndTurn = false;
+
+        for (var i = 0; i < count; i++)
+            switch (decisions[i].Kind)
             {
-                var fortify = decisions[i].GetFortifyData();
+                case DecisionKind.Fortify:
+                {
+                    var fortify = decisions[i].GetFortifyData();
 
-                if (fortify.SourceTerritory == 0)
-                    foundInvalid = true;
+                    if (fortify.SourceTerritory == 0)
+                        foundInvalid = true;
 
-                if (fortify.SourceTerritory == 1 &&
-                    fortify.TargetTerritory == 0)
-                    foundValid = true;
+                    if (fortify.SourceTerritory == 1 &&
+                        fortify.TargetTerritory == 0)
+                        foundValid = true;
 
-                break;
+                    break;
+                }
+
+                case DecisionKind.EndTurn:
+                    foundEndTurn = true;
+                    break;
             }
 
-            case DecisionKind.EndTurn:
-                foundEndTurn = true;
-                break;
-        }
+        Assert.False(foundInvalid);
+        Assert.True(foundValid);
+        Assert.True(foundEndTurn);
     }
-
-    Assert.False(foundInvalid);
-    Assert.True(foundValid);
-    Assert.True(foundEndTurn);
-}
 }

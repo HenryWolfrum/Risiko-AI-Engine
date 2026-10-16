@@ -1,11 +1,10 @@
-﻿using RiskEngine.Layout.Validation;
-using RiskEngine.Layout.Tests.Helpers;
+﻿using RiskEngine.Actions;
+using RiskEngine.Error;
+using RiskEngine.Rules;
+using RiskEngine.State;
+using RiskEngine.Tests.TestInfrastructure;
 
-namespace RiskEngine.Layout.Tests.Validation;
-
-using Layout;
-using Layout.Tests.Helpers;
-using Xunit;
+namespace RiskEngine.Tests.Rules;
 
 public class AttackRulesTests
 {
@@ -39,7 +38,7 @@ public class AttackRulesTests
         GameStateHelper.SetTerritoryTroops(ref state, 1, 3);
 
 
-        var action = new GameAction
+        var action = new GameAction()
         {
             SourceTerritory = 0,
             TargetTerritory = 1,
@@ -307,8 +306,8 @@ public class AttackRulesTests
         Assert.Equal(1, oneTroopMax);
         Assert.Equal(2, manyTroopsMax);
     }
-    
-    
+
+
     /*
      * ATTACK-009
      *
@@ -346,7 +345,7 @@ public class AttackRulesTests
         // Assert
         Assert.False(result.IsValid);
     }
-    
+
     /*
      * ATTACK-010
      *

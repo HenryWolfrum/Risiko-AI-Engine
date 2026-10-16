@@ -1,20 +1,25 @@
 using System.Runtime.CompilerServices;
+using RiskEngine.Actions;
+using RiskEngine.Cards;
+using RiskEngine.Error;
+using RiskEngine.Layout;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout.Rules;
+namespace RiskEngine.Rules;
 
 public static class TurnInCardsRules
 {
-    public static ValidationResult Validate(in GameState state, in GameAction action,DeckLayout deck)
+    public static ValidationResult Validate(in GameState state, in GameAction action, DeckLayout deck)
     {
         // Cards out of Range
-        if (action.Card1 >= deck.CardCount || action.Card2 >= deck.CardCount ||action.Card3 >= deck.CardCount)
+        if (action.Card1 >= deck.CardCount || action.Card2 >= deck.CardCount || action.Card3 >= deck.CardCount)
             return ValidationResult.Invalid(EngineError.UnknownCard);
 
         //Does player own the cards
         var player = state.PlayerTurn;
-        if (!CardHelper.PlayerHasCard(in state, player, action.Card1,deck) ||
-            !CardHelper.PlayerHasCard(in state, player, action.Card2,deck) ||
-            !CardHelper.PlayerHasCard(in state, player, action.Card3,deck))
+        if (!CardHelper.PlayerHasCard(in state, player, action.Card1, deck) ||
+            !CardHelper.PlayerHasCard(in state, player, action.Card2, deck) ||
+            !CardHelper.PlayerHasCard(in state, player, action.Card3, deck))
             return ValidationResult.Invalid(EngineError.CardNotOwned);
 
         //Get Card Types
@@ -23,15 +28,12 @@ public static class TurnInCardsRules
         var cardType3 = deck.TerritoryToType[action.Card3];
 
         //Check if deck is valid
-        if (!IsValidSet(cardType1,cardType2,cardType3))
-        {
-            return ValidationResult.Invalid(EngineError.InvalidCardSet);
-        }
-        
+        if (!IsValidSet(cardType1, cardType2, cardType3)) return ValidationResult.Invalid(EngineError.InvalidCardSet);
+
         return ValidationResult.Valid();
     }
-    
-    
+
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsValidSet(CardType type1, CardType type2, CardType type3)
     {

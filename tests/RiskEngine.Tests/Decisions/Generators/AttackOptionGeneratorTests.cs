@@ -1,8 +1,10 @@
-﻿using RiskEngine.Layout.Generation;
-using RiskEngine.Layout.Tests.Helpers;
-using RiskEngine.Layout;
+﻿using RiskEngine.Actions;
+using RiskEngine.Decisions;
+using RiskEngine.Decisions.Generators;
+using RiskEngine.State;
+using RiskEngine.Tests.TestInfrastructure;
 
-namespace RiskEngine.Layout.Tests.Decisions.Generators;
+namespace RiskEngine.Tests.Decisions.Generators;
 
 public class AttackOptionGeneratorTests
 {
@@ -47,12 +49,11 @@ public class AttackOptionGeneratorTests
         // Assert
         Assert.Equal(3, count);
 
-        bool foundAttack = false;
-        bool foundSkip = false;
-        bool foundEndTurn = false;
+        var foundAttack = false;
+        var foundSkip = false;
+        var foundEndTurn = false;
 
-        for (int i = 0; i < count; i++)
-        {
+        for (var i = 0; i < count; i++)
             switch (decisions[i].Kind)
             {
                 case DecisionKind.Attack:
@@ -61,9 +62,7 @@ public class AttackOptionGeneratorTests
 
                     if (attack.SourceTerritory == 0 &&
                         attack.TargetTerritory == 1)
-                    {
                         foundAttack = true;
-                    }
 
                     break;
                 }
@@ -75,14 +74,13 @@ public class AttackOptionGeneratorTests
                     foundEndTurn = true;
                     break;
             }
-        }
 
         Assert.True(foundAttack);
         Assert.True(foundSkip);
         Assert.True(foundEndTurn);
     }
-    
-    
+
+
     /*
      * ATTACKGEN-002
      *
@@ -128,13 +126,12 @@ public class AttackOptionGeneratorTests
         // Assert
         Assert.Equal(4, count);
 
-        bool foundAttack01 = false;
-        bool foundAttack02 = false;
-        bool foundSkip = false;
-        bool foundEndTurn = false;
+        var foundAttack01 = false;
+        var foundAttack02 = false;
+        var foundSkip = false;
+        var foundEndTurn = false;
 
-        for (int i = 0; i < count; i++)
-        {
+        for (var i = 0; i < count; i++)
             switch (decisions[i].Kind)
             {
                 case DecisionKind.Attack:
@@ -153,113 +150,105 @@ public class AttackOptionGeneratorTests
                 case DecisionKind.SkipPhase:
                     foundSkip = true;
                     break;
-                
+
                 case DecisionKind.EndTurn:
                     foundEndTurn = true;
                     break;
             }
-        }
 
         Assert.True(foundAttack01);
         Assert.True(foundAttack02);
         Assert.True(foundSkip);
         Assert.True(foundEndTurn);
-        
     }
-    
-    
+
+
     /*
- * ATTACKGEN-003
- *
- * Multiple attacking territories should
- * each contribute their legal attack
- * decisions.
- *
- * Guarantees:
- * - attacks from every owned territory are generated
- * - no attack source is ignored
- * - skip and end turn decisions are generated
- */
-[Fact]
-public void ATTACKGEN_003_ShouldGenerateAttacksFromMultipleSources()
-{
-    // Arrange
-    var layout = TestLayoutBuilder
-        .Create()
-        .WithTerritories(4)
-        .Connect(0, 1)
-        .Connect(2, 3)
-        .Connect(0,2)
-        .Build();
-
-    var state = GameStateHelper.CreateEmpty(2, 4);
-
-    state.CurrentPhase = GamePhase.Attack;
-    state.PlayerTurn = 0;
-
-    GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
-    GameStateHelper.SetTerritoryTroops(ref state, 0, 3);
-
-    GameStateHelper.SetTerritoryOwner(ref state, 1, 1);
-    GameStateHelper.SetTerritoryTroops(ref state, 1, 1);
-
-    GameStateHelper.SetTerritoryOwner(ref state, 2, 0);
-    GameStateHelper.SetTerritoryTroops(ref state, 2, 3);
-
-    GameStateHelper.SetTerritoryOwner(ref state, 3, 1);
-    GameStateHelper.SetTerritoryTroops(ref state, 3, 1);
-
-    Span<DecisionOption> decisions = stackalloc DecisionOption[8];
-
-    // Act
-    int count = AttackOptionGenerator.Generate(in state, layout, decisions);
-
-    // Assert
-    Assert.Equal(4, count);
-
-    bool foundAttack01 = false;
-    bool foundAttack23 = false;
-    bool foundSkip = false;
-    bool foundEndTurn = false;
-
-    for (int i = 0; i < count; i++)
+     * ATTACKGEN-003
+     *
+     * Multiple attacking territories should
+     * each contribute their legal attack
+     * decisions.
+     *
+     * Guarantees:
+     * - attacks from every owned territory are generated
+     * - no attack source is ignored
+     * - skip and end turn decisions are generated
+     */
+    [Fact]
+    public void ATTACKGEN_003_ShouldGenerateAttacksFromMultipleSources()
     {
-        switch (decisions[i].Kind)
-        {
-            case DecisionKind.Attack:
+        // Arrange
+        var layout = TestLayoutBuilder
+            .Create()
+            .WithTerritories(4)
+            .Connect(0, 1)
+            .Connect(2, 3)
+            .Connect(0, 2)
+            .Build();
+
+        var state = GameStateHelper.CreateEmpty(2, 4);
+
+        state.CurrentPhase = GamePhase.Attack;
+        state.PlayerTurn = 0;
+
+        GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 0, 3);
+
+        GameStateHelper.SetTerritoryOwner(ref state, 1, 1);
+        GameStateHelper.SetTerritoryTroops(ref state, 1, 1);
+
+        GameStateHelper.SetTerritoryOwner(ref state, 2, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 2, 3);
+
+        GameStateHelper.SetTerritoryOwner(ref state, 3, 1);
+        GameStateHelper.SetTerritoryTroops(ref state, 3, 1);
+
+        Span<DecisionOption> decisions = stackalloc DecisionOption[8];
+
+        // Act
+        int count = AttackOptionGenerator.Generate(in state, layout, decisions);
+
+        // Assert
+        Assert.Equal(4, count);
+
+        var foundAttack01 = false;
+        var foundAttack23 = false;
+        var foundSkip = false;
+        var foundEndTurn = false;
+
+        for (var i = 0; i < count; i++)
+            switch (decisions[i].Kind)
             {
-                var attack = decisions[i].GetAttackData();
-
-                if (attack.SourceTerritory == 0 &&
-                    attack.TargetTerritory == 1)
+                case DecisionKind.Attack:
                 {
-                    foundAttack01 = true;
+                    var attack = decisions[i].GetAttackData();
+
+                    if (attack.SourceTerritory == 0 &&
+                        attack.TargetTerritory == 1)
+                        foundAttack01 = true;
+
+                    if (attack.SourceTerritory == 2 &&
+                        attack.TargetTerritory == 3)
+                        foundAttack23 = true;
+
+                    break;
                 }
 
-                if (attack.SourceTerritory == 2 &&
-                    attack.TargetTerritory == 3)
-                {
-                    foundAttack23 = true;
-                }
+                case DecisionKind.SkipPhase:
+                    foundSkip = true;
+                    break;
 
-                break;
+                case DecisionKind.EndTurn:
+                    foundEndTurn = true;
+                    break;
             }
 
-            case DecisionKind.SkipPhase:
-                foundSkip = true;
-                break;
-
-            case DecisionKind.EndTurn:
-                foundEndTurn = true;
-                break;
-        }
+        Assert.True(foundAttack01);
+        Assert.True(foundAttack23);
+        Assert.True(foundSkip);
+        Assert.True(foundEndTurn);
     }
-
-    Assert.True(foundAttack01);
-    Assert.True(foundAttack23);
-    Assert.True(foundSkip);
-    Assert.True(foundEndTurn);
-}
 
 
 /*
@@ -274,61 +263,59 @@ public void ATTACKGEN_003_ShouldGenerateAttacksFromMultipleSources()
  * - skip decision is generated
  * - end turn decision is generated
  */
-[Fact]
-public void ATTACKGEN_004_ShouldGenerateNoAttacksWhenNoneArePossible()
-{
-    // Arrange
-    var layout = TestLayoutBuilder
-        .Create()
-        .WithTerritories(2)
-        .Connect(0, 1)
-        .Build();
-
-    var state = GameStateHelper.CreateEmpty(2, 2);
-
-    state.CurrentPhase = GamePhase.Attack;
-    state.PlayerTurn = 0;
-
-    GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
-    GameStateHelper.SetTerritoryTroops(ref state, 1, 1);
-
-    GameStateHelper.SetTerritoryOwner(ref state, 1, 0);
-    GameStateHelper.SetTerritoryTroops(ref state, 1, 3);
-
-    Span<DecisionOption> decisions = stackalloc DecisionOption[8];
-
-    // Act
-    int count = AttackOptionGenerator.Generate(in state, layout, decisions);
-
-    // Assert
-    Assert.Equal(2, count);
-
-    bool foundAttack = false;
-    bool foundSkip = false;
-    bool foundEndTurn = false;
-
-    for (int i = 0; i < count; i++)
+    [Fact]
+    public void ATTACKGEN_004_ShouldGenerateNoAttacksWhenNoneArePossible()
     {
-        switch (decisions[i].Kind)
-        {
-            case DecisionKind.Attack:
-                foundAttack = true;
-                break;
+        // Arrange
+        var layout = TestLayoutBuilder
+            .Create()
+            .WithTerritories(2)
+            .Connect(0, 1)
+            .Build();
 
-            case DecisionKind.SkipPhase:
-                foundSkip = true;
-                break;
+        var state = GameStateHelper.CreateEmpty(2, 2);
 
-            case DecisionKind.EndTurn:
-                foundEndTurn = true;
-                break;
-        }
+        state.CurrentPhase = GamePhase.Attack;
+        state.PlayerTurn = 0;
+
+        GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 1, 1);
+
+        GameStateHelper.SetTerritoryOwner(ref state, 1, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 1, 3);
+
+        Span<DecisionOption> decisions = stackalloc DecisionOption[8];
+
+        // Act
+        int count = AttackOptionGenerator.Generate(in state, layout, decisions);
+
+        // Assert
+        Assert.Equal(2, count);
+
+        var foundAttack = false;
+        var foundSkip = false;
+        var foundEndTurn = false;
+
+        for (var i = 0; i < count; i++)
+            switch (decisions[i].Kind)
+            {
+                case DecisionKind.Attack:
+                    foundAttack = true;
+                    break;
+
+                case DecisionKind.SkipPhase:
+                    foundSkip = true;
+                    break;
+
+                case DecisionKind.EndTurn:
+                    foundEndTurn = true;
+                    break;
+            }
+
+        Assert.False(foundAttack);
+        Assert.True(foundSkip);
+        Assert.True(foundEndTurn);
     }
-
-    Assert.False(foundAttack);
-    Assert.True(foundSkip);
-    Assert.True(foundEndTurn);
-}
 
 /*
  * ATTACKGEN-005
@@ -341,68 +328,64 @@ public void ATTACKGEN_004_ShouldGenerateNoAttacksWhenNoneArePossible()
  * - only enemy territories are attack targets
  * - friendly territories are ignored
  */
-[Fact]
-public void ATTACKGEN_005_ShouldIgnoreFriendlyNeighbours()
-{
-    // Arrange
-    var layout = TestLayoutBuilder
-        .Create()
-        .WithTerritories(3)
-        .Connect(0, 1)
-        .Connect(0, 2)
-        .Build();
-
-    var state = GameStateHelper.CreateEmpty(2, 3);
-
-    state.CurrentPhase = GamePhase.Attack;
-    state.PlayerTurn = 0;
-
-    GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
-    GameStateHelper.SetTerritoryTroops(ref state, 0, 3);
-
-    // Friendly neighbour
-    GameStateHelper.SetTerritoryOwner(ref state, 1, 0);
-    GameStateHelper.SetTerritoryTroops(ref state, 1, 1);
-
-    // Enemy neighbour
-    GameStateHelper.SetTerritoryOwner(ref state, 2, 1);
-    GameStateHelper.SetTerritoryTroops(ref state, 2, 1);
-
-    Span<DecisionOption> decisions = stackalloc DecisionOption[8];
-
-    // Act
-    int count = AttackOptionGenerator.Generate(in state, layout, decisions);
-
-    // Assert
-    Assert.Equal(3, count);
-
-    bool foundFriendlyAttack = false;
-    bool foundEnemyAttack = false;
-
-    for (int i = 0; i < count; i++)
+    [Fact]
+    public void ATTACKGEN_005_ShouldIgnoreFriendlyNeighbours()
     {
-        if (decisions[i].Kind != DecisionKind.Attack)
-            continue;
+        // Arrange
+        var layout = TestLayoutBuilder
+            .Create()
+            .WithTerritories(3)
+            .Connect(0, 1)
+            .Connect(0, 2)
+            .Build();
 
-        var attack = decisions[i].GetAttackData();
+        var state = GameStateHelper.CreateEmpty(2, 3);
 
-        if (attack.SourceTerritory == 0 &&
-            attack.TargetTerritory == 1)
+        state.CurrentPhase = GamePhase.Attack;
+        state.PlayerTurn = 0;
+
+        GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 0, 3);
+
+        // Friendly neighbour
+        GameStateHelper.SetTerritoryOwner(ref state, 1, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 1, 1);
+
+        // Enemy neighbour
+        GameStateHelper.SetTerritoryOwner(ref state, 2, 1);
+        GameStateHelper.SetTerritoryTroops(ref state, 2, 1);
+
+        Span<DecisionOption> decisions = stackalloc DecisionOption[8];
+
+        // Act
+        int count = AttackOptionGenerator.Generate(in state, layout, decisions);
+
+        // Assert
+        Assert.Equal(3, count);
+
+        var foundFriendlyAttack = false;
+        var foundEnemyAttack = false;
+
+        for (var i = 0; i < count; i++)
         {
-            foundFriendlyAttack = true;
+            if (decisions[i].Kind != DecisionKind.Attack)
+                continue;
+
+            var attack = decisions[i].GetAttackData();
+
+            if (attack.SourceTerritory == 0 &&
+                attack.TargetTerritory == 1)
+                foundFriendlyAttack = true;
+
+            if (attack.SourceTerritory == 0 &&
+                attack.TargetTerritory == 2)
+                foundEnemyAttack = true;
         }
 
-        if (attack.SourceTerritory == 0 &&
-            attack.TargetTerritory == 2)
-        {
-            foundEnemyAttack = true;
-        }
+        Assert.False(foundFriendlyAttack);
+        Assert.True(foundEnemyAttack);
     }
 
-    Assert.False(foundFriendlyAttack);
-    Assert.True(foundEnemyAttack);
-}
-    
 /*
  * ATTACKGEN-006
  *
@@ -414,61 +397,59 @@ public void ATTACKGEN_005_ShouldIgnoreFriendlyNeighbours()
  * - attacks require at least two troops
  * - phase control decisions remain available
  */
-[Fact]
-public void ATTACKGEN_006_ShouldNotGenerateAttackWithSingleTroop()
-{
-    // Arrange
-    var layout = TestLayoutBuilder
-        .Create()
-        .WithTerritories(2)
-        .Connect(0, 1)
-        .Build();
-
-    var state = GameStateHelper.CreateEmpty(2, 2);
-
-    state.CurrentPhase = GamePhase.Attack;
-    state.PlayerTurn = 0;
-
-    GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
-    GameStateHelper.SetTerritoryTroops(ref state, 0, 1);
-
-    GameStateHelper.SetTerritoryOwner(ref state, 1, 1);
-    GameStateHelper.SetTerritoryTroops(ref state, 1, 1);
-
-    Span<DecisionOption> decisions = stackalloc DecisionOption[8];
-
-    // Act
-    int count = AttackOptionGenerator.Generate(in state, layout, decisions);
-
-    // Assert
-    Assert.Equal(2, count);
-
-    bool foundAttack = false;
-    bool foundSkip = false;
-    bool foundEndTurn = false;
-
-    for (int i = 0; i < count; i++)
+    [Fact]
+    public void ATTACKGEN_006_ShouldNotGenerateAttackWithSingleTroop()
     {
-        switch (decisions[i].Kind)
-        {
-            case DecisionKind.Attack:
-                foundAttack = true;
-                break;
+        // Arrange
+        var layout = TestLayoutBuilder
+            .Create()
+            .WithTerritories(2)
+            .Connect(0, 1)
+            .Build();
 
-            case DecisionKind.SkipPhase:
-                foundSkip = true;
-                break;
+        var state = GameStateHelper.CreateEmpty(2, 2);
 
-            case DecisionKind.EndTurn:
-                foundEndTurn = true;
-                break;
-        }
+        state.CurrentPhase = GamePhase.Attack;
+        state.PlayerTurn = 0;
+
+        GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 0, 1);
+
+        GameStateHelper.SetTerritoryOwner(ref state, 1, 1);
+        GameStateHelper.SetTerritoryTroops(ref state, 1, 1);
+
+        Span<DecisionOption> decisions = stackalloc DecisionOption[8];
+
+        // Act
+        int count = AttackOptionGenerator.Generate(in state, layout, decisions);
+
+        // Assert
+        Assert.Equal(2, count);
+
+        var foundAttack = false;
+        var foundSkip = false;
+        var foundEndTurn = false;
+
+        for (var i = 0; i < count; i++)
+            switch (decisions[i].Kind)
+            {
+                case DecisionKind.Attack:
+                    foundAttack = true;
+                    break;
+
+                case DecisionKind.SkipPhase:
+                    foundSkip = true;
+                    break;
+
+                case DecisionKind.EndTurn:
+                    foundEndTurn = true;
+                    break;
+            }
+
+        Assert.False(foundAttack);
+        Assert.True(foundSkip);
+        Assert.True(foundEndTurn);
     }
-
-    Assert.False(foundAttack);
-    Assert.True(foundSkip);
-    Assert.True(foundEndTurn);
-}
 
 /*
  * ATTACKGEN-007
@@ -479,62 +460,57 @@ public void ATTACKGEN_006_ShouldNotGenerateAttackWithSingleTroop()
  * Guarantees:
  * - no duplicate attack decisions exist
  */
-[Fact]
-public void ATTACKGEN_007_ShouldNotGenerateDuplicateAttacks()
-{
-    // Arrange
-    var layout = TestLayoutBuilder
-        .Create()
-        .WithTerritories(3)
-        .Connect(0, 1)
-        .Connect(0, 2)
-        .Build();
-
-    var state = GameStateHelper.CreateEmpty(2, 3);
-
-    state.CurrentPhase = GamePhase.Attack;
-    state.PlayerTurn = 0;
-
-    GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
-    GameStateHelper.SetTerritoryTroops(ref state, 0, 5);
-
-    GameStateHelper.SetTerritoryOwner(ref state, 1, 1);
-    GameStateHelper.SetTerritoryTroops(ref state, 1, 1);
-
-    GameStateHelper.SetTerritoryOwner(ref state, 2, 1);
-    GameStateHelper.SetTerritoryTroops(ref state, 2, 1);
-
-    Span<DecisionOption> decisions = stackalloc DecisionOption[8];
-
-    // Act
-    int count = AttackOptionGenerator.Generate(in state, layout, decisions);
-
-    // Assert
-    int attack01 = 0;
-    int attack02 = 0;
-
-    for (int i = 0; i < count; i++)
+    [Fact]
+    public void ATTACKGEN_007_ShouldNotGenerateDuplicateAttacks()
     {
-        if (decisions[i].Kind != DecisionKind.Attack)
-            continue;
+        // Arrange
+        var layout = TestLayoutBuilder
+            .Create()
+            .WithTerritories(3)
+            .Connect(0, 1)
+            .Connect(0, 2)
+            .Build();
 
-        var attack = decisions[i].GetAttackData();
+        var state = GameStateHelper.CreateEmpty(2, 3);
 
-        if (attack.SourceTerritory == 0 &&
-            attack.TargetTerritory == 1)
+        state.CurrentPhase = GamePhase.Attack;
+        state.PlayerTurn = 0;
+
+        GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
+        GameStateHelper.SetTerritoryTroops(ref state, 0, 5);
+
+        GameStateHelper.SetTerritoryOwner(ref state, 1, 1);
+        GameStateHelper.SetTerritoryTroops(ref state, 1, 1);
+
+        GameStateHelper.SetTerritoryOwner(ref state, 2, 1);
+        GameStateHelper.SetTerritoryTroops(ref state, 2, 1);
+
+        Span<DecisionOption> decisions = stackalloc DecisionOption[8];
+
+        // Act
+        int count = AttackOptionGenerator.Generate(in state, layout, decisions);
+
+        // Assert
+        var attack01 = 0;
+        var attack02 = 0;
+
+        for (var i = 0; i < count; i++)
         {
-            attack01++;
+            if (decisions[i].Kind != DecisionKind.Attack)
+                continue;
+
+            var attack = decisions[i].GetAttackData();
+
+            if (attack.SourceTerritory == 0 &&
+                attack.TargetTerritory == 1)
+                attack01++;
+
+            if (attack.SourceTerritory == 0 &&
+                attack.TargetTerritory == 2)
+                attack02++;
         }
 
-        if (attack.SourceTerritory == 0 &&
-            attack.TargetTerritory == 2)
-        {
-            attack02++;
-        }
+        Assert.Equal(1, attack01);
+        Assert.Equal(1, attack02);
     }
-
-    Assert.Equal(1, attack01);
-    Assert.Equal(1, attack02);
-}
-
 }

@@ -1,7 +1,10 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
+using RiskEngine.Actions;
+using RiskEngine.Error;
+using RiskEngine.Layout;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout.Validation;
+namespace RiskEngine.Rules;
 
 public static class AttackRules
 {
@@ -14,7 +17,7 @@ public static class AttackRules
         // Territory range check
         if (source >= map.TerritoryCount || target >= map.TerritoryCount)
             return ValidationResult.Invalid(EngineError.InvalidTerritory);
-        
+
         // Source must belong to attacker
         if (GameStateHelper.GetTerritoryOwner(in state, source) != player)
             return ValidationResult.Invalid(EngineError.TerritoryNotOwned);

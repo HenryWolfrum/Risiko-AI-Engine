@@ -1,6 +1,7 @@
-using RiskEngine.Layout.Tests.Helpers;
+using RiskEngine.Map;
+using RiskEngine.Tests.TestInfrastructure;
 
-namespace RiskEngine.Layout.Tests.Map;
+namespace RiskEngine.Tests.Map;
 
 public class MapTraverserUndirectedTests
 {
@@ -123,7 +124,7 @@ public class MapTraverserUndirectedTests
         var map = TestLayoutBuilder
             .Create()
             .WithTerritories(3)
-            .Connect(0, 1)        // 0 <-> 1 (valid)
+            .Connect(0, 1) // 0 <-> 1 (valid)
             .ConnectOneWay(1, 2) // 1 -> 2 (missing 2 -> 1)
             .BuildMap();
 

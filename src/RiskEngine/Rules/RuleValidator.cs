@@ -1,16 +1,18 @@
-﻿using RiskEngine.Layout.Rules;
-using RiskEngine.Layout.Validation;
+﻿using RiskEngine.Actions;
+using RiskEngine.Error;
+using RiskEngine.Layout;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout;
+namespace RiskEngine.Rules;
 
 /// <summary>
-/// Central validation entry point for all player actions.
-/// Ensures that actions are legal in the current phase and game context.
+///     Central validation entry point for all player actions.
+///     Ensures that actions are legal in the current phase and game context.
 /// </summary>
 public static class RuleValidator
 {
     /// <summary>
-    /// Validates an action against the current game state and active rules.
+    ///     Validates an action against the current game state and active rules.
     /// </summary>
     public static ValidationResult Validate(in GameState state, in GameAction action, GameLayout game)
     {
@@ -25,32 +27,29 @@ public static class RuleValidator
 
         // Skip and end actions are phase control commands.
         // They do not require additional rule validation.
-        if (action.Type == ActionType.SkipPhase || action.Type == ActionType.EndTurn)
-        {
-            return ValidationResult.Valid();
-        }
+        if (action.Type == ActionType.SkipPhase || action.Type == ActionType.EndTurn) return ValidationResult.Valid();
 
 
         // Validate action according to its specific rule set
         return action.Type switch
         {
-            ActionType.Reinforce => ReinforceRules.Validate(in state, in action,game.Map),
-            
+            ActionType.Reinforce => ReinforceRules.Validate(in state, in action, game.Map),
+
             ActionType.Attack => AttackRules.Validate(in state, in action, game.Map),
 
             ActionType.Fortify => FortifyRules.Validate(in state, in action, game.Map),
 
             ActionType.TurnInCards => TurnInCardsRules.Validate(in state, in action, game.Deck),
 
-           ActionType.Conquer => ConquerRules.Validate(in state, in action,game.Map),
-            
+            ActionType.Conquer => ConquerRules.Validate(in state, in action, game.Map),
+
             _ => ValidationResult.Invalid(EngineError.InvalidAction)
         };
     }
 
 
     /// <summary>
-    /// Checks whether an action type is allowed during the current phase.
+    ///     Checks whether an action type is allowed during the current phase.
     /// </summary>
     private static ValidationResult IsActionAllowedInPhase(GamePhase phase, ActionType action)
     {
@@ -78,7 +77,7 @@ public static class RuleValidator
             GamePhase.Attack => action switch
             {
                 ActionType.Attack => ValidationResult.Valid(),
-                
+
                 ActionType.Defend => ValidationResult.Valid(),
 
                 ActionType.SkipPhase => ValidationResult.Valid(),
@@ -91,7 +90,7 @@ public static class RuleValidator
 
             // Conquer phase is mandatory after a successful conquest
             GamePhase.Conquer => action switch
-            { 
+            {
                 ActionType.Conquer => ValidationResult.Valid(),
 
                 _ => ValidationResult.Invalid(EngineError.ActionNotAllowedInPhase)
@@ -109,7 +108,7 @@ public static class RuleValidator
 
                 _ => ValidationResult.Invalid(EngineError.ActionNotAllowedInPhase)
             },
-            
+
             _ => ValidationResult.Invalid(EngineError.ActionNotAllowedInPhase)
         };
     }

@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.Layout;
+﻿namespace RiskEngine.Actions;
 
 /// <summary>
 ///     Defines all discrete player action types in the Risk engine.
@@ -6,12 +6,12 @@
 public enum ActionType : byte
 {
     NotInitialized,
-    TurnInCards, 
-    Reinforce, 
-    Attack, 
-    Defend, 
+    TurnInCards,
+    Reinforce,
+    Attack,
+    Defend,
     Conquer,
-    Fortify, 
-    SkipPhase, 
-    EndTurn 
+    Fortify,
+    SkipPhase,
+    EndTurn
 }

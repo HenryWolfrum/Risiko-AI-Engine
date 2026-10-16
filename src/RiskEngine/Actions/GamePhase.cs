@@ -1,7 +1,7 @@
-﻿namespace RiskEngine.Layout;
+﻿namespace RiskEngine.Actions;
 
 /// <summary>
-/// Is used to keep track of the current game phase in order to process the next simulation steps
+///     Is used to keep track of the current game phase in order to process the next simulation steps
 /// </summary>
 public enum GamePhase : byte
 {
@@ -12,6 +12,5 @@ public enum GamePhase : byte
     Defend,
     Conquer,
     Fortify,
-    Terminated,
-    
+    Terminated
 }

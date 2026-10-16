@@ -1,9 +1,9 @@
-﻿
+﻿using RiskEngine.Constants;
 
-using RiskEngine.Layout;
+namespace RiskEngine.Decisions;
 
 /// <summary>
-/// Represents a compact, continuous integer interval for parameterized choices (e.g., troop counts, dice counts).
+///     Represents a compact, continuous integer interval for parameterized choices (e.g., troop counts, dice counts).
 /// </summary>
 public readonly struct ParameterSpace
 {
@@ -21,5 +21,8 @@ public readonly struct ParameterSpace
         Max = max;
     }
 
-    public bool Contains(byte value) => value >= Min && value <= Max;
+    public bool Contains(byte value)
+    {
+        return value >= Min && value <= Max;
+    }
 }

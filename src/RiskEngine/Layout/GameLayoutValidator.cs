@@ -1,10 +1,17 @@
+using RiskEngine.Cards;
+using RiskEngine.Constants;
+using RiskEngine.Core;
+using RiskEngine.Error;
+using RiskEngine.Map;
 using RiskEngine.Mission;
+using RiskEngine.Rules;
 
 namespace RiskEngine.Layout;
 
 public static class GameLayoutValidator
 {
-    public static ValidationResult Validate(MapLayout map, DeckLayout deck, EngineConfig config,MissionCatalog missions)
+    public static ValidationResult Validate(MapLayout map, DeckLayout deck, EngineConfig config,
+        MissionCatalog missions)
     {
         var result = ValidateConfig(config);
         if (!result.IsValid)
@@ -13,7 +20,7 @@ public static class GameLayoutValidator
         result = ValidateMap(map);
         if (!result.IsValid)
             return result;
-        
+
         result = ValidateContinents(map);
         if (!result.IsValid)
             return result;
@@ -25,7 +32,7 @@ public static class GameLayoutValidator
         result = ValidateCrossLayout(map, deck);
         if (!result.IsValid)
             return result;
-        
+
         result = ValidateMissions(missions, map, config);
         if (!result.IsValid) return result;
 
@@ -36,118 +43,108 @@ public static class GameLayoutValidator
     {
         //PlayerCount
         if (config.PlayerCount < EngineConstants.MIN_PLAYERS || config.PlayerCount > EngineConstants.MAX_PLAYERS)
-        {
             return ValidationResult.Invalid(EngineError.InvalidPlayerCount);
-        }
 
         if (config.MaxRounds == 0 || config.MaxRounds > EngineConstants.MAX_ROUNDS)
-        {
             return ValidationResult.Invalid(EngineError.InvalidMaxRounds);
-        }
 
         return ValidationResult.Valid();
     }
 
-   private static ValidationResult ValidateMap(MapLayout map)
-{
-    // ==========================================
-    // 1. TerritoryCount
-    // ==========================================
-
-    if (map.TerritoryCount == 0)
-        return ValidationResult.Invalid(EngineError.InvalidTerritoryCount);
-
-    if (map.TerritoryCount > EngineConstants.MAX_TERRITORIES)
-        return ValidationResult.Invalid(EngineError.InvalidTerritoryCount);
-
-    if (map.TerritoryNames.Length != map.TerritoryCount)
-        return ValidationResult.Invalid(EngineError.InvalidTerritoryCount);
-
-    if (map.Adjacencies.Length != map.TerritoryCount)
-        return ValidationResult.Invalid(EngineError.InvalidTerritoryCount);
-
-
-    // ==========================================
-    // 2. Territory Names
-    // ==========================================
-
-    var existingNames = new HashSet<string>();
-
-    for (int territory = 0; territory < map.TerritoryCount; territory++)
+    private static ValidationResult ValidateMap(MapLayout map)
     {
-        var name = map.TerritoryNames[territory];
+        // ==========================================
+        // 1. TerritoryCount
+        // ==========================================
 
-        if (string.IsNullOrWhiteSpace(name))
-            return ValidationResult.Invalid(EngineError.InvalidTerritoryName);
+        if (map.TerritoryCount == 0)
+            return ValidationResult.Invalid(EngineError.InvalidTerritoryCount);
 
-        if (!existingNames.Add(name))
-            return ValidationResult.Invalid(EngineError.InvalidTerritoryName);
-    }
+        if (map.TerritoryCount > EngineConstants.MAX_TERRITORIES)
+            return ValidationResult.Invalid(EngineError.InvalidTerritoryCount);
+
+        if (map.TerritoryNames.Length != map.TerritoryCount)
+            return ValidationResult.Invalid(EngineError.InvalidTerritoryCount);
+
+        if (map.Adjacencies.Length != map.TerritoryCount)
+            return ValidationResult.Invalid(EngineError.InvalidTerritoryCount);
 
 
-    // ==========================================
-    // 3. Adjacency Lists
-    // ==========================================
+        // ==========================================
+        // 2. Territory Names
+        // ==========================================
 
-    for (byte territory = 0; territory < map.TerritoryCount; territory++)
-    {
-        var neighbours = map.Adjacencies[territory];
+        var existingNames = new HashSet<string>();
 
-        if (neighbours == null)
-            return ValidationResult.Invalid(EngineError.InvalidAdjacency);
-
-        var visitedNeighbours = new HashSet<byte>();
-
-        foreach (var neighbour in neighbours)
+        for (var territory = 0; territory < map.TerritoryCount; territory++)
         {
-            // Territory must exist
-            if (neighbour >= map.TerritoryCount)
-                return ValidationResult.Invalid(EngineError.InvalidAdjacency);
+            var name = map.TerritoryNames[territory];
 
-            // No self-loop
-            if (neighbour == territory)
-                return ValidationResult.Invalid(EngineError.InvalidAdjacency);
+            if (string.IsNullOrWhiteSpace(name))
+                return ValidationResult.Invalid(EngineError.InvalidTerritoryName);
 
-            // No duplicate neighbours
-            if (!visitedNeighbours.Add(neighbour))
-                return ValidationResult.Invalid(EngineError.InvalidAdjacency);
+            if (!existingNames.Add(name))
+                return ValidationResult.Invalid(EngineError.InvalidTerritoryName);
         }
+
+
+        // ==========================================
+        // 3. Adjacency Lists
+        // ==========================================
+
+        for (byte territory = 0; territory < map.TerritoryCount; territory++)
+        {
+            var neighbours = map.Adjacencies[territory];
+
+            if (neighbours == null)
+                return ValidationResult.Invalid(EngineError.InvalidAdjacency);
+
+            var visitedNeighbours = new HashSet<byte>();
+
+            foreach (var neighbour in neighbours)
+            {
+                // Territory must exist
+                if (neighbour >= map.TerritoryCount)
+                    return ValidationResult.Invalid(EngineError.InvalidAdjacency);
+
+                // No self-loop
+                if (neighbour == territory)
+                    return ValidationResult.Invalid(EngineError.InvalidAdjacency);
+
+                // No duplicate neighbours
+                if (!visitedNeighbours.Add(neighbour))
+                    return ValidationResult.Invalid(EngineError.InvalidAdjacency);
+            }
+        }
+
+
+        // ==========================================
+        // 4. Map must be connected
+        // ==========================================
+
+        if (!MapTraverser.IsConnected(map)) return ValidationResult.Invalid(EngineError.MapNotConnected);
+
+        // ==========================================
+        // 5. Map must be undirected
+        // ==========================================
+
+        if (!MapTraverser.IsUndirected(map)) return ValidationResult.Invalid(EngineError.MapNotUndirected);
+
+
+        return ValidationResult.Valid();
     }
 
-    
-    // ==========================================
-    // 4. Map must be connected
-    // ==========================================
-    
-    if (!MapTraverser.IsConnected(map))
-    {
-        return ValidationResult.Invalid(EngineError.MapNotConnected);
-    }
-    
-    // ==========================================
-    // 5. Map must be undirected
-    // ==========================================
-
-    if (!MapTraverser.IsUndirected(map))
-    {
-        return ValidationResult.Invalid(EngineError.MapNotUndirected);
-    }
-    
-
-    return ValidationResult.Valid();
-}
-   
-       private static ValidationResult ValidateContinents(MapLayout map)
+    private static ValidationResult ValidateContinents(MapLayout map)
     {
         // Keine Kontinente
         if (map.Continents == null || map.Continents.Length == 0)
             return ValidationResult.Invalid(EngineError.InvalidContinentId);
-    
+
         var ids = new HashSet<byte>();
         var names = new HashSet<string>();
-    
+
         var territoryCounter = new int[map.Continents.Length];
-    
+
         // ----------------------------
         // Kontinente prüfen
         // ----------------------------
@@ -155,53 +152,51 @@ public static class GameLayoutValidator
         {
             if (!ids.Add(continent.Id))
                 return ValidationResult.Invalid(EngineError.DuplicateContinentId);
-    
+
             if (string.IsNullOrWhiteSpace(continent.Name))
                 return ValidationResult.Invalid(EngineError.DuplicateContinentName);
-    
+
             if (!names.Add(continent.Name))
                 return ValidationResult.Invalid(EngineError.DuplicateContinentName);
         }
-    
+
         // IDs müssen 0..N-1 sein
         for (byte i = 0; i < map.Continents.Length; i++)
-        {
             if (map.Continents[i].Id != i)
                 return ValidationResult.Invalid(EngineError.InvalidContinentId);
-        }
-    
+
         // ----------------------------
         // Territory -> Continent Mapping
         // ----------------------------
         if (map.TerritoryToContinent.Length != map.TerritoryCount)
             return ValidationResult.Invalid(EngineError.InvalidTerritoryToContinentMapping);
-    
-        for (int territory = 0; territory < map.TerritoryCount; territory++)
+
+        for (var territory = 0; territory < map.TerritoryCount; territory++)
         {
             var continentId = map.TerritoryToContinent[territory];
-    
+
             if (continentId >= map.Continents.Length)
                 return ValidationResult.Invalid(EngineError.InvalidTerritoryToContinentMapping);
-    
+
             territoryCounter[continentId]++;
         }
-    
+
         // ----------------------------
         // TerritoryCount je Kontinent
         // ----------------------------
-        int total = 0;
-    
-        for (int i = 0; i < map.Continents.Length; i++)
+        var total = 0;
+
+        for (var i = 0; i < map.Continents.Length; i++)
         {
             if (territoryCounter[i] != map.Continents[i].TerritoryCount)
                 return ValidationResult.Invalid(EngineError.InvalidContinentTerritoryCount);
-    
+
             total += territoryCounter[i];
         }
-    
+
         if (total != map.TerritoryCount)
             return ValidationResult.Invalid(EngineError.InvalidContinentTerritoryCount);
-    
+
         return ValidationResult.Valid();
     }
 
@@ -210,164 +205,153 @@ public static class GameLayoutValidator
         // ----------------------------
         // 1. Basic Checks
         // ----------------------------
-    
+
         if (deck.TerritoryToType == null)
             return ValidationResult.Invalid(EngineError.InvalidCardCount);
-    
+
         if (deck.CardCount == 0 || deck.CardCount > EngineConstants.MAX_TERRITORIES + EngineConstants.JOKER_COUNT)
             return ValidationResult.Invalid(EngineError.InvalidCardCount);
-        
-    
+
+
         // ----------------------------
         // 2. Count Card Types
         // ----------------------------
-    
-        int infantry = 0;
-        int cavalry = 0;
-        int artillery = 0;
-        int jokers = 0;
-    
-        for (int i = 0; i < deck.CardCount; i++)
-        {
+
+        var infantry = 0;
+        var cavalry = 0;
+        var artillery = 0;
+        var jokers = 0;
+
+        for (var i = 0; i < deck.CardCount; i++)
             switch (deck.TerritoryToType[i])
             {
                 case CardType.Infantry:
                     infantry++;
                     break;
-    
+
                 case CardType.Cavalry:
                     cavalry++;
                     break;
-    
+
                 case CardType.Artillery:
                     artillery++;
                     break;
-    
+
                 case CardType.Joker:
                     jokers++;
                     break;
-    
+
                 default:
                     return ValidationResult.Invalid(EngineError.InvalidCardType);
             }
-        }
-    
+
         // ----------------------------
         // 3. Joker Count
         // ----------------------------
-    
+
         if (jokers != EngineConstants.JOKER_COUNT)
             return ValidationResult.Invalid(EngineError.InvalidJokerCount);
-    
+
         // ----------------------------
         // 4. Joker Position
         // ----------------------------
-    
-        for (int i = 0; i < deck.CardCount - EngineConstants.JOKER_COUNT; i++)
-        {
+
+        for (var i = 0; i < deck.CardCount - EngineConstants.JOKER_COUNT; i++)
             if (deck.TerritoryToType[i] == CardType.Joker)
                 return ValidationResult.Invalid(EngineError.InvalidJokerPosition);
-        }
-    
-        for (int i = deck.CardCount - EngineConstants.JOKER_COUNT; i < deck.CardCount; i++)
-        {
+
+        for (var i = deck.CardCount - EngineConstants.JOKER_COUNT; i < deck.CardCount; i++)
             if (deck.TerritoryToType[i] != CardType.Joker)
                 return ValidationResult.Invalid(EngineError.InvalidJokerPosition);
-        }
-    
+
         // ----------------------------
         // 5. Balanced Distribution
         // ----------------------------
-    
-        int min = Math.Min(infantry, Math.Min(cavalry, artillery));
-        int max = Math.Max(infantry, Math.Max(cavalry, artillery));
-    
+
+        var min = Math.Min(infantry, Math.Min(cavalry, artillery));
+        var max = Math.Max(infantry, Math.Max(cavalry, artillery));
+
         if (max - min > 1)
             return ValidationResult.Invalid(EngineError.InvalidCardTypeDistribution);
-    
+
         return ValidationResult.Valid();
     }
 
     private static ValidationResult ValidateCrossLayout(MapLayout map, DeckLayout deck)
     {
-        if (deck.TerritoryCardCount != map.TerritoryCount)
-        {
-            return ValidationResult.Invalid(EngineError.LayoutMismatch);
-        }
-        
+        if (deck.TerritoryCardCount != map.TerritoryCount) return ValidationResult.Invalid(EngineError.LayoutMismatch);
+
 
         return ValidationResult.Valid();
     }
-    
-    
+
+
     private static ValidationResult ValidateMissions(MissionCatalog missions, MapLayout map, EngineConfig config)
-{
-    // A game without missions is valid (Fallback to WorldDomination happens in GameInitializer)
-    if (missions.Count == 0)
-        return ValidationResult.Valid();
-
-    var ids = new HashSet<byte>();
-    
-    // Create a bitmask representing all valid continents (e.g. 6 Continents = 0b0011_1111)
-    ulong validContinentBits = (1UL << map.Continents.Length) - 1;
-
-    for (int i = 0; i < missions.Count; i++)
     {
-        ref readonly var mission = ref missions[i];
+        // A game without missions is valid (Fallback to WorldDomination happens in GameInitializer)
+        if (missions.Count == 0)
+            return ValidationResult.Valid();
 
-        // ----------------------------
-        // 1. Check uniqueness
-        // ----------------------------
-        if (!ids.Add(mission.Id))
-            return ValidationResult.Invalid(EngineError.DuplicateMissionId);
+        var ids = new HashSet<byte>();
 
-        // ----------------------------
-        // 2. Validate Targets based on Type
-        // ----------------------------
-        switch (mission.Type)
+        // Create a bitmask representing all valid continents (e.g. 6 Continents = 0b0011_1111)
+        var validContinentBits = (1UL << map.Continents.Length) - 1;
+
+        for (var i = 0; i < missions.Count; i++)
         {
-            case MissionType.WorldDomination:
-                // No parameters to validate
-                break;
+            ref readonly var mission = ref missions[i];
 
-            case MissionType.ConquerTerritories:
-                if (mission.RequiredTerritories == 0 || mission.RequiredTerritories > map.TerritoryCount)
-                    return ValidationResult.Invalid(EngineError.InvalidMissionTerritoryTarget);
-                
-                // Optional: MinTroopsPerTerritory check (e.g. shouldn't be impossibly high)
-                break;
+            // ----------------------------
+            // 1. Check uniqueness
+            // ----------------------------
+            if (!ids.Add(mission.Id))
+                return ValidationResult.Invalid(EngineError.DuplicateMissionId);
 
-            case MissionType.ConquerContinents:
-                if (mission.TargetContinentMask == 0)
-                    return ValidationResult.Invalid(EngineError.InvalidMissionContinent);
+            // ----------------------------
+            // 2. Validate Targets based on Type
+            // ----------------------------
+            switch (mission.Type)
+            {
+                case MissionType.WorldDomination:
+                    // No parameters to validate
+                    break;
 
-                // Ensure the mission mask doesn't request bits for continents that don't exist
-                if ((mission.TargetContinentMask & ~validContinentBits) != 0)
-                    return ValidationResult.Invalid(EngineError.InvalidMissionContinent);
-                break;
+                case MissionType.ConquerTerritories:
+                    if (mission.RequiredTerritories == 0 || mission.RequiredTerritories > map.TerritoryCount)
+                        return ValidationResult.Invalid(EngineError.InvalidMissionTerritoryTarget);
 
-            case MissionType.EliminatePlayer:
-                // Note: The classic boardgame allows targetting yourself (resolved in Setup). 
-                // However, the target ID must not exceed the theoretical maximum player count.
-                if (mission.TargetPlayerId >= EngineConstants.MAX_PLAYERS)
-                    return ValidationResult.Invalid(EngineError.InvalidMissionPlayerTarget);
-                break;
+                    // Optional: MinTroopsPerTerritory check (e.g. shouldn't be impossibly high)
+                    break;
 
-            default:
-                return ValidationResult.Invalid(EngineError.InvalidMissionType);
+                case MissionType.ConquerContinents:
+                    if (mission.TargetContinentMask == 0)
+                        return ValidationResult.Invalid(EngineError.InvalidMissionContinent);
+
+                    // Ensure the mission mask doesn't request bits for continents that don't exist
+                    if ((mission.TargetContinentMask & ~validContinentBits) != 0)
+                        return ValidationResult.Invalid(EngineError.InvalidMissionContinent);
+                    break;
+
+                case MissionType.EliminatePlayer:
+                    // Note: The classic boardgame allows targetting yourself (resolved in Setup). 
+                    // However, the target ID must not exceed the theoretical maximum player count.
+                    if (mission.TargetPlayerId >= EngineConstants.MAX_PLAYERS)
+                        return ValidationResult.Invalid(EngineError.InvalidMissionPlayerTarget);
+                    break;
+
+                default:
+                    return ValidationResult.Invalid(EngineError.InvalidMissionType);
+            }
         }
-    }
 
-    // ----------------------------
-    // 3. ID Sequentiality (Optional but recommended)
-    // ----------------------------
-    // Ensure IDs are 0 to Count-1 for direct array mapping
-    for (byte i = 0; i < missions.Count; i++)
-    {
-        if (!ids.Contains(i))
-            return ValidationResult.Invalid(EngineError.InvalidMissionIdSequence);
-    }
+        // ----------------------------
+        // 3. ID Sequentiality (Optional but recommended)
+        // ----------------------------
+        // Ensure IDs are 0 to Count-1 for direct array mapping
+        for (byte i = 0; i < missions.Count; i++)
+            if (!ids.Contains(i))
+                return ValidationResult.Invalid(EngineError.InvalidMissionIdSequence);
 
-    return ValidationResult.Valid();
-}
+        return ValidationResult.Valid();
+    }
 }

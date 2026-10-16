@@ -1,59 +1,48 @@
-using System;
 using Raylib_cs;
-using RiskEngine.Layout.AI.Configuration;
-using RiskEngine.Layout.Replay.Recording;
 
-
-namespace RiskEngine.Layout.Replay.GUI;
+namespace RiskEngine.Replay.GUI;
 
 // Main script for organizing and running the replay view
 public static class ReplayViewer
 {
-    public static Font DefaultFont { get; private set; }
-    
     // Klassische "Missing Texture / Error"-Farbe (Magenta/Pink)
     public static readonly Color ErrorColor = Color.Magenta;
 
     // Feste Definition der 4 Spielerfarben (gut lesbar mit hohem Kontrast)
     private static readonly Color[] PlayerColors =
     [
-        new Color(220, 50, 50, 255),   
-        new Color(50, 120, 220, 255), 
-        new Color(50, 180, 80, 255),  
-        new Color(240, 200, 40, 255)   
+        new(220, 50, 50, 255),
+        new(50, 120, 220, 255),
+        new(50, 180, 80, 255),
+        new(240, 200, 40, 255)
     ];
 
+    public static Font DefaultFont { get; private set; }
+
     /// <summary>
-    /// Liefert die Farbe für den angegebenen Spieler-Index.
-    /// Falls der Index ungültig ist, wird Magenta (Error Color) zurückgegeben.
+    ///     Liefert die Farbe für den angegebenen Spieler-Index.
+    ///     Falls der Index ungültig ist, wird Magenta (Error Color) zurückgegeben.
     /// </summary>
     public static Color GetPlayerColor(int playerIndex)
     {
-        if (playerIndex >= 0 && playerIndex < PlayerColors.Length)
-        {
-            return PlayerColors[playerIndex];
-        }
+        if (playerIndex >= 0 && playerIndex < PlayerColors.Length) return PlayerColors[playerIndex];
 
         // Ungültiger Index -> Error-Farbe (Magenta)
         return ErrorColor;
     }
 
- 
 
     public static void Run(ReplayPlayer player, int screenWidth, int screenHeight)
     {
         InitializeView(screenWidth, screenHeight);
-        
-        ViewLayout layout = ViewLayoutFactory.CreateDefault(screenWidth, screenHeight);
-        
-        ReplayMode currentMode = ReplayMode.Frame;
+
+        var layout = ViewLayoutFactory.CreateDefault(screenWidth, screenHeight);
+
+        var currentMode = ReplayMode.Frame;
 
         if (!player.IsFirstFrame)
         {
-            if (player.FrameCount == 0)
-            {
-                throw new ArgumentException("Replay player must have a frame count.");
-            }
+            if (player.FrameCount == 0) throw new ArgumentException("Replay player must have a frame count.");
 
             // Go to initial frame
             player.JumpTo(0);
@@ -75,8 +64,8 @@ public static class ReplayViewer
 
             // 3. Durch UI ausgelöste Aktionen verarbeiten
             currentMode = context.Mode;
-            ReplayAction pendingAction = context.PendingAction;
-            
+            var pendingAction = context.PendingAction;
+
             UpdateView(ref currentMode, ref pendingAction, player);
         }
 
@@ -84,7 +73,7 @@ public static class ReplayViewer
         Raylib.CloseWindow();
     }
 
-    
+
     public static void InitializeView(int screenWidth, int screenHeight)
     {
         Raylib.SetConfigFlags(ConfigFlags.ResizableWindow | ConfigFlags.Msaa4xHint);
@@ -95,9 +84,9 @@ public static class ReplayViewer
         DefaultFont = Raylib.GetFontDefault();
         Raylib.SetTextureFilter(DefaultFont.Texture, TextureFilter.Bilinear);
     }
-    
+
     /// <summary>
-    /// Handles replay actions and interacts with the player accordingly.
+    ///     Handles replay actions and interacts with the player accordingly.
     /// </summary>
     public static void UpdateView(ref ReplayMode mode, ref ReplayAction action, ReplayPlayer player)
     {
@@ -109,10 +98,10 @@ public static class ReplayViewer
                 // Cycle through step modes: Frame -> Phase -> Player -> Round -> Frame
                 mode = mode switch
                 {
-                    ReplayMode.Frame  => ReplayMode.Phase,
-                    ReplayMode.Phase  => ReplayMode.Player,
+                    ReplayMode.Frame => ReplayMode.Phase,
+                    ReplayMode.Phase => ReplayMode.Player,
                     ReplayMode.Player => ReplayMode.Round,
-                    _                 => ReplayMode.Frame
+                    _ => ReplayMode.Frame
                 };
                 break;
 
@@ -133,6 +122,7 @@ public static class ReplayViewer
                         player.NextRound();
                         break;
                 }
+
                 break;
 
             case ReplayAction.Previous:
@@ -152,6 +142,7 @@ public static class ReplayViewer
                         player.PreviousRound();
                         break;
                 }
+
                 break;
         }
 
@@ -161,9 +152,6 @@ public static class ReplayViewer
 
     public static void RenderView(ViewLayout layout, ReplayUIContext context)
     {
-        foreach (ViewSection section in layout.Sections)
-        {
-            section.Renderer.Render(section.Bounds, context);
-        }
+        foreach (var section in layout.Sections) section.Renderer.Render(section.Bounds, context);
     }
 }

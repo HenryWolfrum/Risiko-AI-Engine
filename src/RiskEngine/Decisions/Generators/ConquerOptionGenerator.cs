@@ -1,14 +1,14 @@
-﻿using System;
-using RiskEngine.Layout.Exceptions;
-using RiskEngine.Layout.Decisions;
+﻿using RiskEngine.Constants;
+using RiskEngine.Error;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout.Generation;
+namespace RiskEngine.Decisions.Generators;
 
 public static class ConquerOptionGenerator
 {
     /// <summary>
-    /// Generates the single parameterized conquer (occupation) move option.
-    /// Specifies the source, target, and troop bounds (min to max) that can/must be moved.
+    ///     Generates the single parameterized conquer (occupation) move option.
+    ///     Specifies the source, target, and troop bounds (min to max) that can/must be moved.
     /// </summary>
     public static int Generate(in GameState state, Span<DecisionOption> options)
     {
@@ -17,34 +17,30 @@ public static class ConquerOptionGenerator
 
         // Fail-fast Guard 1: Cache auf Gültigkeit prüfen (#255 fangen, BEVOR der Underflow passiert)
         if (source == EngineConstants.NO_VALUE || target == EngineConstants.NO_VALUE)
-        {
             throw new InvalidGameActionException(
                 $"Cannot generate conquer options! State cache is uninitialized.\n" +
                 $"  • AttackerTerritory: #{source}\n" +
                 $"  • DefenderTerritory: #{target}"
             );
-        }
 
         // Truppen des Angreifers auf dem Ursprungsterritorium (in state für Zero-Allocation)
-        byte sourceTroops = GameStateHelper.GetTerritoryTroops(in state, source);
+        var sourceTroops = GameStateHelper.GetTerritoryTroops(in state, source);
 
         // Fail-fast Guard 2: Mindestens 2 Truppen erforderlich (1 muss stehen bleiben)
         if (sourceTroops < 2)
-        {
             throw new InvalidGameActionException(
                 $"Cannot generate conquer options for territory #{source} with only {sourceTroops} troops!\n" +
                 $"At least 2 troops are required on source territory to perform a move."
             );
-        }
 
-        byte maxTroops = (byte)(sourceTroops - 1);
-        byte minTroops = 1; 
+        var maxTroops = (byte)(sourceTroops - 1);
+        byte minTroops = 1;
 
         options[0] = DecisionOption.Conquer(
-            source: source,
-            target: target,
-            minTroops: minTroops,
-            maxTroops: maxTroops
+            source,
+            target,
+            minTroops,
+            maxTroops
         );
 
         return 1;

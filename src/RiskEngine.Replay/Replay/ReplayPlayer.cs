@@ -1,18 +1,16 @@
-﻿using RiskEngine.Layout;
+﻿using RiskEngine.Actions;
 
-namespace RiskEngine.Layout.Replay;
+namespace RiskEngine.Replay;
 
 /// <summary>
-/// Provides navigation through a recorded replay.
+///     Provides navigation through a recorded replay.
 /// </summary>
 public sealed class ReplayPlayer
 {
     public readonly Replay _replay;
 
-    private int _currentFrame;
-
     /// <summary>
-    /// Creates a replay player.
+    ///     Creates a replay player.
     /// </summary>
     public ReplayPlayer(Replay replay)
     {
@@ -25,201 +23,178 @@ public sealed class ReplayPlayer
     }
 
     /// <summary>
-    /// Gets the currently selected frame.
+    ///     Gets the currently selected frame.
     /// </summary>
-    public ReplayFrame CurrentFrame => _replay.Frames[_currentFrame];
+    public ReplayFrame CurrentFrame => _replay.Frames[CurrentFrameIndex];
 
     /// <summary>
-    /// Gets the index of the currently selected frame.
+    ///     Gets the index of the currently selected frame.
     /// </summary>
-    public int CurrentFrameIndex => _currentFrame;
+    public int CurrentFrameIndex { get; private set; }
 
     /// <summary>
-    /// Gets the total number of recorded frames.
+    ///     Gets the total number of recorded frames.
     /// </summary>
     public int FrameCount => _replay.Frames.Count;
 
     /// <summary>
-    /// Gets whether the current frame is the first frame.
+    ///     Gets whether the current frame is the first frame.
     /// </summary>
-    public bool IsFirstFrame => _currentFrame == 0;
+    public bool IsFirstFrame => CurrentFrameIndex == 0;
 
     /// <summary>
-    /// Gets whether the current frame is the last frame.
+    ///     Gets whether the current frame is the last frame.
     /// </summary>
-    public bool IsLastFrame => _currentFrame == _replay.Frames.Count - 1;
+    public bool IsLastFrame => CurrentFrameIndex == _replay.Frames.Count - 1;
 
     /// <summary>
-    /// Moves to the next recorded event.
+    ///     Moves to the next recorded event.
     /// </summary>
     public bool NextFrame()
     {
         if (IsLastFrame)
             return false;
 
-        _currentFrame++;
+        CurrentFrameIndex++;
         return true;
     }
 
     /// <summary>
-    /// Moves to the previous recorded event.
+    ///     Moves to the previous recorded event.
     /// </summary>
     public bool PreviousFrame()
     {
         if (IsFirstFrame)
             return false;
 
-        _currentFrame--;
+        CurrentFrameIndex--;
         return true;
     }
 
     /// <summary>
-    /// Moves to the first frame of the next round.
+    ///     Moves to the first frame of the next round.
     /// </summary>
     public bool NextRound()
     {
         ushort currentRound = CurrentFrame.State.CurrentRound;
 
         while (NextFrame())
-        {
             if (CurrentFrame.State.CurrentRound != currentRound)
                 return true;
-        }
 
         return false;
     }
 
-  
 
     /// <summary>
-    /// Moves to the first frame of the next player's turn.
+    ///     Moves to the first frame of the next player's turn.
     /// </summary>
     public bool NextPlayer()
     {
         byte currentPlayer = CurrentFrame.State.PlayerTurn;
 
         while (NextFrame())
-        {
             if (CurrentFrame.State.PlayerTurn != currentPlayer)
                 return true;
-        }
 
         return false;
     }
 
-    
+
     public bool NextPhase()
     {
         GamePhase currentPhase = CurrentFrame.State.CurrentPhase;
 
         while (NextFrame())
-        {
             if (CurrentFrame.State.CurrentPhase != currentPhase)
                 return true;
+
+        return false;
+    }
+
+    /// <summary>
+    ///     Moves to the first frame of the previous round.
+    /// </summary>
+    public bool PreviousRound()
+    {
+        if (IsFirstFrame) return false;
+
+        ushort startRound = CurrentFrame.State.CurrentRound;
+
+        // 1. Zurückgehen, bis wir nicht mehr in der aktuellen Runde sind
+        while (!IsFirstFrame && CurrentFrame.State.CurrentRound == startRound) PreviousFrame();
+
+        // 2. Falls wir in einer früheren Runde gelandet sind, bis zu deren ERSTEM Frame zurückspulen
+        if (CurrentFrame.State.CurrentRound != startRound)
+        {
+            ushort targetRound = CurrentFrame.State.CurrentRound;
+            while (CurrentFrameIndex > 0 && _replay.Frames[CurrentFrameIndex - 1].State.CurrentRound == targetRound)
+                CurrentFrameIndex--;
+            return true;
         }
 
         return false;
     }
 
     /// <summary>
-/// Moves to the first frame of the previous round.
-/// </summary>
-public bool PreviousRound()
-{
-    if (IsFirstFrame) return false;
-
-    ushort startRound = CurrentFrame.State.CurrentRound;
-
-    // 1. Zurückgehen, bis wir nicht mehr in der aktuellen Runde sind
-    while (!IsFirstFrame && CurrentFrame.State.CurrentRound == startRound)
+    ///     Moves to the first frame of the previous player's turn.
+    /// </summary>
+    public bool PreviousPlayer()
     {
-        PreviousFrame();
-    }
+        if (IsFirstFrame) return false;
 
-    // 2. Falls wir in einer früheren Runde gelandet sind, bis zu deren ERSTEM Frame zurückspulen
-    if (CurrentFrame.State.CurrentRound != startRound)
-    {
-        ushort targetRound = CurrentFrame.State.CurrentRound;
-        while (_currentFrame > 0 && _replay.Frames[_currentFrame - 1].State.CurrentRound == targetRound)
+        byte startPlayer = CurrentFrame.State.PlayerTurn;
+
+        while (!IsFirstFrame && CurrentFrame.State.PlayerTurn == startPlayer) PreviousFrame();
+
+        if (CurrentFrame.State.PlayerTurn != startPlayer)
         {
-            _currentFrame--;
+            byte targetPlayer = CurrentFrame.State.PlayerTurn;
+            while (CurrentFrameIndex > 0 && _replay.Frames[CurrentFrameIndex - 1].State.PlayerTurn == targetPlayer)
+                CurrentFrameIndex--;
+            return true;
         }
-        return true;
+
+        return false;
     }
 
-    return false;
-}
-
-/// <summary>
-/// Moves to the first frame of the previous player's turn.
-/// </summary>
-public bool PreviousPlayer()
-{
-    if (IsFirstFrame) return false;
-
-    byte startPlayer = CurrentFrame.State.PlayerTurn;
-
-    while (!IsFirstFrame && CurrentFrame.State.PlayerTurn == startPlayer)
-    {
-        PreviousFrame();
-    }
-
-    if (CurrentFrame.State.PlayerTurn != startPlayer)
-    {
-        byte targetPlayer = CurrentFrame.State.PlayerTurn;
-        while (_currentFrame > 0 && _replay.Frames[_currentFrame - 1].State.PlayerTurn == targetPlayer)
-        {
-            _currentFrame--;
-        }
-        return true;
-    }
-
-    return false;
-}
-
-/// <summary>
-/// Moves to the first frame of the previous phase.
-/// </summary>
-public bool PreviousPhase()
-{
-    if (IsFirstFrame) return false;
-
-    GamePhase startPhase = CurrentFrame.State.CurrentPhase;
-
-    while (!IsFirstFrame && CurrentFrame.State.CurrentPhase == startPhase)
-    {
-        PreviousFrame();
-    }
-
-    if (CurrentFrame.State.CurrentPhase != startPhase)
-    {
-        GamePhase targetPhase = CurrentFrame.State.CurrentPhase;
-        while (_currentFrame > 0 && _replay.Frames[_currentFrame - 1].State.CurrentPhase == targetPhase)
-        {
-            _currentFrame--;
-        }
-        return true;
-    }
-
-    return false;
-}
-    
-    
-    
     /// <summary>
-    /// Jumps to the specified frame.
+    ///     Moves to the first frame of the previous phase.
+    /// </summary>
+    public bool PreviousPhase()
+    {
+        if (IsFirstFrame) return false;
+
+        GamePhase startPhase = CurrentFrame.State.CurrentPhase;
+
+        while (!IsFirstFrame && CurrentFrame.State.CurrentPhase == startPhase) PreviousFrame();
+
+        if (CurrentFrame.State.CurrentPhase != startPhase)
+        {
+            GamePhase targetPhase = CurrentFrame.State.CurrentPhase;
+            while (CurrentFrameIndex > 0 && _replay.Frames[CurrentFrameIndex - 1].State.CurrentPhase == targetPhase)
+                CurrentFrameIndex--;
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /// <summary>
+    ///     Jumps to the specified frame.
     /// </summary>
     public bool JumpTo(int frame)
     {
         if (frame < 0 || frame >= FrameCount)
             return false;
 
-        _currentFrame = frame;
+        CurrentFrameIndex = frame;
         return true;
     }
-    
+
     /// <summary>
-    /// Gets the frame at the specified index without changing the current frame.
+    ///     Gets the frame at the specified index without changing the current frame.
     /// </summary>
     public ReplayFrame GetFrame(int index)
     {

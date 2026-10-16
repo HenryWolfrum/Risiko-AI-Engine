@@ -1,6 +1,7 @@
-using RiskEngine.Layout.Tests.Helpers;
+using RiskEngine.Map;
+using RiskEngine.Tests.TestInfrastructure;
 
-namespace RiskEngine.Layout.Tests.Map;
+namespace RiskEngine.Tests.Map;
 
 public class MapTraverserConnectedTests
 {

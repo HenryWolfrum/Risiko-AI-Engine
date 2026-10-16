@@ -1,10 +1,9 @@
-﻿using RiskEngine.Layout.Tests.Helpers;
+﻿using RiskEngine.Core;
+using RiskEngine.Random;
+using RiskEngine.State;
+using RiskEngine.Tests.TestInfrastructure;
 
-namespace RiskEngine.Layout.Tests.Initialization;
-
-using Layout;
-using Layout.Tests.Helpers;
-using Xunit;
+namespace RiskEngine.Tests.Core;
 
 public class GameInitializerTests
 {
@@ -24,7 +23,7 @@ public class GameInitializerTests
         // Arrange
         var layout =
             TestLayoutBuilder
-                .CreateSmallRiskLayout(playerCount: 2)
+                .CreateSmallRiskLayout(2)
                 .Build();
 
         var rng = new EngineRandom(seed: 123);
@@ -59,8 +58,8 @@ public class GameInitializerTests
     public void INIT_002_GameInitializer_ShouldAssignTerritoriesToEveryPlayer()
     {
         // Arrange
-        var layout = TestLayoutBuilder.CreateSmallRiskLayout(playerCount: 4)
-                    .Build();
+        var layout = TestLayoutBuilder.CreateSmallRiskLayout(4)
+            .Build();
         var rng = new EngineRandom(seed: 42);
 
 
@@ -90,8 +89,8 @@ public class GameInitializerTests
     public void INIT_003_GameInitializer_ShouldBeDeterministicForSameSeed()
     {
         // Arrange
-        var layout = TestLayoutBuilder.CreateSmallRiskLayout(playerCount: 3)
-                .Build();
+        var layout = TestLayoutBuilder.CreateSmallRiskLayout(3)
+            .Build();
 
 
         var rng1 = new EngineRandom(seed: 999);
@@ -107,10 +106,12 @@ public class GameInitializerTests
         // Assert
         for (byte territory = 0; territory < layout.Map.TerritoryCount; territory++)
         {
-            Assert.Equal(GameStateHelper.GetTerritoryOwner(in state1, territory), GameStateHelper.GetTerritoryOwner(in state2, territory));
+            Assert.Equal(GameStateHelper.GetTerritoryOwner(in state1, territory),
+                GameStateHelper.GetTerritoryOwner(in state2, territory));
 
 
-            Assert.Equal(GameStateHelper.GetTerritoryTroops(in state1, territory), GameStateHelper.GetTerritoryTroops(in state2, territory));
+            Assert.Equal(GameStateHelper.GetTerritoryTroops(in state1, territory),
+                GameStateHelper.GetTerritoryTroops(in state2, territory));
         }
 
 
@@ -130,7 +131,7 @@ public class GameInitializerTests
         const byte playerCount = 5;
 
         var layout = TestLayoutBuilder.CreateSmallRiskLayout(playerCount)
-                     .Build();
+            .Build();
 
         var rng = new EngineRandom(seed: 1);
 
@@ -141,13 +142,11 @@ public class GameInitializerTests
 
         // Assert
         for (byte player = 0; player < playerCount; player++)
-        {
             Assert.True(GameStateHelper.IsPlayerAlive(in state, player), $"Player {player} should be alive");
-        }
-        
+
         Assert.Equal(playerCount, GameStateHelper.GetActivePlayerCount(in state));
     }
-    
+
     /*
      * INIT-005
      *
@@ -162,8 +161,8 @@ public class GameInitializerTests
     {
         // Arrange
         var layout = TestLayoutBuilder
-                .CreateSmallRiskLayout(playerCount: 4)
-                .Build();
+            .CreateSmallRiskLayout(4)
+            .Build();
 
         var rng = new EngineRandom(seed: 42);
 
@@ -171,16 +170,14 @@ public class GameInitializerTests
         var state = GameInitializer.CreateInitialState(layout, ref rng);
 
         // Assert
-        int ownedTerritories = 0;
+        var ownedTerritories = 0;
 
         for (byte player = 0; player < layout.Config.PlayerCount; player++)
-        {
             ownedTerritories += GameStateHelper.GetOwnedTerritoryCount(in state, player);
-        }
 
         Assert.Equal(layout.Map.TerritoryCount, ownedTerritories);
     }
-    
+
     /*
      * INIT-006
      *
@@ -197,7 +194,7 @@ public class GameInitializerTests
         // Arrange
         var layout =
             TestLayoutBuilder
-                .CreateSmallRiskLayout(playerCount: 3)
+                .CreateSmallRiskLayout(3)
                 .Build();
 
         var rng = new EngineRandom(seed: 7);
@@ -206,13 +203,11 @@ public class GameInitializerTests
         var state = GameInitializer.CreateInitialState(layout, ref rng);
 
         // Assert
-        int troopCount = 0;
+        var troopCount = 0;
 
         for (byte territory = 0; territory < layout.Map.TerritoryCount; territory++)
-        {
             troopCount +=
                 GameStateHelper.GetTerritoryTroops(in state, territory);
-        }
 
         Assert.Equal(layout.Map.TerritoryCount, troopCount);
     }

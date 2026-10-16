@@ -1,75 +1,74 @@
 using Raylib_cs;
+using RiskEngine.Replay.GUI.Renderer;
 
-namespace RiskEngine.Layout.Replay.GUI;
+namespace RiskEngine.Replay.GUI;
 
 public abstract class ViewLayoutFactory
 {
     public static ViewLayout CreateDefault(float width, float height)
     {
-         
         //ViewSections
-        ViewSection[] sections = new ViewSection[3];
-        
+        var sections = new ViewSection[3];
+
         //Bounds
-        Rectangle[] bounds = new Rectangle[3];
-        
-        
-        
+        var bounds = new Rectangle[3];
+
+
         //1. ControlBar
-        string controlBarName = "ControlBar";
-        
+        var controlBarName = "ControlBar";
+
         //ControlBar constants
         float ControlBarX = 0;
         float ControlBarY = 0;
-        float ControlBarWidth = width;
-        float ControlBarHeight = 0.25F * height;
-        
+        var ControlBarWidth = width;
+        var ControlBarHeight = 0.25F * height;
+
         bounds[0] = new Rectangle(ControlBarX, ControlBarY, ControlBarWidth, ControlBarHeight);
-        
+
         //Renderer
-        ControlBarRenderer controlBarRenderer = new ControlBarRenderer();
-        
+        var controlBarRenderer = new ControlBarRenderer();
+
 
         //2. Map
-        string mapName = "Map";
-        
+        var mapName = "Map";
+
         //Map Dimensions
         float mapX = 0;
-        float mapY = ControlBarHeight;
-        float mapWidth = 0.5F * width;
-        float mapHeight = 0.75F * height;
-        
-        bounds[1]= new Rectangle(mapX,mapY,mapWidth,mapHeight);
-        
+        var mapY = ControlBarHeight;
+        var mapWidth = 0.5F * width;
+        var mapHeight = 0.75F * height;
+
+        bounds[1] = new Rectangle(mapX, mapY, mapWidth, mapHeight);
+
         //Renderer
-        MapRenderer mapRenderer = new MapRenderer();
-        
+        var mapRenderer = new MapRenderer();
+
         //3. Player Viewer
-        string playerViewerName = "Player Viewer";
-        
+        var playerViewerName = "Player Viewer";
+
         //Player Viewer Dimensions
-        float playerViewX = 0.5F * width;
-        float playerViewY = ControlBarHeight;
-        float playerViewWidth = 0.5F * width;
-        float playerViewHeight = 0.75F * height;
+        var playerViewX = 0.5F * width;
+        var playerViewY = ControlBarHeight;
+        var playerViewWidth = 0.5F * width;
+        var playerViewHeight = 0.75F * height;
 
         bounds[2] = new Rectangle(playerViewX, playerViewY, playerViewWidth, playerViewHeight);
 
         //Renderer
-        PlayerViewerRenderer playerViewerRenderer = new PlayerViewerRenderer();
+        var playerViewerRenderer = new PlayerViewerRenderer();
 
 
         //Sections assembly
         sections[0] = new ViewSection(controlBarName, bounds[0], controlBarRenderer);
         sections[1] = new ViewSection(mapName, bounds[1], mapRenderer);
         sections[2] = new ViewSection(playerViewerName, bounds[2], playerViewerRenderer);
-        
+
 
         return new ViewLayout
         {
             ScreenWidth = width,
             ScreenHeight = height,
-            Sections =  sections
+            Sections = sections
         };
     }
 }

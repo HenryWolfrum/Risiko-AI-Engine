@@ -1,30 +1,35 @@
-using System;
+using RiskEngine.Actions;
+using RiskEngine.Error;
 using RiskEngine.Layout;
-using RiskEngine.Layout.Exceptions;
-using RiskEngine.Layout.Mutation;
-using RiskEngine.Layout.Observer;
-using RiskEngine.Layout.Validation;
+using RiskEngine.Mutators;
+using RiskEngine.Observer;
+using RiskEngine.Player;
+using RiskEngine.Random;
+using RiskEngine.Reinforcement;
+using RiskEngine.Rules;
+using RiskEngine.State;
 
 namespace RiskEngine.Execution;
 
 /// <summary>
-/// Executes the reinforcement phase of a player's turn.
-/// Responsible for calculating available troops, enforcing strict rule validation, and applying placement actions.
+///     Executes the reinforcement phase of a player's turn.
+///     Responsible for calculating available troops, enforcing strict rule validation, and applying placement actions.
 /// </summary>
 public static class ReinforceExecutor
 {
     /// <summary>
-    /// Executes the reinforcement phase for the current player.
+    ///     Executes the reinforcement phase for the current player.
     /// </summary>
-    public static void Execute(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng, IGameObserver? observer = null)
+    public static void Execute(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng,
+        IGameObserver? observer = null)
     {
         state.CurrentPhase = GamePhase.Reinforce;
 
         // Calculate reinforcement troops based on current game state.
-        var totalReinforcement = ReinforcementCalculator.CalculateTroops(in state, layout.Map,state.PlayerTurn);
-        
-        GameStateHelper.AddPlayerTroopsToPlace(ref state,  state.PlayerTurn, totalReinforcement);
-  
+        var totalReinforcement = ReinforcementCalculator.CalculateTroops(in state, layout.Map, state.PlayerTurn);
+
+        GameStateHelper.AddPlayerTroopsToPlace(ref state, state.PlayerTurn, totalReinforcement);
+
         // Upper bound safety limit based on total troops to place.
         // Each valid action places at least 1 troop.
         var maxIterations = GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn);
@@ -49,13 +54,11 @@ public static class ReinforceExecutor
 
             // Fail-fast: Reinforce phase strictly requires a Reinforce action type.
             if (action.Type != ActionType.Reinforce)
-            {
                 throw new InvalidGameActionException(
                     $"Player {state.PlayerTurn} submitted an invalid action type during reinforcement phase!\n" +
                     $"  • Expected: {ActionType.Reinforce}\n" +
                     $"  • Actual:   {action.Type}"
                 );
-            }
 
             // Validate reinforcement action through central rule system.
             var validation = RuleValidator.Validate(
@@ -87,14 +90,12 @@ public static class ReinforceExecutor
                 );
             }
 
-          
-            
+
             // Apply valid reinforcement placement.
             GameStateMutator.Apply(ref state, in action, ref rng, layout);
-            
+
             //Record
             observer?.Record(in state, action);
-
         }
     }
 }

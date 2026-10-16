@@ -1,7 +1,8 @@
-﻿using RiskEngine.Layout.Generation;
-using RiskEngine.Layout;
+﻿using RiskEngine.Decisions;
+using RiskEngine.Decisions.Generators;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout.Tests.Decisions.Generators;
+namespace RiskEngine.Tests.Decisions.Generators;
 
 public class ReinforcementOptionGeneratorTests
 {
@@ -39,11 +40,11 @@ public class ReinforcementOptionGeneratorTests
         // Assert
         Assert.Equal(3, count);
 
-        bool found0 = false;
-        bool found1 = false;
-        bool found3 = false;
+        var found0 = false;
+        var found1 = false;
+        var found3 = false;
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             Assert.Equal(DecisionKind.Reinforce, decisions[i].Kind);
 
@@ -66,8 +67,8 @@ public class ReinforcementOptionGeneratorTests
         Assert.True(found1);
         Assert.True(found3);
     }
-    
-    
+
+
     /*
      * REINFORCEGEN-002
      *
@@ -99,8 +100,8 @@ public class ReinforcementOptionGeneratorTests
         // Assert
         Assert.Equal(0, count);
     }
-    
-    
+
+
     /*
      * REINFORCEGEN-003
      *
@@ -141,7 +142,7 @@ public class ReinforcementOptionGeneratorTests
         Assert.Equal(1, decisions[0].Parameter.Min);
         Assert.Equal(7, decisions[0].Parameter.Max);
     }
-    
+
     /*
      * REINFORCEGEN-004
      *
@@ -172,11 +173,11 @@ public class ReinforcementOptionGeneratorTests
         int count = ReinforcementOptionGenerator.Generate(in state, decisions);
 
         // Assert
-        int territory0 = 0;
-        int territory1 = 0;
-        int territory2 = 0;
+        var territory0 = 0;
+        var territory1 = 0;
+        var territory2 = 0;
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             var reinforce = decisions[i].GetReinforceData();
 

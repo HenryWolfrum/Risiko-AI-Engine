@@ -1,8 +1,8 @@
-namespace RiskEngine.Layout.AI.Configuration;
+namespace RiskEngine.AI.Configuration;
 
 /// <summary>
-/// Configuration for a deterministic AggroBot.
-/// Holds no parameters as the bot operates strictly on fixed priorities.
+///     Configuration for a deterministic AggroBot.
+///     Holds no parameters as the bot operates strictly on fixed priorities.
 /// </summary>
 public sealed class AggroBotConfiguration : PlayerConfiguration
 {

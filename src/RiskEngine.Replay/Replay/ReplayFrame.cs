@@ -1,6 +1,7 @@
-﻿using RiskEngine.Layout;
+﻿using RiskEngine.Actions;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout.Replay;
+namespace RiskEngine.Replay;
 
 public readonly struct ReplayFrame
 {

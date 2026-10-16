@@ -1,4 +1,4 @@
-namespace RiskEngine.Layout.Replay.GUI;
+namespace RiskEngine.Replay.GUI;
 
 public enum ReplayMode
 {

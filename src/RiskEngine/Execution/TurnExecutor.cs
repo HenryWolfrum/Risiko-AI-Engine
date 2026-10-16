@@ -1,19 +1,22 @@
+using RiskEngine.Actions;
 using RiskEngine.Layout;
-using RiskEngine.Execution;
-using RiskEngine.Layout.Observer;
+using RiskEngine.Observer;
+using RiskEngine.Player;
+using RiskEngine.Random;
+using RiskEngine.State;
 
 namespace RiskEngine.Execution;
 
 /// <summary>
-/// Executes the complete turn sequence for a single player.
-/// This class only coordinates phases and does not contain rule logic.
+///     Executes the complete turn sequence for a single player.
+///     This class only coordinates phases and does not contain rule logic.
 /// </summary>
 public static class TurnExecutor
 {
     /// <summary>
-    /// Executes all phases of the current player's turn.
+    ///     Executes all phases of the current player's turn.
     /// </summary>
-    public static void ExecuteTurn(ref GameState state, IRiskPlayer[] players, GameLayout layout, 
+    public static void ExecuteTurn(ref GameState state, IRiskPlayer[] players, GameLayout layout,
         ref EngineRandom rng,
         IGameObserver? observer = null)
     {
@@ -49,10 +52,7 @@ public static class TurnExecutor
 
 
         // Game could already be decided during attack/conquest.
-        if (state.CurrentPhase == GamePhase.Terminated)
-        {
-            return;
-        }
+        if (state.CurrentPhase == GamePhase.Terminated) return;
 
 
         // 4. Fortification phase.

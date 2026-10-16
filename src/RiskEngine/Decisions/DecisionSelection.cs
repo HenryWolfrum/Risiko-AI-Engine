@@ -1,7 +1,9 @@
-﻿/// <summary>
-/// Represents the decision selected by an algorithm or user.
-/// Contains the index of the chosen option within the current DecisionSpace
-/// and the chosen parameter value (if applicable).
+﻿namespace RiskEngine.Decisions;
+
+/// <summary>
+///     Represents the decision selected by an algorithm or user.
+///     Contains the index of the chosen option within the current DecisionSpace
+///     and the chosen parameter value (if applicable).
 /// </summary>
 public readonly struct DecisionSelection
 {

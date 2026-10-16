@@ -1,20 +1,23 @@
-using RiskEngine.Layout.Combat;
-using RiskEngine.Layout.Exceptions;
-using RiskEngine.Layout.Observer;
+using RiskEngine.Actions;
+using RiskEngine.Combat;
+using RiskEngine.Error;
+using RiskEngine.Layout;
+using RiskEngine.Random;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout.Mutation;
+namespace RiskEngine.Mutators;
 
 /// <summary>
-/// Central mutation dispatcher.
-/// Applies validated game actions to the game state.
+///     Central mutation dispatcher.
+///     Applies validated game actions to the game state.
 /// </summary>
 public static class GameStateMutator
 {
     /// <summary>
-    /// Applies an action and updates the game state.
-    /// Validation must happen before calling this method.
+    ///     Applies an action and updates the game state.
+    ///     Validation must happen before calling this method.
     /// </summary>
-    public static void Apply(ref GameState state, in GameAction action, ref EngineRandom rng,GameLayout layout)
+    public static void Apply(ref GameState state, in GameAction action, ref EngineRandom rng, GameLayout layout)
     {
         switch (action.Type)
         {
@@ -55,7 +58,7 @@ public static class GameStateMutator
             case ActionType.TurnInCards:
             {
                 // Exchange a valid card set for reinforcements.
-                CardTurnInMutator.Apply(ref state, in action,layout.Deck); 
+                CardTurnInMutator.Apply(ref state, in action, layout.Deck);
                 break;
             }
 
@@ -65,10 +68,5 @@ public static class GameStateMutator
                 throw new InvalidGameActionException($"Unsupported action type: {action.Type}");
             }
         }
-        
-        
     }
-    
-    
 }
-

@@ -1,26 +1,26 @@
-using System;
+using RiskEngine.Actions;
+using RiskEngine.Constants;
+using RiskEngine.Error;
 using RiskEngine.Layout;
-using RiskEngine.Layout.Exceptions;
-using RiskEngine.Layout.Observer;
-using RiskEngine.Layout.Validation;
-using RiskEngine.Layout.Mutation;
+using RiskEngine.Mutators;
+using RiskEngine.Observer;
+using RiskEngine.Player;
+using RiskEngine.Random;
+using RiskEngine.Rules;
+using RiskEngine.State;
 
 namespace RiskEngine.Execution;
 
 /// <summary>
-/// Executes the fortification phase of a player's turn.
-/// Responsible for moving troops between connected friendly territories.
+///     Executes the fortification phase of a player's turn.
+///     Responsible for moving troops between connected friendly territories.
 /// </summary>
 public static class FortifyExecutor
 {
     /// <summary>
-    /// Executes the fortification phase.
+    ///     Executes the fortification phase.
     /// </summary>
-    public static void Execute(
-        ref GameState state,
-        IRiskPlayer player,
-        GameLayout layout,
-        ref EngineRandom rng,
+    public static void Execute(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng,
         IGameObserver? observer = null)
     {
         state.CurrentPhase = GamePhase.Fortify;
@@ -41,20 +41,16 @@ public static class FortifyExecutor
             // Player chooses to end fortification phase.
             if (action.Type == ActionType.SkipPhase ||
                 action.Type == ActionType.EndTurn)
-            {
                 break;
-            }
 
 
             // Fail-fast: Action type must strictly be Fortify.
             if (action.Type != ActionType.Fortify)
-            {
                 throw new InvalidGameActionException(
                     $"Player {state.PlayerTurn} submitted an invalid action type during fortify phase!\n" +
                     $"  • Expected: {ActionType.Fortify}, {ActionType.SkipPhase}, or {ActionType.EndTurn}\n" +
                     $"  • Actual:   {action.Type}"
                 );
-            }
 
 
             // Validate troop movement and connectivity rules.
@@ -83,8 +79,6 @@ public static class FortifyExecutor
                     $"  • Requested Troops: {action.TroopCount}"
                 );
             }
-            
-           
 
 
             // Apply troop movement.
@@ -92,7 +86,6 @@ public static class FortifyExecutor
 
             // Record completed fortification event.
             observer?.Record(in state, action);
-          
 
 
             moveCounter++;

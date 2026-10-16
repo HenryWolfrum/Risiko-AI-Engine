@@ -1,7 +1,8 @@
-using RiskEngine.Layout.Mutation;
-using RiskEngine.Layout;
+using RiskEngine.Actions;
+using RiskEngine.Mutators;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout.Tests.Mutation;
+namespace RiskEngine.Tests.Mutation;
 
 public class FortifyMutatorTests
 {
@@ -22,7 +23,7 @@ public class FortifyMutatorTests
 
         GameStateHelper.SetTerritoryTroops(ref state, 0, 10);
 
-        var action = new GameAction
+        var action = new GameAction()
         {
             SourceTerritory = 0,
             TargetTerritory = 1,
@@ -35,7 +36,7 @@ public class FortifyMutatorTests
         // Assert
         Assert.Equal(7, GameStateHelper.GetTerritoryTroops(in state, 0));
     }
-    
+
     /*
      * MUTATE-FORTIFY-002
      *
@@ -68,8 +69,8 @@ public class FortifyMutatorTests
             8,
             GameStateHelper.GetTerritoryTroops(in state, 1));
     }
-    
-    
+
+
     /*
      * MUTATE-FORTIFY-003
      *
@@ -108,8 +109,8 @@ public class FortifyMutatorTests
             6,
             GameStateHelper.GetTerritoryTroops(in state, 1));
     }
-    
-    
+
+
     /*
      * MUTATE-FORTIFY-004
      *
@@ -149,7 +150,7 @@ public class FortifyMutatorTests
         // Assert
         Assert.Equal(totalBefore, totalAfter);
     }
-    
+
     /*
      * MUTATE-FORTIFY-005
      *
@@ -182,8 +183,8 @@ public class FortifyMutatorTests
         // Assert
         Assert.Equal(7, GameStateHelper.GetTerritoryTroops(in state, 2));
     }
-    
-    
+
+
     /*
      * MUTATE-FORTIFY-006
      *

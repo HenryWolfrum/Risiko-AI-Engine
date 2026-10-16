@@ -1,7 +1,8 @@
-﻿using RiskEngine.Layout.Observer;
-using RiskEngine.Layout;
+﻿using RiskEngine.Actions;
+using RiskEngine.Observer;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout.Replay.Recording;
+namespace RiskEngine.Replay.Recording;
 
 public sealed class ReplayRecorder : IGameObserver
 {
@@ -26,5 +27,8 @@ public sealed class ReplayRecorder : IGameObserver
     }
 
 
-    public Replay Build() => _replay;
+    public Replay Build()
+    {
+        return _replay;
+    }
 }

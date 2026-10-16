@@ -1,4 +1,6 @@
-﻿/// <summary> Zero-allocation view for reinforcement decision metadata. </summary>
+﻿namespace RiskEngine.Decisions.Views;
+
+/// <summary> Zero-allocation view for reinforcement decision metadata. </summary>
 public readonly struct ReinforceData
 {
     public byte TargetTerritory { get; }

@@ -1,4 +1,6 @@
-﻿/// <summary> Zero-allocation view for attack decision metadata. </summary>
+﻿namespace RiskEngine.Decisions.Views;
+
+/// <summary> Zero-allocation view for attack decision metadata. </summary>
 public readonly struct ConquerData
 {
     public byte SourceTerritory { get; }

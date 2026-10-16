@@ -1,26 +1,21 @@
-using System;
-using System.IO;
 using System.Numerics;
 using Raylib_cs;
-using RiskEngine.Layout;
+using RiskEngine.Actions;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout.Replay.GUI;
+namespace RiskEngine.Replay.GUI.Renderer;
 
 public class MapRenderer : ISectionRenderer
 {
-    private Texture2D _mapTexture;
-    private bool _isLoaded;
-    private bool _loadAttempted;
-
     // Desaturated, soft light blue for ocean background
     private static readonly Color MapBackgroundColor = new(150, 185, 210, 255);
+    private bool _isLoaded;
+    private bool _loadAttempted;
+    private Texture2D _mapTexture;
 
     public void Render(Rectangle bounds, ReplayUIContext context)
     {
-        if (!_loadAttempted)
-        {
-            LoadMapTexture();
-        }
+        if (!_loadAttempted) LoadMapTexture();
 
         // --- LAYER 1: BACKGROUND & MAP ---
         Raylib.DrawRectangleRec(bounds, MapBackgroundColor);
@@ -31,51 +26,56 @@ public class MapRenderer : ISectionRenderer
             return;
         }
 
-        float scale = Math.Min(bounds.Width / _mapTexture.Width, bounds.Height / _mapTexture.Height);
-        float renderWidth = _mapTexture.Width * scale;
-        float renderHeight = _mapTexture.Height * scale;
+        var scale = Math.Min(bounds.Width / _mapTexture.Width, bounds.Height / _mapTexture.Height);
+        var renderWidth = _mapTexture.Width * scale;
+        var renderHeight = _mapTexture.Height * scale;
 
-        float offsetX = bounds.X + (bounds.Width - renderWidth) / 2f;
-        float offsetY = bounds.Y + (bounds.Height - renderHeight) / 2f;
+        var offsetX = bounds.X + (bounds.Width - renderWidth) / 2f;
+        var offsetY = bounds.Y + (bounds.Height - renderHeight) / 2f;
         Vector2 renderOffset = new(offsetX, offsetY);
 
         Raylib.DrawTextureEx(_mapTexture, renderOffset, 0.0f, scale, Color.White);
 
         // Dynamic radius and font size based on map scale
-        float radius = Math.Clamp(renderWidth * 0.0135f, 14f, 28f);
-        int fontSize = (int)(radius * 1.2f);
+        var radius = Math.Clamp(renderWidth * 0.0135f, 14f, 28f);
+        var fontSize = (int)(radius * 1.2f);
 
         var currentFrame = context.Player.CurrentFrame;
         var action = currentFrame.Action; // Assuming this holds your action data or is null/empty
 
         // --- LAYER 2: ACTION HIGHLIGHTS & ARROWS (Underneath circles) ---
         if (action != null)
-        {
             switch (action.Value.Type)
             {
                 case ActionType.Reinforce:
-                    Vector2 reinforceTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth, renderHeight);
+                    var reinforceTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth,
+                        renderHeight);
                     DrawTerritoryHighlight(reinforceTarget, radius, Color.Lime);
                     break;
 
                 case ActionType.Attack:
-                    Vector2 attackSource = GetScreenPos(action.Value.SourceTerritory, renderOffset, renderWidth, renderHeight);
-                    Vector2 attackTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth, renderHeight);
-                    
+                    var attackSource = GetScreenPos(action.Value.SourceTerritory, renderOffset, renderWidth,
+                        renderHeight);
+                    var attackTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth,
+                        renderHeight);
+
                     DrawTerritoryHighlight(attackSource, radius, Color.Red);
                     DrawTerritoryHighlight(attackTarget, radius, Color.Orange);
                     DrawActionArrow(attackSource, attackTarget, radius, Color.Red, 4f);
                     break;
 
                 case ActionType.Conquer:
-                    Vector2 conquerTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth, renderHeight);
+                    var conquerTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth,
+                        renderHeight);
                     DrawTerritoryHighlight(conquerTarget, radius, Color.Yellow);
                     break;
 
                 case ActionType.Fortify:
-                    Vector2 fortifySource = GetScreenPos(action.Value.SourceTerritory, renderOffset, renderWidth, renderHeight);
-                    Vector2 fortifyTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth, renderHeight);
-                    
+                    var fortifySource = GetScreenPos(action.Value.SourceTerritory, renderOffset, renderWidth,
+                        renderHeight);
+                    var fortifyTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth,
+                        renderHeight);
+
                     DrawTerritoryHighlight(fortifySource, radius, Color.SkyBlue);
                     DrawTerritoryHighlight(fortifyTarget, radius, Color.SkyBlue);
                     DrawActionArrow(fortifySource, fortifyTarget, radius, Color.SkyBlue, 3f);
@@ -84,64 +84,70 @@ public class MapRenderer : ISectionRenderer
                 case ActionType.TurnInCards:
                     break;
             }
-        }
 
         // --- LAYER 3: TERRITORY CIRCLES & TROOP COUNTS ---
-        for (int i = 0; i < TerritoryLayout.Entries.Length; i++)
+        for (var i = 0; i < TerritoryLayout.Entries.Length; i++)
         {
-            Vector2 center = GetScreenPos(i, renderOffset, renderWidth, renderHeight);
+            var center = GetScreenPos(i, renderOffset, renderWidth, renderHeight);
 
             int troops = GameStateHelper.GetTerritoryTroops(currentFrame.State, i);
-            Color playerColor = ReplayViewer.GetPlayerColor(GameStateHelper.GetTerritoryOwner(currentFrame.State, i));
+            var playerColor = ReplayViewer.GetPlayerColor(GameStateHelper.GetTerritoryOwner(currentFrame.State, i));
 
             Raylib.DrawCircleV(center, radius + 2f, Color.Black);
             Raylib.DrawCircleV(center, radius, playerColor);
 
-            string text = troops.ToString();
-            int textWidth = Raylib.MeasureText(text, fontSize);
-            Raylib.DrawText(text, (int)(center.X - textWidth / 2f), (int)(center.Y - fontSize / 2f), fontSize, Color.White);
+            var text = troops.ToString();
+            var textWidth = Raylib.MeasureText(text, fontSize);
+            Raylib.DrawText(text, (int)(center.X - textWidth / 2f), (int)(center.Y - fontSize / 2f), fontSize,
+                Color.White);
         }
 
         // --- LAYER 4: ACTION BADGES ---
         if (action != null)
-        {
             switch (action.Value.Type)
             {
                 case ActionType.Reinforce:
-                    Vector2 reinforceTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth, renderHeight);
-                    DrawBadge(reinforceTarget + new Vector2(0, -radius - 12f), $"+{action.Value.TroopCount}", Color.Lime, Color.Black);
+                    var reinforceTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth,
+                        renderHeight);
+                    DrawBadge(reinforceTarget + new Vector2(0, -radius - 12f), $"+{action.Value.TroopCount}",
+                        Color.Lime, Color.Black);
                     break;
 
                 case ActionType.Attack:
-                    Vector2 atkSource = GetScreenPos(action.Value.SourceTerritory, renderOffset, renderWidth, renderHeight);
-                    Vector2 atkTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth, renderHeight);
-                    Vector2 midAtk = (atkSource + atkTarget) / 2f;
-                    
-                    DrawBadge(midAtk, $"{action.Value.ChosenAttackerDiceCount} v {action.Value.ChosenDefenderDiceCount}", Color.Red, Color.White);
+                    var atkSource = GetScreenPos(action.Value.SourceTerritory, renderOffset, renderWidth, renderHeight);
+                    var atkTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth, renderHeight);
+                    var midAtk = (atkSource + atkTarget) / 2f;
+
+                    DrawBadge(midAtk,
+                        $"{action.Value.ChosenAttackerDiceCount} v {action.Value.ChosenDefenderDiceCount}", Color.Red,
+                        Color.White);
                     break;
 
                 case ActionType.Conquer:
-                    Vector2 conquerTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth, renderHeight);
-                    DrawBadge(conquerTarget + new Vector2(0, -radius - 12f), $"+{action.Value.TroopCount}", Color.Yellow, Color.Black);
+                    var conquerTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth,
+                        renderHeight);
+                    DrawBadge(conquerTarget + new Vector2(0, -radius - 12f), $"+{action.Value.TroopCount}",
+                        Color.Yellow, Color.Black);
                     break;
 
                 case ActionType.Fortify:
-                    Vector2 fortSource = GetScreenPos(action.Value.SourceTerritory, renderOffset, renderWidth, renderHeight);
-                    Vector2 fortTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth, renderHeight);
-                    Vector2 midFort = (fortSource + fortTarget) / 2f;
-                    
+                    var fortSource = GetScreenPos(action.Value.SourceTerritory, renderOffset, renderWidth,
+                        renderHeight);
+                    var fortTarget = GetScreenPos(action.Value.TargetTerritory, renderOffset, renderWidth,
+                        renderHeight);
+                    var midFort = (fortSource + fortTarget) / 2f;
+
                     DrawBadge(midFort, $"-> {action.Value.TroopCount}", Color.SkyBlue, Color.Black);
                     break;
             }
-        }
-        
+
         // --- LAYER 5: ACTION BANNER (Unten Links) ---
         if (action != null)
         {
             var layout = context.Player._replay.Header.Layout;
-            byte activePlayerId = (byte)currentFrame.State.PlayerTurn;
+            var activePlayerId = (byte)currentFrame.State.PlayerTurn;
 
-            string actionText = ActionTranslator.TranslateAction(action.Value, layout, activePlayerId);
+            var actionText = ActionTranslator.TranslateAction(action.Value, layout, activePlayerId);
             DrawActionBanner(bounds, actionText, activePlayerId);
         }
 
@@ -152,7 +158,7 @@ public class MapRenderer : ISectionRenderer
     private void LoadMapTexture()
     {
         _loadAttempted = true;
-        string imagePath = Path.Combine(AppContext.BaseDirectory, "Assets", "risk_map.png");
+        var imagePath = Path.Combine(AppContext.BaseDirectory, "Assets", "risk_map.png");
 
         if (File.Exists(imagePath))
         {
@@ -178,62 +184,63 @@ public class MapRenderer : ISectionRenderer
 
     private static void DrawActionArrow(Vector2 start, Vector2 end, float circleRadius, Color color, float thickness)
     {
-        Vector2 direction = Vector2.Normalize(end - start);
-        float distance = Vector2.Distance(start, end);
+        var direction = Vector2.Normalize(end - start);
+        var distance = Vector2.Distance(start, end);
 
         if (distance < circleRadius * 2.5f) return;
 
-        Vector2 p1 = start + direction * (circleRadius + 7f);
-        Vector2 p2 = end - direction * (circleRadius + 9f);
+        var p1 = start + direction * (circleRadius + 7f);
+        var p2 = end - direction * (circleRadius + 9f);
 
         Raylib.DrawLineEx(p1, p2, thickness, color);
 
-        float arrowSize = 10f;
+        var arrowSize = 10f;
         Vector2 right = new(-direction.Y, direction.X);
 
-        Vector2 headLeft = p2 - direction * arrowSize + right * (arrowSize * 0.6f);
-        Vector2 headRight = p2 - direction * arrowSize - right * (arrowSize * 0.6f);
+        var headLeft = p2 - direction * arrowSize + right * (arrowSize * 0.6f);
+        var headRight = p2 - direction * arrowSize - right * (arrowSize * 0.6f);
 
         Raylib.DrawTriangle(p2, headRight, headLeft, color);
     }
 
     private static void DrawBadge(Vector2 position, string text, Color bgColor, Color textColor)
     {
-        int fontSize = 14;
-        int paddingHorizontal = 6;
-        int paddingVertical = 3;
+        var fontSize = 14;
+        var paddingHorizontal = 6;
+        var paddingVertical = 3;
 
-        int textWidth = Raylib.MeasureText(text, fontSize);
-        float rectWidth = textWidth + (paddingHorizontal * 2);
-        float rectHeight = fontSize + (paddingVertical * 2);
+        var textWidth = Raylib.MeasureText(text, fontSize);
+        float rectWidth = textWidth + paddingHorizontal * 2;
+        float rectHeight = fontSize + paddingVertical * 2;
 
         Rectangle rect = new(
-            position.X - (rectWidth / 2f),
-            position.Y - (rectHeight / 2f),
+            position.X - rectWidth / 2f,
+            position.Y - rectHeight / 2f,
             rectWidth,
             rectHeight
         );
 
-        Raylib.DrawRectangleRounded(rect, 0.4f, 4, Color.Black); 
-        
+        Raylib.DrawRectangleRounded(rect, 0.4f, 4, Color.Black);
+
         Rectangle innerRect = new(rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2);
         Raylib.DrawRectangleRounded(innerRect, 0.4f, 4, bgColor);
 
-        Raylib.DrawText(text, (int)(position.X - textWidth / 2f), (int)(position.Y - fontSize / 2f), fontSize, textColor);
+        Raylib.DrawText(text, (int)(position.X - textWidth / 2f), (int)(position.Y - fontSize / 2f), fontSize,
+            textColor);
     }
-    
+
     private static void DrawActionBanner(Rectangle bounds, string text, byte playerId)
     {
-        int fontSize = 15;
-        int textWidth = Raylib.MeasureText(text, fontSize);
+        var fontSize = 15;
+        var textWidth = Raylib.MeasureText(text, fontSize);
 
-        float paddingX = 14f;
-        float paddingY = 10f;
-        float boxWidth = textWidth + (paddingX * 2);
-        float boxHeight = fontSize + (paddingY * 2);
+        var paddingX = 14f;
+        var paddingY = 10f;
+        var boxWidth = textWidth + paddingX * 2;
+        var boxHeight = fontSize + paddingY * 2;
 
-        float margin = 15f;
-        
+        var margin = 15f;
+
         Rectangle box = new(
             bounds.X + margin,
             bounds.Y + bounds.Height - boxHeight - margin,
@@ -241,7 +248,7 @@ public class MapRenderer : ISectionRenderer
             boxHeight
         );
 
-        Color playerColor = ReplayViewer.GetPlayerColor(playerId);
+        var playerColor = ReplayViewer.GetPlayerColor(playerId);
         Color boxBg = new(20, 24, 32, 220);
 
         Raylib.DrawRectangleRounded(box, 0.25f, 4, boxBg);
@@ -251,20 +258,20 @@ public class MapRenderer : ISectionRenderer
     }
 
     /// <summary>
-    /// Zeichnet eine kleine HUD-Anzeige oben rechts auf der Karte für eingelöste Kartensets.
+    ///     Zeichnet eine kleine HUD-Anzeige oben rechts auf der Karte für eingelöste Kartensets.
     /// </summary>
     private static void DrawTradedCardSetsHUD(Rectangle bounds, byte cardSetsTradedCount)
     {
-        string text = $"Traded Card Sets: {cardSetsTradedCount}";
-        int fontSize = 14;
-        int textWidth = Raylib.MeasureText(text, fontSize);
+        var text = $"Traded Card Sets: {cardSetsTradedCount}";
+        var fontSize = 14;
+        var textWidth = Raylib.MeasureText(text, fontSize);
 
-        float paddingX = 12f;
-        float paddingY = 8f;
-        float boxWidth = textWidth + (paddingX * 2);
-        float boxHeight = fontSize + (paddingY * 2);
+        var paddingX = 12f;
+        var paddingY = 8f;
+        var boxWidth = textWidth + paddingX * 2;
+        var boxHeight = fontSize + paddingY * 2;
 
-        float margin = 15f;
+        var margin = 15f;
 
         // Oben rechts positionieren
         Rectangle box = new(

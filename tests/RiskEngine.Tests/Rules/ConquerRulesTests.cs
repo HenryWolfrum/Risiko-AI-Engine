@@ -1,8 +1,10 @@
-using RiskEngine.Layout.Rules;
-using RiskEngine.Layout.Tests.Helpers;
-using Xunit;
+using RiskEngine.Actions;
+using RiskEngine.Error;
+using RiskEngine.Rules;
+using RiskEngine.State;
+using RiskEngine.Tests.TestInfrastructure;
 
-namespace RiskEngine.Layout.Tests.Validation;
+namespace RiskEngine.Tests.Rules;
 
 public class ConquerRulesTests
 {
@@ -36,7 +38,7 @@ public class ConquerRulesTests
         // Territory has already been conquered.
         GameStateHelper.SetTerritoryTroops(ref state, 1, 0);
 
-        var action = new GameAction
+        var action = new GameAction()
         {
             SourceTerritory = 0,
             TargetTerritory = 1,

@@ -1,10 +1,8 @@
-﻿using RiskEngine.Layout.Mutation;
+﻿using RiskEngine.Actions;
+using RiskEngine.Mutators;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout.Tests.Mutation;
-
-using Layout;
-using Layout.Mutation;
-using Xunit;
+namespace RiskEngine.Tests.Mutation;
 
 public class ReinforceMutatorTests
 {
@@ -26,7 +24,7 @@ public class ReinforceMutatorTests
         GameStateHelper.SetTerritoryTroops(ref state, 0, 5);
 
 
-        var action = new GameAction
+        var action = new GameAction()
         {
             TargetTerritory = 0,
             TroopCount = 3
@@ -161,7 +159,7 @@ public class ReinforceMutatorTests
         // Assert
         Assert.Equal(9, GameStateHelper.GetTerritoryTroops(in state, 0));
     }
-    
+
     /*
      * MUTATE-REINFORCE-005
      *
@@ -191,8 +189,8 @@ public class ReinforceMutatorTests
         // Assert
         Assert.Equal(4, GameStateHelper.GetTerritoryTroops(in state, 0));
     }
-    
-    
+
+
     /*
      * MUTATE-REINFORCE-006
      *

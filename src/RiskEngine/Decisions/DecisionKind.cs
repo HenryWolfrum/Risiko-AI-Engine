@@ -1,7 +1,7 @@
-﻿namespace RiskEngine.Layout.Generation;
+﻿namespace RiskEngine.Decisions;
 
 /// <summary>
-/// Defines the categories of decisions presented to an external decision-maker (AI, UI, Network Client).
+///     Defines the categories of decisions presented to an external decision-maker (AI, UI, Network Client).
 /// </summary>
 public enum DecisionKind : byte
 {
@@ -12,5 +12,5 @@ public enum DecisionKind : byte
     Conquer,
     Fortify,
     SkipPhase,
-    EndTurn,
+    EndTurn
 }

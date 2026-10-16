@@ -1,4 +1,5 @@
-﻿
+﻿namespace RiskEngine.Decisions.Views;
+
 /// <summary> Zero-allocation view for attack decision metadata. </summary>
 public readonly struct AttackData
 {

@@ -1,4 +1,10 @@
+using RiskEngine.Actions;
+using RiskEngine.Error;
 using RiskEngine.Layout;
+using RiskEngine.Map;
+using RiskEngine.State;
+
+namespace RiskEngine.Rules;
 
 public static class FortifyRules
 {

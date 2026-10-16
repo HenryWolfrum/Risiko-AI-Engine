@@ -1,22 +1,30 @@
+using RiskEngine.Actions;
+using RiskEngine.Cards;
+using RiskEngine.Constants;
+using RiskEngine.Error;
 using RiskEngine.Layout;
-using RiskEngine.Layout.Exceptions;
 using RiskEngine.Mission;
-using RiskEngine.Layout.Mutation;
-using RiskEngine.Layout.Observer;
+using RiskEngine.Mutators;
+using RiskEngine.Observer;
+using RiskEngine.Player;
+using RiskEngine.Random;
+using RiskEngine.Rules;
+using RiskEngine.State;
 
 namespace RiskEngine.Execution;
 
 /// <summary>
-/// Executes the conquest phase after a successful attack.
-/// Handles troop movement into conquered territory, card trades, post-conquest reinforcement, and player elimination.
+///     Executes the conquest phase after a successful attack.
+///     Handles troop movement into conquered territory, card trades, post-conquest reinforcement, and player elimination.
 /// </summary>
 public static class ConquerExecutor
 {
     /// <summary>
-    /// Executes the conquest phase.
-    /// The attacker moves troops from the attacking territory into the newly conquered territory.
+    ///     Executes the conquest phase.
+    ///     The attacker moves troops from the attacking territory into the newly conquered territory.
     /// </summary>
-    public static void Execute(ref GameState state, IRiskPlayer attacker, byte defenderId, GameLayout layout, ref EngineRandom rng, IGameObserver? observer = null)
+    public static void Execute(ref GameState state, IRiskPlayer attacker, byte defenderId, GameLayout layout,
+        ref EngineRandom rng, IGameObserver? observer = null)
     {
         state.CurrentPhase = GamePhase.Conquer;
 
@@ -43,7 +51,7 @@ public static class ConquerExecutor
         observer?.Record(in state, conquerAction);
 
         // 3. Process potential player elimination and card transfer
-        CheckPlayerElimination(ref state, defenderId,observer);
+        CheckPlayerElimination(ref state, defenderId, observer);
 
         // 4. Check for game-winning condition
         if (MissionEvaluator.CheckEliminationWin(in state, in layout, state.PlayerTurn, out byte winnerId))
@@ -54,9 +62,7 @@ public static class ConquerExecutor
 
         // 5. Handle mandatory card exchange if hand limit is exceeded
         if (CardHelper.GetPlayerCardCount(in state, state.PlayerTurn) >= EngineConstants.FORCE_TRADE_CARD_COUNT)
-        {
             CardTurnInExecutor.ExecuteMandatoryTradeIn(ref state, attacker, layout, ref rng, observer);
-        }
 
         // 6. Place any newly acquired reinforcement troops from card sets
         if (GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn) > 0)
@@ -64,23 +70,18 @@ public static class ConquerExecutor
             state.CurrentPhase = GamePhase.Reinforce;
             ReinforceExecutor.Execute(ref state, attacker, layout, ref rng, observer);
         }
-        
     }
 
     /// <summary>
-    /// Removes eliminated players and transfers their cards.
+    ///     Removes eliminated players and transfers their cards.
     /// </summary>
-    private static void CheckPlayerElimination(ref GameState state, byte defenderId,IGameObserver? observer)
+    private static void CheckPlayerElimination(ref GameState state, byte defenderId, IGameObserver? observer)
     {
-        if (GameStateHelper.GetOwnedTerritoryCount(in state, defenderId) > 0)
-        {
-            return;
-        }
+        if (GameStateHelper.GetOwnedTerritoryCount(in state, defenderId) > 0) return;
 
         var attackerId = state.PlayerTurn;
         CardHelper.EliminateAndTransferCards(ref state, attackerId, defenderId);
         //Record State before card set Selection for new received cards
         observer?.Record(in state, null);
-
     }
 }

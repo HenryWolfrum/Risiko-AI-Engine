@@ -1,10 +1,12 @@
-using RiskEngine.Layout.Tests.Helpers;
+using RiskEngine.Cards;
+using RiskEngine.Random;
+using RiskEngine.State;
+using RiskEngine.Tests.TestInfrastructure;
 
-namespace RiskEngine.Layout.Tests.State;
+namespace RiskEngine.Tests.Cards;
 
 public class CardHelperTests
 {
-    
     [Fact]
     public void CARD_001_ShouldAddCardToPlayer()
     {
@@ -15,7 +17,7 @@ public class CardHelperTests
 
         Assert.True(CardHelper.PlayerHasCard(in state, 0, 2, layout.Deck));
     }
-    
+
     [Fact]
     public void CARD_002_ShouldRemoveCardFromPlayer()
     {
@@ -28,7 +30,7 @@ public class CardHelperTests
 
         Assert.False(CardHelper.PlayerHasCard(in state, 0, 2, layout.Deck));
     }
-    
+
     [Fact]
     public void CARD_003_ShouldCountPlayerCards()
     {
@@ -41,7 +43,7 @@ public class CardHelperTests
 
         Assert.Equal(3, CardHelper.GetPlayerCardCount(in state, 0));
     }
-    
+
     [Fact]
     public void CARD_004_ShouldReturnPlayerCardBitboard()
     {
@@ -51,11 +53,11 @@ public class CardHelperTests
         CardHelper.AddCardToPlayer(ref state, 0, 0, layout.Deck);
         CardHelper.AddCardToPlayer(ref state, 0, 3, layout.Deck);
 
-        ulong expected = (1UL << 0) | (1UL << 3);
+        var expected = (1UL << 0) | (1UL << 3);
 
         Assert.Equal(expected, CardHelper.GetPlayerCardsBitboard(in state, 0));
     }
-    
+
     [Fact]
     public void CARD_005_ShouldTransferCardsOnPlayerElimination()
     {
@@ -71,7 +73,7 @@ public class CardHelperTests
 
         Assert.Equal(0, CardHelper.GetPlayerCardCount(in state, 1));
     }
-    
+
     [Fact]
     public void CARD_006_ShouldReturnAvailableCards()
     {
@@ -88,7 +90,7 @@ public class CardHelperTests
 
         Assert.True((available & (1UL << 2)) != 0);
     }
-    
+
     [Fact]
     public void CARD_007_ShouldGiveBonusCard()
     {
@@ -101,7 +103,7 @@ public class CardHelperTests
 
         Assert.Equal(1, CardHelper.GetPlayerCardCount(in state, 0));
     }
-    
+
     [Fact]
     public void CARD_008_ShouldDetectThreeInfantryCards()
     {

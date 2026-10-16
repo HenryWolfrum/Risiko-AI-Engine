@@ -1,8 +1,11 @@
-﻿using RiskEngine.Layout.Generation;
-using RiskEngine.Layout.Tests.Helpers;
-using RiskEngine.Layout;
+﻿using RiskEngine.Cards;
+using RiskEngine.Constants;
+using RiskEngine.Decisions;
+using RiskEngine.Decisions.Generators;
+using RiskEngine.State;
+using RiskEngine.Tests.TestInfrastructure;
 
-namespace RiskEngine.Layout.Tests.Decisions.Generators;
+namespace RiskEngine.Tests.Decisions.Generators;
 
 public class CardTurnInOptionGeneratorTests
 {
@@ -24,8 +27,8 @@ public class CardTurnInOptionGeneratorTests
         var layout = TestLayoutBuilder
             .Create()
             .WithTerritories(3)
-            .Connect(0,1)
-            .Connect(1,2)
+            .Connect(0, 1)
+            .Connect(1, 2)
             .Build();
 
         var state = GameStateHelper.CreateEmpty(2, 3);
@@ -44,11 +47,10 @@ public class CardTurnInOptionGeneratorTests
         // Assert
         Assert.Equal(2, count);
 
-        bool foundSet = false;
-        bool foundSkip = false;
+        var foundSet = false;
+        var foundSkip = false;
 
-        for (int i = 0; i < count; i++)
-        {
+        for (var i = 0; i < count; i++)
             switch (decisions[i].Kind)
             {
                 case DecisionKind.CardTurnIn:
@@ -58,9 +60,7 @@ public class CardTurnInOptionGeneratorTests
                     if (cards.Card1 == 0 &&
                         cards.Card2 == 1 &&
                         cards.Card3 == 2)
-                    {
                         foundSet = true;
-                    }
 
                     break;
                 }
@@ -69,12 +69,11 @@ public class CardTurnInOptionGeneratorTests
                     foundSkip = true;
                     break;
             }
-        }
 
         Assert.True(foundSet);
         Assert.True(foundSkip);
     }
-    
+
     /*
      * CARDTURNINGEN-002
      *
@@ -115,12 +114,11 @@ public class CardTurnInOptionGeneratorTests
         // Assert
         Assert.Equal(3, count);
 
-        bool found012 = false;
-        bool found123 = false;
-        bool foundSkip = false;
+        var found012 = false;
+        var found123 = false;
+        var foundSkip = false;
 
-        for (int i = 0; i < count; i++)
-        {
+        for (var i = 0; i < count; i++)
             switch (decisions[i].Kind)
             {
                 case DecisionKind.CardTurnIn:
@@ -130,16 +128,12 @@ public class CardTurnInOptionGeneratorTests
                     if (cards.Card1 == 0 &&
                         cards.Card2 == 1 &&
                         cards.Card3 == 2)
-                    {
                         found012 = true;
-                    }
 
                     if (cards.Card1 == 1 &&
                         cards.Card2 == 2 &&
                         cards.Card3 == 3)
-                    {
                         found123 = true;
-                    }
 
                     break;
                 }
@@ -148,14 +142,13 @@ public class CardTurnInOptionGeneratorTests
                     foundSkip = true;
                     break;
             }
-        }
 
         Assert.True(found012);
         Assert.True(found123);
         Assert.True(foundSkip);
     }
-    
-    
+
+
     /*
      * CARDTURNINGEN-003
      *
@@ -197,7 +190,7 @@ public class CardTurnInOptionGeneratorTests
 
         Assert.Equal(DecisionKind.SkipPhase, decisions[0].Kind);
     }
-    
+
     /*
      * CARDTURNINGEN-004
      *
@@ -216,10 +209,7 @@ public class CardTurnInOptionGeneratorTests
             .Create()
             .WithTerritories(EngineConstants.FORCE_TRADE_CARD_COUNT);
 
-        for (byte i = 0; i < EngineConstants.FORCE_TRADE_CARD_COUNT - 1; i++)
-        {
-            builder.Connect(i, (byte)(i + 1));
-        }
+        for (byte i = 0; i < EngineConstants.FORCE_TRADE_CARD_COUNT - 1; i++) builder.Connect(i, (byte)(i + 1));
 
         var layout = builder.Build();
 
@@ -228,9 +218,7 @@ public class CardTurnInOptionGeneratorTests
         state.PlayerTurn = 0;
 
         for (byte card = 0; card < EngineConstants.FORCE_TRADE_CARD_COUNT; card++)
-        {
             CardHelper.AddCardToPlayer(ref state, 0, card, layout.Deck);
-        }
 
         Span<DecisionOption> decisions = stackalloc DecisionOption[32];
 
@@ -240,12 +228,9 @@ public class CardTurnInOptionGeneratorTests
         // Assert
         Assert.True(count > 0);
 
-        for (int i = 0; i < count; i++)
-        {
-            Assert.NotEqual(DecisionKind.SkipPhase, decisions[i].Kind);
-        }
+        for (var i = 0; i < count; i++) Assert.NotEqual(DecisionKind.SkipPhase, decisions[i].Kind);
     }
-    
+
     /*
      * CARDTURNINGEN-005
      *
@@ -282,10 +267,10 @@ public class CardTurnInOptionGeneratorTests
         int count = CardTurnInOptionGenerator.Generate(in state, layout, decisions);
 
         // Assert
-        int occurrences012 = 0;
-        int occurrences123 = 0;
+        var occurrences012 = 0;
+        var occurrences123 = 0;
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             if (decisions[i].Kind != DecisionKind.CardTurnIn)
                 continue;
@@ -295,16 +280,12 @@ public class CardTurnInOptionGeneratorTests
             if (cards.Card1 == 0 &&
                 cards.Card2 == 1 &&
                 cards.Card3 == 2)
-            {
                 occurrences012++;
-            }
 
             if (cards.Card1 == 1 &&
                 cards.Card2 == 2 &&
                 cards.Card3 == 3)
-            {
                 occurrences123++;
-            }
         }
 
         Assert.Equal(1, occurrences012);

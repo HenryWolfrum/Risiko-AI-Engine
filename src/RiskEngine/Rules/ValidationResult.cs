@@ -1,4 +1,6 @@
-﻿namespace RiskEngine.Layout;
+﻿using RiskEngine.Error;
+
+namespace RiskEngine.Rules;
 
 public readonly struct ValidationResult
 {

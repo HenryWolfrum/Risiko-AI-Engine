@@ -1,7 +1,7 @@
-﻿namespace RiskEngine.Layout;
+﻿namespace RiskEngine.Constants;
 
 /// <summary>
-/// Global engine limits and default values.
+///     Global engine limits and default values.
 /// </summary>
 public static class EngineConstants
 {
@@ -10,18 +10,18 @@ public static class EngineConstants
     // ---------------------------------------------------------------------
 
     /// <summary>
-    /// Minimum supported player count.
+    ///     Minimum supported player count.
     /// </summary>
     public const byte MIN_PLAYERS = 2;
 
     /// <summary>
-    /// Maximum supported player count.
+    ///     Maximum supported player count.
     /// </summary>
     public const byte MAX_PLAYERS = 6;
 
     /// <summary>
-    /// Maximum supported territory count.
-    /// Limited by the internal ulong bitboards.
+    ///     Maximum supported territory count.
+    ///     Limited by the internal ulong bitboards.
     /// </summary>
     public const byte MAX_TERRITORIES = 64;
 
@@ -37,7 +37,7 @@ public static class EngineConstants
     public const ushort MIN_ROUNDS = 50;
 
     public const byte JOKER_COUNT = 2;
-    
+
 
     // ---------------------------------------------------------------------
     // Combat Rules
@@ -57,14 +57,14 @@ public static class EngineConstants
     public const byte CARD_TERRITORY_BONUS_TROOPS = 2;
 
     public const byte FORCE_TRADE_CARD_COUNT = 5;
-    
-    
+
+
     // ---------------------------------------------------------------------
     // Fortify Rules
     // ---------------------------------------------------------------------
-    
+
     public const byte MAX_FORTIFY_MOVES_PER_TURN = 1;
-    
+
     // ---------------------------------------------------------------------
     // Misc
     // ---------------------------------------------------------------------

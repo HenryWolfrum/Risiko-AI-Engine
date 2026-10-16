@@ -1,12 +1,12 @@
-﻿using RiskEngine.Layout;
+﻿using RiskEngine.Actions;
 
-namespace RiskEngine.Layout.Decisions;
+namespace RiskEngine.Decisions;
 
 public static class ActionFactoryHelper
 {
     public static GameAction TradeCards(byte card1, byte card2, byte card3)
     {
-        return new GameAction()
+        return new GameAction
         {
             Type = ActionType.TurnInCards,
             Card1 = card1,
@@ -17,7 +17,7 @@ public static class ActionFactoryHelper
 
     public static GameAction Reinforce(byte target, byte amount)
     {
-        return new GameAction()
+        return new GameAction
         {
             Type = ActionType.Reinforce,
             TargetTerritory = target,
@@ -27,7 +27,7 @@ public static class ActionFactoryHelper
 
     public static GameAction Attack(byte source, byte target, byte diceCount)
     {
-        return new GameAction()
+        return new GameAction
         {
             Type = ActionType.Attack,
             SourceTerritory = source,
@@ -38,7 +38,7 @@ public static class ActionFactoryHelper
 
     public static GameAction Defend(byte diceCount)
     {
-        return new GameAction()
+        return new GameAction
         {
             Type = ActionType.Defend,
             ChosenDefenderDiceCount = diceCount
@@ -46,11 +46,11 @@ public static class ActionFactoryHelper
     }
 
     /// <summary>
-    /// Creates a conquer action. Explicitly sets source and target territories.
+    ///     Creates a conquer action. Explicitly sets source and target territories.
     /// </summary>
     public static GameAction Conquer(byte source, byte target, byte amount)
     {
-        return new GameAction()
+        return new GameAction
         {
             Type = ActionType.Conquer,
             SourceTerritory = source,
@@ -58,11 +58,11 @@ public static class ActionFactoryHelper
             TroopCount = amount
         };
     }
-    
-    
+
+
     public static GameAction Fortify(byte source, byte target, byte amount)
     {
-        return new GameAction()
+        return new GameAction
         {
             Type = ActionType.Fortify,
             SourceTerritory = source,
@@ -73,15 +73,15 @@ public static class ActionFactoryHelper
 
     public static GameAction Skip()
     {
-        return new GameAction()
+        return new GameAction
         {
             Type = ActionType.SkipPhase
         };
     }
-    
+
     public static GameAction EndTurn()
     {
-        return new GameAction()
+        return new GameAction
         {
             Type = ActionType.EndTurn
         };

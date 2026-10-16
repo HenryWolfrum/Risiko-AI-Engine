@@ -1,7 +1,6 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
-namespace RiskEngine.Layout;
+namespace RiskEngine.Random;
 
 // Deterministic, 100% Zero-Allocation, Fully Unbiased Xoroshiro128++ Generator
 public sealed class EngineRandom
@@ -33,7 +32,8 @@ public sealed class EngineRandom
     public int Next(int minInclusive, int maxExclusive)
     {
         if (minInclusive >= maxExclusive)
-            throw new ArgumentOutOfRangeException(nameof(minInclusive), "minInclusive must be smaller than maxExclusive.");
+            throw new ArgumentOutOfRangeException(nameof(minInclusive),
+                "minInclusive must be smaller than maxExclusive.");
 
         var range = (uint)(maxExclusive - minInclusive);
         return minInclusive + (int)NextBoundedUInt32(range);
@@ -77,7 +77,10 @@ public sealed class EngineRandom
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong RotateLeft(ulong x, int k) => (x << k) | (x >> (64 - k));
+    private static ulong RotateLeft(ulong x, int k)
+    {
+        return (x << k) | (x >> (64 - k));
+    }
 
     private static ulong SplitMix64(ref ulong state)
     {

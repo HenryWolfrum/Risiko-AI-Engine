@@ -1,4 +1,7 @@
-﻿namespace RiskEngine.Layout;
+﻿using RiskEngine.Actions;
+using RiskEngine.Constants;
+
+namespace RiskEngine.State;
 
 public unsafe struct GameState
 {
@@ -25,6 +28,6 @@ public unsafe struct GameState
 
     public byte AttackerTerritory;
     public byte DefenderTerritory;
-    
+
     public byte WinnerId;
 }

@@ -1,18 +1,17 @@
-﻿using RiskEngine.Layout;
+﻿using RiskEngine.Actions;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout.Observer;
+namespace RiskEngine.Observer;
 
 /// <summary>
-/// Observes state changes during a simulation.
+///     Observes state changes during a simulation.
 /// </summary>
 public interface IGameObserver
 {
     /// <summary>
-    /// Records a new simulation frame.
+    ///     Records a new simulation frame.
     /// </summary>
     /// <param name="state">Current game state.</param>
     /// <param name="action">Action that produced the state, nullable for first instance.</param>
     void Record(in GameState state, GameAction? action);
-    
-   
 }

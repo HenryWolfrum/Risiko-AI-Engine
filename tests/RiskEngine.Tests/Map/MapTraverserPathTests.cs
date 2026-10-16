@@ -1,6 +1,8 @@
-using RiskEngine.Layout.Tests.Helpers;
+using RiskEngine.Map;
+using RiskEngine.State;
+using RiskEngine.Tests.TestInfrastructure;
 
-namespace RiskEngine.Layout.Tests.Map;
+namespace RiskEngine.Tests.Map;
 
 public class MapTraverserPathTests
 {
@@ -34,7 +36,7 @@ public class MapTraverserPathTests
         // Assert
         Assert.True(result);
     }
-    
+
     /*
      * PATH-002
      *
@@ -69,7 +71,7 @@ public class MapTraverserPathTests
         // Assert
         Assert.True(result);
     }
-    
+
     /*
      * PATH-003
      *
@@ -86,7 +88,7 @@ public class MapTraverserPathTests
         var map = TestLayoutBuilder
             .Create()
             .WithTerritories(3)
-            .ConnectOneWay(0,1)
+            .ConnectOneWay(0, 1)
             .BuildMap();
 
         Assert.False(MapTraverser.IsUndirected(map));
@@ -104,7 +106,7 @@ public class MapTraverserPathTests
         // Assert
         Assert.False(result);
     }
-    
+
     /*
      * PATH-004
      *
@@ -135,7 +137,7 @@ public class MapTraverserPathTests
         // Assert
         Assert.False(result);
     }
-    
+
     /*
      * PATH-005
      *
@@ -166,8 +168,8 @@ public class MapTraverserPathTests
         // Assert
         Assert.False(result);
     }
-    
-    
+
+
     /*
      * PATH-006
      *

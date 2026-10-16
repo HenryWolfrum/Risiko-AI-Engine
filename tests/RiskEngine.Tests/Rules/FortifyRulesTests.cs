@@ -1,6 +1,10 @@
-using RiskEngine.Layout.Tests.Helpers;
+using RiskEngine.Actions;
+using RiskEngine.Error;
+using RiskEngine.Rules;
+using RiskEngine.State;
+using RiskEngine.Tests.TestInfrastructure;
 
-namespace RiskEngine.Layout.Tests.Validation;
+namespace RiskEngine.Tests.Rules;
 
 public class FortifyRulesTests
 {
@@ -33,7 +37,7 @@ public class FortifyRulesTests
         GameStateHelper.SetTerritoryTroops(ref state, 0, 5);
         GameStateHelper.SetTerritoryTroops(ref state, 1, 2);
 
-        var action = new GameAction
+        var action = new GameAction()
         {
             SourceTerritory = 0,
             TargetTerritory = 1,
@@ -47,7 +51,7 @@ public class FortifyRulesTests
         Assert.True(result.IsValid);
         Assert.Equal(EngineError.None, result.Error);
     }
-    
+
     /*
      * FORTIFY-002
      *
@@ -85,7 +89,7 @@ public class FortifyRulesTests
         Assert.False(result.IsValid);
         Assert.Equal(EngineError.InvalidTerritory, result.Error);
     }
-    
+
     /*
      * FORTIFY-003
      *
@@ -123,7 +127,7 @@ public class FortifyRulesTests
         Assert.False(result.IsValid);
         Assert.Equal(EngineError.InvalidTerritory, result.Error);
     }
-    
+
     /*
      * FORTIFY-004
      *
@@ -162,8 +166,8 @@ public class FortifyRulesTests
         Assert.False(result.IsValid);
         Assert.Equal(EngineError.InvalidTarget, result.Error);
     }
-    
-    
+
+
     /*
      * FORTIFY-006
      *
@@ -207,7 +211,7 @@ public class FortifyRulesTests
         Assert.False(result.IsValid);
         Assert.Equal(EngineError.NoPathFound, result.Error);
     }
-    
+
     /*
      * FORTIFY-007
      *
@@ -250,7 +254,7 @@ public class FortifyRulesTests
         Assert.False(result.IsValid);
         Assert.Equal(EngineError.NotEnoughTroops, result.Error);
     }
-    
+
     /*
      * FORTIFY-008
      *
@@ -294,8 +298,8 @@ public class FortifyRulesTests
         Assert.False(result.IsValid);
         Assert.Equal(EngineError.TerritoryNotOwned, result.Error);
     }
-    
-    
+
+
     /*
      * FORTIFY-009
      *

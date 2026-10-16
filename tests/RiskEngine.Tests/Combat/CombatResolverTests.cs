@@ -1,9 +1,9 @@
-﻿using RiskEngine.Layout.Combat;
+﻿using RiskEngine.Actions;
+using RiskEngine.Combat;
+using RiskEngine.Random;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout.Tests.Combat;
-
-using Layout;
-using Xunit;
+namespace RiskEngine.Tests.Combat;
 
 public class CombatResolverTests
 {
@@ -23,7 +23,7 @@ public class CombatResolverTests
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
 
-        var action = new GameAction
+        var action = new GameAction()
         {
             Type = ActionType.Attack,
             ChosenAttackerDiceCount = 1,
@@ -56,7 +56,6 @@ public class CombatResolverTests
     [Fact]
     public void COMBAT_003_MultipleDiceCombat_ShouldResolveMultipleComparisons()
     {
-
         var action = new GameAction
         {
             Type = ActionType.Attack,
@@ -74,7 +73,7 @@ public class CombatResolverTests
         // Assert
         Assert.Equal(2, result.AttackerLosses + result.DefenderLosses);
     }
-    
+
     /*
      * COMBAT-005
      *
@@ -110,7 +109,7 @@ public class CombatResolverTests
 
         Assert.Equal(result1.DefenderLosses, result2.DefenderLosses);
     }
-    
+
     /*
      * COMBAT-006
      *
@@ -142,7 +141,7 @@ public class CombatResolverTests
         // Only one comparison can happen because attacker has one die.
         Assert.Equal(1, result.AttackerLosses + result.DefenderLosses);
     }
-    
+
     /*
      * COMBAT-007
      *
@@ -159,7 +158,8 @@ public class CombatResolverTests
     [InlineData(3, 1, 1)]
     [InlineData(2, 2, 2)]
     [InlineData(3, 2, 2)]
-    public void COMBAT_007_ShouldResolveCorrectNumberOfComparisons(byte attackerDice, byte defenderDice, byte expectedComparisons)
+    public void COMBAT_007_ShouldResolveCorrectNumberOfComparisons(byte attackerDice, byte defenderDice,
+        byte expectedComparisons)
     {
         var action = new GameAction
         {
@@ -178,7 +178,7 @@ public class CombatResolverTests
             expectedComparisons,
             result.AttackerLosses + result.DefenderLosses);
     }
-    
+
     /*
      * COMBAT-008
      *

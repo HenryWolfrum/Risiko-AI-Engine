@@ -1,18 +1,23 @@
 using System.Runtime.CompilerServices;
+using RiskEngine.Actions;
+using RiskEngine.Cards;
+using RiskEngine.Constants;
+using RiskEngine.Layout;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout.Mutation;
+namespace RiskEngine.Mutators;
 
 public static class CardTurnInMutator
 {
     // Trades three cards for reinforcement troops
-    public static void Apply(ref GameState state, in GameAction action,DeckLayout deck)
+    public static void Apply(ref GameState state, in GameAction action, DeckLayout deck)
     {
         var player = state.PlayerTurn;
 
         // 1. Remove cards from player's hand
-        CardHelper.RemoveCardFromPlayer(ref state, player, action.Card1,deck);
-        CardHelper.RemoveCardFromPlayer(ref state, player, action.Card2,deck);
-        CardHelper.RemoveCardFromPlayer(ref state, player, action.Card3,deck);
+        CardHelper.RemoveCardFromPlayer(ref state, player, action.Card1, deck);
+        CardHelper.RemoveCardFromPlayer(ref state, player, action.Card2, deck);
+        CardHelper.RemoveCardFromPlayer(ref state, player, action.Card3, deck);
 
         // 2. Increase traded set counter
         state.CardSetsTradedCount++;
@@ -32,10 +37,7 @@ public static class CardTurnInMutator
     {
         // If the card matches a territory currently owned by the player, add +2 troops directly to that territory
         if (GameStateHelper.GetTerritoryOwner(in state, cardTerritoryId) == player)
-        {
-            GameStateHelper.AddTerritoryTroops(ref state,cardTerritoryId,EngineConstants.CARD_TERRITORY_BONUS_TROOPS);
-            
-        }
+            GameStateHelper.AddTerritoryTroops(ref state, cardTerritoryId, EngineConstants.CARD_TERRITORY_BONUS_TROOPS);
     }
 
     // Calculates reinforcement bonus based on set count

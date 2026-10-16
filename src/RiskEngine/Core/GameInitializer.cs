@@ -1,11 +1,15 @@
-﻿using RiskEngine.Mission;
-using RiskEngine.Layout.Observer;
+﻿using RiskEngine.Layout;
+using RiskEngine.Mission;
+using RiskEngine.Observer;
+using RiskEngine.Random;
+using RiskEngine.State;
 
-namespace RiskEngine.Layout;
+namespace RiskEngine.Core;
 
 public static class GameInitializer
 {
-    public static unsafe GameState CreateInitialState(GameLayout layout, ref EngineRandom rng,IGameObserver? observer = null)
+    public static unsafe GameState CreateInitialState(GameLayout layout, ref EngineRandom rng,
+        IGameObserver? observer = null)
     {
         // 1. Get Params
         int territoryCount = layout.Map.TerritoryCount;
@@ -52,7 +56,7 @@ public static class GameInitializer
 
         // 9. Initialize GameState
         var state = GameStateHelper.CreateEmpty(playerCount, (byte)territoryCount);
-        
+
         // Set Round
         state.CurrentRound = 1;
 
@@ -68,13 +72,10 @@ public static class GameInitializer
         state.PlayerTurn = playerOrder[0];
 
         // Reset troops to place for all players
-        for (byte p = 0; p < playerCount; p++)
-        {
-            GameStateHelper.SetPlayerTroopsToPlace(ref state, p, 0);
-        }
-        
+        for (byte p = 0; p < playerCount; p++) GameStateHelper.SetPlayerTroopsToPlace(ref state, p, 0);
+
         // 10. Assign each player one unique mission with fallback safety
-        int missionCount = layout.Missions.Count;
+        var missionCount = layout.Missions.Count;
 
         if (missionCount >= playerCount)
         {
@@ -86,14 +87,14 @@ public static class GameInitializer
 
             for (byte p = 0; p < playerCount; p++)
             {
-                byte missionId = missionIds[p];
+                var missionId = missionIds[p];
                 var mission = layout.Missions[missionId];
 
                 // CHECK: Self-Elimination OR Non-Existent Player ID
                 if (mission.Type == MissionType.EliminatePlayer)
                 {
-                    bool isSelfElimination = mission.TargetPlayerId == p;
-                    bool isInvalidPlayerId = mission.TargetPlayerId >= playerCount;
+                    var isSelfElimination = mission.TargetPlayerId == p;
+                    var isInvalidPlayerId = mission.TargetPlayerId >= playerCount;
 
                     if (isSelfElimination || isInvalidPlayerId)
                     {
@@ -110,14 +111,11 @@ public static class GameInitializer
         else
         {
             // General Fallback if catalog is too small
-            for (byte p = 0; p < playerCount; p++)
-            {
-                state.PlayerMissions[p] = layout.Missions.FallbackMissionId;
-            }
+            for (byte p = 0; p < playerCount; p++) state.PlayerMissions[p] = layout.Missions.FallbackMissionId;
         }
-        
+
         //11. Inform Observers
-        observer?.Record(in state,null);
+        observer?.Record(in state, null);
 
         return state;
     }

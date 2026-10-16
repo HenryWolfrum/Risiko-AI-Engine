@@ -1,8 +1,9 @@
-﻿using RiskEngine.Layout.AI.Bots;
-using RiskEngine.Layout.AI.Configuration;
-using RiskEngine.Layout;
+﻿using RiskEngine.AI.Bots;
+using RiskEngine.AI.Configuration;
+using RiskEngine.Player;
+using RiskEngine.Random;
 
-namespace RiskEngine.Layout.AI.Factory;
+namespace RiskEngine.AI.Factory;
 
 public static class PlayerFactory
 {
@@ -18,16 +19,13 @@ public static class PlayerFactory
     }
 
     /// <summary>
-    /// Creates multiple players from a span of configurations.
+    ///     Creates multiple players from a span of configurations.
     /// </summary>
     public static IRiskPlayer[] Create(ReadOnlySpan<PlayerConfiguration> configurations)
     {
         IRiskPlayer[] players = new IRiskPlayer[configurations.Length];
 
-        for (int i = 0; i < configurations.Length; i++)
-        {
-            players[i] = Create(configurations[i]);
-        }
+        for (var i = 0; i < configurations.Length; i++) players[i] = Create(configurations[i]);
 
         return players;
     }

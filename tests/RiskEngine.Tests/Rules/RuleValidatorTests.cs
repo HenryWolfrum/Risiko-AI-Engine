@@ -1,6 +1,10 @@
-using RiskEngine.Layout.Tests.Helpers;
+using RiskEngine.Actions;
+using RiskEngine.Error;
+using RiskEngine.Rules;
+using RiskEngine.State;
+using RiskEngine.Tests.TestInfrastructure;
 
-namespace RiskEngine.Layout.Tests.Validation;
+namespace RiskEngine.Tests.Rules;
 
 public class RuleValidatorTests
 {
@@ -44,7 +48,7 @@ public class RuleValidatorTests
         Assert.True(result.IsValid);
         Assert.Equal(EngineError.None, result.Error);
     }
-    
+
     /*
      * VALIDATOR-002
      *
@@ -82,7 +86,7 @@ public class RuleValidatorTests
         Assert.False(result.IsValid);
         Assert.Equal(EngineError.ActionNotAllowedInPhase, result.Error);
     }
-    
+
     /*
      * VALIDATOR-003
      *
@@ -121,7 +125,7 @@ public class RuleValidatorTests
         Assert.True(result.IsValid);
         Assert.Equal(EngineError.None, result.Error);
     }
-    
+
     /*
      * VALIDATOR-004
      *
@@ -157,7 +161,7 @@ public class RuleValidatorTests
         Assert.True(result.IsValid);
         Assert.Equal(EngineError.None, result.Error);
     }
-    
+
     /*
      * VALIDATOR-005
      *
@@ -196,7 +200,7 @@ public class RuleValidatorTests
         };
 
         // Act
-        var result = RuleValidator.Validate( in state, in action, layout);
+        var result = RuleValidator.Validate(in state, in action, layout);
 
         // Assert
         Assert.True(result.IsValid);

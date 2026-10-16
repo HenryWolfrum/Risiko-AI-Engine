@@ -1,4 +1,5 @@
-﻿
+﻿namespace RiskEngine.Error;
+
 public enum EngineError : byte
 {
     None = 0,
@@ -34,7 +35,7 @@ public enum EngineError : byte
 
     CannotAttackOwnTerritory = 60,
     InvalidDiceCount = 61,
-    CacheDoesNotMatchState=62,
+    CacheDoesNotMatchState = 62,
 
     // =========================================
     // Card Errors (80-99)
@@ -79,16 +80,16 @@ public enum EngineError : byte
     InvalidJokerCount = 142,
     InvalidJokerPosition = 143,
     InvalidCardTypeDistribution = 144,
-    
-    
+
+
     //Mission
     DuplicateMissionId = 145,
     InvalidMissionTerritoryTarget = 146,
     InvalidMissionContinent = 147,
     InvalidMissionPlayerTarget = 148,
     InvalidMissionType = 149,
-    InvalidMissionIdSequence=150,
-    
+    InvalidMissionIdSequence = 150,
+
     // =========================================
     // Internal
     // =========================================

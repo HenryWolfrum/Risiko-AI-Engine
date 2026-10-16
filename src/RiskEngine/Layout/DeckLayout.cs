@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
-using RiskEngine.Layout;
+using RiskEngine.Cards;
+
+namespace RiskEngine.Layout;
 
 public class DeckLayout
 {
@@ -12,9 +14,9 @@ public class DeckLayout
         ulong artillery = 0;
         ulong joker = 0;
 
-        for (int id = 0; id < territoryToType.Length; id++)
+        for (var id = 0; id < territoryToType.Length; id++)
         {
-            ulong bit = 1UL << id;
+            var bit = 1UL << id;
 
             switch (territoryToType[id])
             {

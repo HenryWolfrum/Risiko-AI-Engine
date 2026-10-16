@@ -1,11 +1,10 @@
-﻿using RiskEngine.Layout.Tests.Helpers;
-using RiskEngine.Layout.Validation;
+﻿using RiskEngine.Actions;
+using RiskEngine.Error;
+using RiskEngine.Rules;
+using RiskEngine.State;
+using RiskEngine.Tests.TestInfrastructure;
 
-namespace RiskEngine.Layout.Tests.Validation;
-
-using Layout;
-using Layout.Tests.Helpers;
-using Xunit;
+namespace RiskEngine.Tests.Rules;
 
 public class ReinforceRulesTests
 {
@@ -32,7 +31,7 @@ public class ReinforceRulesTests
         GameStateHelper.SetPlayerTroopsToPlace(ref state, 0, 5);
 
 
-        var action = new GameAction
+        var action = new GameAction()
         {
             TargetTerritory = 0,
             TroopCount = 3
@@ -197,7 +196,7 @@ public class ReinforceRulesTests
         Assert.False(result.IsValid);
         Assert.Equal(EngineError.InvalidTerritory, result.Error);
     }
-    
+
     /*
      * REINFORCE-006
      *
@@ -231,7 +230,7 @@ public class ReinforceRulesTests
         // Assert
         Assert.True(result.IsValid);
     }
-    
+
     /*
      * REINFORCE-007
      *

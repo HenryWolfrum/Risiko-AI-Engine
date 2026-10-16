@@ -1,8 +1,10 @@
-using RiskEngine.Layout.Mutation;
-using RiskEngine.Layout.Tests.Helpers;
-using RiskEngine.Layout;
+using RiskEngine.Actions;
+using RiskEngine.Cards;
+using RiskEngine.Mutators;
+using RiskEngine.State;
+using RiskEngine.Tests.TestInfrastructure;
 
-namespace RiskEngine.Layout.Tests.Mutation;
+namespace RiskEngine.Tests.Mutation;
 
 public class CardTurnInMutatorTests
 {
@@ -33,7 +35,7 @@ public class CardTurnInMutatorTests
         CardHelper.AddCardToPlayer(ref state, 0, 1, layout.Deck);
         CardHelper.AddCardToPlayer(ref state, 0, 2, layout.Deck);
 
-        var action = new GameAction
+        var action = new GameAction()
         {
             Card1 = 0,
             Card2 = 1,
@@ -48,7 +50,7 @@ public class CardTurnInMutatorTests
         Assert.False(CardHelper.PlayerHasCard(in state, 0, 1, layout.Deck));
         Assert.False(CardHelper.PlayerHasCard(in state, 0, 2, layout.Deck));
     }
-    
+
     /*
      * MUTATE-TURNIN-002
      *
@@ -87,7 +89,7 @@ public class CardTurnInMutatorTests
         // Assert
         Assert.Equal(1, state.CardSetsTradedCount);
     }
-    
+
     /*
      * MUTATE-TURNIN-003
      *
@@ -127,7 +129,7 @@ public class CardTurnInMutatorTests
         // Assert
         Assert.Equal(4, GameStateHelper.GetPlayerTroopsToPlace(in state, 0));
     }
-    
+
     /*
      * MUTATE-TURNIN-004
      *
@@ -170,7 +172,7 @@ public class CardTurnInMutatorTests
         // Assert
         Assert.Equal(7, GameStateHelper.GetPlayerTroopsToPlace(in state, 0));
     }
-    
+
     /*
      * MUTATE-TURNIN-005
      *
@@ -213,7 +215,7 @@ public class CardTurnInMutatorTests
         // Assert
         Assert.Equal(7, GameStateHelper.GetTerritoryTroops(in state, 0));
     }
-    
+
     /*
      * MUTATE-TURNIN-006
      *

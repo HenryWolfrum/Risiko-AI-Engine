@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.Layout.Replay.Setup;
+﻿namespace RiskEngine.Replay.Setup;
 
 public static class SetupHelper
 {
@@ -8,7 +8,7 @@ public static class SetupHelper
         {
             Console.Write($"{question} [Y/N]: ");
 
-            string? input = Console.ReadLine()?.Trim().ToUpperInvariant();
+            var input = Console.ReadLine()?.Trim().ToUpperInvariant();
 
             switch (input)
             {
@@ -33,14 +33,12 @@ public static class SetupHelper
         {
             Console.Write($"{question} ({min}-{max}): ");
 
-            string? input = Console.ReadLine();
+            var input = Console.ReadLine();
 
-            if (ulong.TryParse(input, out ulong value) &&
+            if (ulong.TryParse(input, out var value) &&
                 value >= min &&
                 value <= max)
-            {
                 return value;
-            }
 
             Console.WriteLine($"Please enter a number between {min} and {max}.");
         }
@@ -48,25 +46,20 @@ public static class SetupHelper
 
     public static T AskEnum<T>(string question) where T : struct, Enum
     {
-        T[] values = Enum.GetValues<T>();
+        var values = Enum.GetValues<T>();
 
         while (true)
         {
             Console.WriteLine(question);
 
-            for (int i = 0; i < values.Length; i++)
-            {
-                Console.WriteLine($"{i + 1}. {values[i]}");
-            }
+            for (var i = 0; i < values.Length; i++) Console.WriteLine($"{i + 1}. {values[i]}");
 
             Console.Write("Selection: ");
 
-            if (int.TryParse(Console.ReadLine(), out int selection) &&
+            if (int.TryParse(Console.ReadLine(), out var selection) &&
                 selection >= 1 &&
                 selection <= values.Length)
-            {
                 return values[selection - 1];
-            }
 
             Console.WriteLine("Invalid selection.");
             Console.WriteLine();

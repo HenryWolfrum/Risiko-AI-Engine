@@ -1,11 +1,16 @@
-using System;
 using System.Numerics;
 using Raylib_cs;
 
-namespace RiskEngine.Layout.Replay.GUI.Controls;
+namespace RiskEngine.Replay.GUI.Controls;
 
 public class Button
 {
+    public Button(Rectangle bounds, string text)
+    {
+        Bounds = bounds;
+        Text = text;
+    }
+
     public Rectangle Bounds { get; set; }
     public string Text { get; set; }
     public int FontSize { get; set; } = 18;
@@ -24,29 +29,20 @@ public class Button
     // Event für entkoppelte Logik
     public event Action? OnClick;
 
-    public Button(Rectangle bounds, string text)
-    {
-        Bounds = bounds;
-        Text = text;
-    }
-
     /// <summary>
-    /// Aktualisiert den Zustand, zeichnet den Button und gibt true zurück, wenn geklickt wurde.
+    ///     Aktualisiert den Zustand, zeichnet den Button und gibt true zurück, wenn geklickt wurde.
     /// </summary>
     public bool DrawAndCheck(Vector2 mousePos)
     {
         IsHovered = Raylib.CheckCollisionPointRec(mousePos, Bounds);
-        bool isPressed = IsHovered && Raylib.IsMouseButtonDown(MouseButton.Left);
-        bool isClicked = IsHovered && Raylib.IsMouseButtonPressed(MouseButton.Left);
+        var isPressed = IsHovered && Raylib.IsMouseButtonDown(MouseButton.Left);
+        var isClicked = IsHovered && Raylib.IsMouseButtonPressed(MouseButton.Left);
 
-        if (isClicked)
-        {
-            OnClick?.Invoke();
-        }
+        if (isClicked) OnClick?.Invoke();
 
         // Farbe basierend auf Zustand wählen
-        Color currentBtnColor = NormalColor;
-        Color currentTextColor = TextColor;
+        var currentBtnColor = NormalColor;
+        var currentTextColor = TextColor;
 
         if (IsHovered)
         {
@@ -59,9 +55,9 @@ public class Button
         Raylib.DrawRectangleLinesEx(Bounds, 1, BorderColor);
 
         // 2. Text zentrieren
-        int textWidth = Raylib.MeasureText(Text, FontSize);
-        float textX = Bounds.X + (Bounds.Width - textWidth) / 2f;
-        float textY = Bounds.Y + (Bounds.Height - FontSize) / 2f;
+        var textWidth = Raylib.MeasureText(Text, FontSize);
+        var textX = Bounds.X + (Bounds.Width - textWidth) / 2f;
+        var textY = Bounds.Y + (Bounds.Height - FontSize) / 2f;
 
         Raylib.DrawText(Text, (int)textX, (int)textY, FontSize, currentTextColor);
 

@@ -1,4 +1,4 @@
-namespace RiskEngine.Layout.Combat;
+namespace RiskEngine.Combat;
 
 public struct CombatResult
 {

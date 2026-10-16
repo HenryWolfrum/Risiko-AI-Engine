@@ -1,14 +1,17 @@
-namespace RiskEngine.Layout.Mutation;
+using RiskEngine.Actions;
+using RiskEngine.State;
+
+namespace RiskEngine.Mutators;
 
 /// <summary>
-/// Applies the state changes caused by conquering a territory.
-/// Assumes that the action was already validated.
+///     Applies the state changes caused by conquering a territory.
+///     Assumes that the action was already validated.
 /// </summary>
 public static class ConquerMutator
 {
     /// <summary>
-    /// Transfers territory ownership and moves attacking troops
-    /// into the conquered territory.
+    ///     Transfers territory ownership and moves attacking troops
+    ///     into the conquered territory.
     /// </summary>
     public static void Apply(ref GameState state, in GameAction action)
     {
@@ -17,7 +20,7 @@ public static class ConquerMutator
 
         // Get current troop count from the attacking territory.
         var sourceTroops = GameStateHelper.GetTerritoryTroops(in state, action.SourceTerritory);
-        
+
 
         // Remove moved troops from the source territory.
         GameStateHelper.SetTerritoryTroops(ref state, action.SourceTerritory, (byte)(sourceTroops - action.TroopCount));
