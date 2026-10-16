@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.Simulations;
+﻿namespace RiskEngine.Layout.Simulations;
 
 internal class Program
 {

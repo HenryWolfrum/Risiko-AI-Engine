@@ -1,7 +1,7 @@
 ﻿using RiskEngine.Mission;
-using RiskEngine.Observer;
+using RiskEngine.Layout.Observer;
 
-namespace RiskEngine.Cards;
+namespace RiskEngine.Layout;
 
 public static class GameInitializer
 {

@@ -1,6 +1,6 @@
 ﻿using RiskEngine.Mission;
 
-namespace RiskEngine.Cards;
+namespace RiskEngine.Layout;
 
 public sealed class GameLayout
 {

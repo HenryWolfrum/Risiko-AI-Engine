@@ -1,9 +1,9 @@
 using System;
-using RiskEngine.Decisions;
-using RiskEngine.Cards;
-using RiskEngine.Cards.Generation;
+using RiskEngine.Layout.Generation;
+using RiskEngine.Layout.Decisions;
+using RiskEngine.Layout;
 
-namespace RiskEngine.AI.Bots;
+namespace RiskEngine.Layout.AI.Bots;
 
 /// <summary>
 /// Aggressive AI that prioritizes attack, maximum troop commitments, and forward pushes.

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using RiskEngine.Mission;
-using RiskEngine.Cards;
+using RiskEngine.Layout;
 
-namespace RiskEngine.Replay.GUI;
+namespace RiskEngine.Layout.Replay.GUI;
 
 public static class MissionTranslator
 {

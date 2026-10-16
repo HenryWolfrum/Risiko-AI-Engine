@@ -1,8 +1,8 @@
-﻿using RiskEngine.Combat;
+﻿using RiskEngine.Layout.Combat;
 
-namespace RiskEngine.Cards.Tests.Resolution;
+namespace RiskEngine.Layout.Tests.Combat;
 
-using Cards;
+using Layout;
 using Xunit;
 
 public class CombatResolverTests
@@ -56,8 +56,6 @@ public class CombatResolverTests
     [Fact]
     public void COMBAT_003_MultipleDiceCombat_ShouldResolveMultipleComparisons()
     {
-        // Arrange
-        var state = GameStateHelper.CreateEmpty(2);
 
         var action = new GameAction
         {

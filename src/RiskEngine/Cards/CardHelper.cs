@@ -1,7 +1,7 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace RiskEngine.Cards;
+namespace RiskEngine.Layout;
 
 /// <summary>
 /// Provides helper methods for managing player cards using bitboards,

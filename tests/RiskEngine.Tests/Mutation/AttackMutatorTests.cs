@@ -1,9 +1,8 @@
-using System;
-using Xunit;
-using RiskEngine.Exceptions;
-using RiskEngine.Cards.Mutation;
+using RiskEngine.Layout.Combat;
+using RiskEngine.Layout.Exceptions;
+using RiskEngine.Layout;
 
-namespace RiskEngine.Cards.Tests.Mutation;
+namespace RiskEngine.Layout.Tests.Mutation;
 
 public class AttackMutatorTests
 {

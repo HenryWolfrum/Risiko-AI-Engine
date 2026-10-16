@@ -1,10 +1,10 @@
-using RiskEngine.Exceptions;
+using RiskEngine.Layout;
+using RiskEngine.Layout.Exceptions;
 using RiskEngine.Mission;
-using RiskEngine.Observer;
-using RiskEngine.Cards.Validation;
-using RiskEngine.Cards.Mutation;
+using RiskEngine.Layout.Mutation;
+using RiskEngine.Layout.Observer;
 
-namespace RiskEngine.Cards.Execution;
+namespace RiskEngine.Execution;
 
 /// <summary>
 /// Executes the conquest phase after a successful attack.

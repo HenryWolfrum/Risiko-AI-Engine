@@ -1,10 +1,10 @@
-using RiskEngine.Cards.Rules;
-using RiskEngine.Cards.Tests.Helpers;
+using RiskEngine.Layout.Rules;
+using RiskEngine.Layout.Tests.Helpers;
 
-namespace RiskEngine.Cards.Tests.Validation;
+namespace RiskEngine.Layout.Tests.Validation;
 
-using Cards;
-using Cards.Tests.Helpers;
+using Layout;
+using Layout.Tests.Helpers;
 using Xunit;
 
 public class TurnInCardsRulesTests

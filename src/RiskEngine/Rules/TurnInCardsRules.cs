@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace RiskEngine.Cards.Rules;
+namespace RiskEngine.Layout.Rules;
 
 public static class TurnInCardsRules
 {

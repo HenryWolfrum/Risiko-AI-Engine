@@ -1,8 +1,8 @@
 ﻿using System;
-using RiskEngine.Decisions;
-using RiskEngine.Exceptions;
+using RiskEngine.Layout.Exceptions;
+using RiskEngine.Layout.Decisions;
 
-namespace RiskEngine.Cards.Generation;
+namespace RiskEngine.Layout.Generation;
 
 public static class ConquerOptionGenerator
 {

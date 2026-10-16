@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace RiskEngine.Cards;
+namespace RiskEngine.Layout;
 
 public static class ReinforcementCalculator
 {

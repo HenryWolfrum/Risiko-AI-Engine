@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.Exceptions;
+﻿namespace RiskEngine.Layout.Exceptions;
 
 /// <summary>
 /// Basis-Klasse für alle gezielten und abgefangenen Fehler der Risk Engine.

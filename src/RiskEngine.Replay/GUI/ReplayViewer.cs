@@ -1,10 +1,10 @@
 using System;
 using Raylib_cs;
-using RiskEngine.AI.Configuration;
-using RiskEngine.Replay.Recording;
+using RiskEngine.Layout.AI.Configuration;
+using RiskEngine.Layout.Replay.Recording;
 
 
-namespace RiskEngine.Replay.GUI;
+namespace RiskEngine.Layout.Replay.GUI;
 
 // Main script for organizing and running the replay view
 public static class ReplayViewer

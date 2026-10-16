@@ -2,9 +2,9 @@ using System;
 using System.IO;
 using System.Numerics;
 using Raylib_cs;
-using RiskEngine.Cards;
+using RiskEngine.Layout;
 
-namespace RiskEngine.Replay.GUI;
+namespace RiskEngine.Layout.Replay.GUI;
 
 public class MapRenderer : ISectionRenderer
 {

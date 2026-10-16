@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.Replay.Setup;
+﻿namespace RiskEngine.Layout.Replay.Setup;
 
 public static class SetupHelper
 {

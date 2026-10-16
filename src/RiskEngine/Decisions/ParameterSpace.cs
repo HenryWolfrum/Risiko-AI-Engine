@@ -1,6 +1,6 @@
 ﻿
 
-using RiskEngine.Cards;
+using RiskEngine.Layout;
 
 /// <summary>
 /// Represents a compact, continuous integer interval for parameterized choices (e.g., troop counts, dice counts).

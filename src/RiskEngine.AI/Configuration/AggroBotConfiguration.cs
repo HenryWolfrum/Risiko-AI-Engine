@@ -1,4 +1,4 @@
-namespace RiskEngine.AI.Configuration;
+namespace RiskEngine.Layout.AI.Configuration;
 
 /// <summary>
 /// Configuration for a deterministic AggroBot.

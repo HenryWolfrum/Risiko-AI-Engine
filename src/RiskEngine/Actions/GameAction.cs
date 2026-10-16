@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.Cards;
+﻿namespace RiskEngine.Layout;
 
 /// <summary>
 /// Represents a player action with fixed fields to cover all scenarios

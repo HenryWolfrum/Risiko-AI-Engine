@@ -1,7 +1,7 @@
-﻿using RiskEngine.Cards.Rules;
-using RiskEngine.Cards.Validation;
+﻿using RiskEngine.Layout.Rules;
+using RiskEngine.Layout.Validation;
 
-namespace RiskEngine.Cards;
+namespace RiskEngine.Layout;
 
 /// <summary>
 /// Central validation entry point for all player actions.

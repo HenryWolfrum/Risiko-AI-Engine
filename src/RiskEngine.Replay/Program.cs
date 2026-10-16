@@ -1,8 +1,8 @@
-﻿using RiskEngine.Replay.GUI;
-using RiskEngine.Replay.Runner;
-using RiskEngine.Replay.Setup;
+﻿using RiskEngine.Layout.Replay.GUI;
+using RiskEngine.Layout.Replay.Runner;
+using RiskEngine.Layout.Replay.Setup;
 
-namespace RiskEngine.Replay;
+namespace RiskEngine.Layout.Replay;
 
 internal static class Program
 {

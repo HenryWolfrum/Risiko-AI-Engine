@@ -1,6 +1,6 @@
-using RiskEngine.Cards.Tests.Helpers;
+using RiskEngine.Layout.Tests.Helpers;
 
-namespace RiskEngine.Cards.Tests.Map;
+namespace RiskEngine.Layout.Tests.Map;
 
 public class MapTraverserPathTests
 {

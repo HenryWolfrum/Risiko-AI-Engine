@@ -1,8 +1,8 @@
-using RiskEngine.Combat;
-using RiskEngine.Exceptions;
-using RiskEngine.Observer;
+using RiskEngine.Layout.Combat;
+using RiskEngine.Layout.Exceptions;
+using RiskEngine.Layout.Observer;
 
-namespace RiskEngine.Cards.Mutation;
+namespace RiskEngine.Layout.Mutation;
 
 /// <summary>
 /// Central mutation dispatcher.

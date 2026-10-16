@@ -1,4 +1,4 @@
-namespace RiskEngine.Cards;
+namespace RiskEngine.Layout;
 
 public static unsafe class MapTraverser
 {

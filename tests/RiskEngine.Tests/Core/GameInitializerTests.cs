@@ -1,9 +1,9 @@
-﻿using RiskEngine.Cards.Tests.Helpers;
+﻿using RiskEngine.Layout.Tests.Helpers;
 
-namespace RiskEngine.Cards.Tests.Initialization;
+namespace RiskEngine.Layout.Tests.Initialization;
 
-using Cards;
-using Cards.Tests.Helpers;
+using Layout;
+using Layout.Tests.Helpers;
 using Xunit;
 
 public class GameInitializerTests

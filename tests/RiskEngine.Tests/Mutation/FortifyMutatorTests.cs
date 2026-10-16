@@ -1,6 +1,7 @@
-using RiskEngine.Cards.Mutation;
+using RiskEngine.Layout.Mutation;
+using RiskEngine.Layout;
 
-namespace RiskEngine.Cards.Tests.Mutation;
+namespace RiskEngine.Layout.Tests.Mutation;
 
 public class FortifyMutatorTests
 {

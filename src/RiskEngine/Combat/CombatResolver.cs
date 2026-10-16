@@ -1,6 +1,6 @@
-﻿using RiskEngine.Cards;
+﻿using RiskEngine.Layout;
 
-namespace RiskEngine.Combat;
+namespace RiskEngine.Layout.Combat;
 
 /// <summary>
 /// Resolves a combat round by rolling and comparing attacker and defender dice.

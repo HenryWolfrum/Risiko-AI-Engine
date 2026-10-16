@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace RiskEngine.Replay.GUI;
+namespace RiskEngine.Layout.Replay.GUI;
 
 
 public static class TerritoryLayout

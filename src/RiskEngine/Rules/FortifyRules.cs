@@ -1,4 +1,4 @@
-using RiskEngine.Cards;
+using RiskEngine.Layout;
 
 public static class FortifyRules
 {

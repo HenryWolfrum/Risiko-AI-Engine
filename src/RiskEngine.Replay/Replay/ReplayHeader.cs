@@ -1,7 +1,7 @@
-﻿using RiskEngine.AI.Configuration;
-using RiskEngine.Cards;
+﻿using RiskEngine.Layout.AI.Configuration;
+using RiskEngine.Layout;
 
-namespace RiskEngine.Replay;
+namespace RiskEngine.Layout.Replay;
 
 /// <summary>
 /// Stores metadata required to identify and describe a replay.

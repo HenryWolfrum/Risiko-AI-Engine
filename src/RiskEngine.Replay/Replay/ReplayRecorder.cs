@@ -1,7 +1,7 @@
-﻿using RiskEngine.Observer;
-using RiskEngine.Cards;
+﻿using RiskEngine.Layout.Observer;
+using RiskEngine.Layout;
 
-namespace RiskEngine.Replay.Recording;
+namespace RiskEngine.Layout.Replay.Recording;
 
 public sealed class ReplayRecorder : IGameObserver
 {

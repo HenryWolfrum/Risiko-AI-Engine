@@ -1,4 +1,4 @@
-namespace RiskEngine.Cards.Mutation;
+namespace RiskEngine.Layout.Mutation;
 
 public static class ReinforceMutator
 {

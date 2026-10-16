@@ -1,10 +1,10 @@
-﻿using RiskEngine.Cards.Tests.Helpers;
-using RiskEngine.Cards.Validation;
+﻿using RiskEngine.Layout.Tests.Helpers;
+using RiskEngine.Layout.Validation;
 
-namespace RiskEngine.Cards.Tests.Validation;
+namespace RiskEngine.Layout.Tests.Validation;
 
-using Cards;
-using Cards.Tests.Helpers;
+using Layout;
+using Layout.Tests.Helpers;
 using Xunit;
 
 public class ReinforceRulesTests

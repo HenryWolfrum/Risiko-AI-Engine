@@ -1,7 +1,7 @@
-﻿using RiskEngine.Cards;
-using RiskEngine.Cards.Generation;
+﻿using RiskEngine.Layout.Generation;
+using RiskEngine.Layout;
 
-namespace RiskEngine.Tests.Decisions.Generators;
+namespace RiskEngine.Layout.Tests.Decisions.Generators;
 
 public class ReinforcementOptionGeneratorTests
 {

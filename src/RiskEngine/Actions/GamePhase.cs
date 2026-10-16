@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.Cards;
+﻿namespace RiskEngine.Layout;
 
 /// <summary>
 /// Is used to keep track of the current game phase in order to process the next simulation steps

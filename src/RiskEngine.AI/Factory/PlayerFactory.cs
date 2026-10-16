@@ -1,8 +1,8 @@
-﻿using RiskEngine.AI.Bots;
-using RiskEngine.AI.Configuration;
-using RiskEngine.Cards;
+﻿using RiskEngine.Layout.AI.Bots;
+using RiskEngine.Layout.AI.Configuration;
+using RiskEngine.Layout;
 
-namespace RiskEngine.AI.Factory;
+namespace RiskEngine.Layout.AI.Factory;
 
 public static class PlayerFactory
 {

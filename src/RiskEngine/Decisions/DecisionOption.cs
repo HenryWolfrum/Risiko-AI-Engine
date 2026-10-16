@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using RiskEngine.Cards;
-using RiskEngine.Cards.Generation;
+using RiskEngine.Layout;
+using RiskEngine.Layout.Generation;
 
 /// <summary>
 /// Represents a lightweight, semantically complete legal decision option.

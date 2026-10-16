@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.Replay;
+﻿namespace RiskEngine.Layout.Replay;
 
 /// <summary>
 /// Represents a complete replay of a simulated game.

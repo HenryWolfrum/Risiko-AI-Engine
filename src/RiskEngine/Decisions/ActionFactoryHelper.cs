@@ -1,6 +1,6 @@
-﻿using RiskEngine.Cards;
+﻿using RiskEngine.Layout;
 
-namespace RiskEngine.Decisions;
+namespace RiskEngine.Layout.Decisions;
 
 public static class ActionFactoryHelper
 {

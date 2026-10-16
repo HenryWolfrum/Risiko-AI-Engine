@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.Cards;
+﻿namespace RiskEngine.Layout;
 
 /// <summary>
 /// Represents the different types a card can have

@@ -1,11 +1,11 @@
 using System;
  using System.Collections.Generic;
  using System.Runtime.InteropServices;
- using RiskEngine.Decisions;
- using RiskEngine.Cards;
- using RiskEngine.Cards.Generation;
- 
- namespace RiskEngine.Domain.Generators;
+ using RiskEngine.Layout.Generation;
+ using RiskEngine.Layout.Decisions;
+ using RiskEngine.Layout;
+
+ namespace RiskEngine.Layout.Domain.Generators;
  
  /// <summary>
  /// High-performance dispatcher that generates the complete Decision Space for any game state

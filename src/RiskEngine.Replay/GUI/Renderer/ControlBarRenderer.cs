@@ -1,9 +1,9 @@
 using System.Numerics;
 using Raylib_cs;
-using RiskEngine.Replay.GUI.Controls;
-using RiskEngine.Cards;
+using RiskEngine.Layout.Replay.GUI.Controls;
+using RiskEngine.Layout;
 
-namespace RiskEngine.Replay.GUI;
+namespace RiskEngine.Layout.Replay.GUI;
 
 public class ControlBarRenderer : ISectionRenderer
 {

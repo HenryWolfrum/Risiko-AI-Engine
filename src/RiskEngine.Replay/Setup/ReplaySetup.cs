@@ -1,7 +1,7 @@
-﻿using RiskEngine.AI.Configuration;
-using RiskEngine.Cards;
+﻿using RiskEngine.Layout.AI.Configuration;
+using RiskEngine.Layout;
 
-namespace RiskEngine.Replay.Setup;
+namespace RiskEngine.Layout.Replay.Setup;
 
 public static class ReplaySetup
 {

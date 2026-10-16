@@ -1,11 +1,11 @@
 using MyEngineCore.Domain.Actions;
-using RiskEngine.Cards.Generation;
+using RiskEngine.Layout.Generation;
 
 using System;
-using RiskEngine.Decisions;
-using RiskEngine.Domain.Generators;
+using RiskEngine.Layout.Domain.Generators;
+using RiskEngine.Layout.Decisions;
 
-namespace RiskEngine.Cards;
+namespace RiskEngine.Layout;
 
 public interface IRiskPlayer
 {

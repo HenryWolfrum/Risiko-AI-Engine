@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.Cards.Validation;
+﻿namespace RiskEngine.Layout.Validation;
 
 public static class ReinforceRules
 {

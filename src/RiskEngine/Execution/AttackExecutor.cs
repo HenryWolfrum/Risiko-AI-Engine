@@ -1,11 +1,12 @@
 using System;
 using System.Numerics;
-using RiskEngine.Cards.Mutation;
-using RiskEngine.Cards.Validation;
-using RiskEngine.Exceptions;
-using RiskEngine.Observer;
+using RiskEngine.Layout;
+using RiskEngine.Layout.Exceptions;
+using RiskEngine.Layout.Mutation;
+using RiskEngine.Layout.Observer;
+using RiskEngine.Layout.Validation;
 
-namespace RiskEngine.Cards.Execution;
+namespace RiskEngine.Execution;
 
 public static class AttackExecutor
 {

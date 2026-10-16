@@ -1,6 +1,6 @@
-﻿using RiskEngine.Cards;
+﻿using RiskEngine.Layout;
 
-namespace RiskEngine.Replay;
+namespace RiskEngine.Layout.Replay;
 
 public readonly struct ReplayFrame
 {

@@ -1,10 +1,10 @@
 using RiskEngine.Mission;
-using RiskEngine.Cards;
-using RiskEngine.Cards.Tests.Helpers;
-using RiskEngine.Cards.Tests.TestInfrastructure;
+using RiskEngine.Layout.Tests.Helpers;
+using RiskEngine.Tests.TestInfrastructure;
+using RiskEngine.Layout.Mutators;
 using Xunit;
 
-namespace RiskEngine.Cards.Tests.Mission;
+namespace RiskEngine.Layout.Mutators.Tests.Mission;
 
 public class MissionEvaluatorTests
 {
@@ -35,7 +35,7 @@ public class MissionEvaluatorTests
             .WithTerritory(5, owner: 1, troops: 1)
             .Build();
 
-        Assert.False(RiskEngine.Mission.MissionEvaluator.IsFulfilled(in almostState, in layout, 0));
+        Assert.False(MissionEvaluator.IsFulfilled(in almostState, in layout, 0));
 
         // All 6 territories owned -> fulfilled
         var fullState = TestStateBuilder.Create(layout)
@@ -48,7 +48,7 @@ public class MissionEvaluatorTests
             .WithTerritory(5, owner: 0, troops: 1)
             .Build();
 
-        Assert.True(RiskEngine.Mission.MissionEvaluator.IsFulfilled(in fullState, in layout, 0));
+        Assert.True(MissionEvaluator.IsFulfilled(in fullState, in layout, 0));
     }
 
     // =====================================================================
@@ -81,7 +81,7 @@ public class MissionEvaluatorTests
             .WithTerritory(5, owner: 1, troops: 1)
             .Build();
 
-        Assert.False(RiskEngine.Mission.MissionEvaluator.IsFulfilled(in belowThreshold, in layout, 0));
+        Assert.False(MissionEvaluator.IsFulfilled(in belowThreshold, in layout, 0));
 
         var atThreshold = TestStateBuilder.Create(layout)
             .WithPlayerMission(0, missionId)
@@ -93,7 +93,7 @@ public class MissionEvaluatorTests
             .WithTerritory(5, owner: 1, troops: 1)
             .Build();
 
-        Assert.True(RiskEngine.Mission.MissionEvaluator.IsFulfilled(in atThreshold, in layout, 0));
+        Assert.True(MissionEvaluator.IsFulfilled(in atThreshold, in layout, 0));
     }
 
     /*
@@ -130,7 +130,7 @@ public class MissionEvaluatorTests
             .WithTerritory(5, owner: 1, troops: 1)
             .Build();
 
-        Assert.False(RiskEngine.Mission.MissionEvaluator.IsFulfilled(in oneWeakTerritory, in layout, 0));
+        Assert.False(MissionEvaluator.IsFulfilled(in oneWeakTerritory, in layout, 0));
 
         // Same ownership, but every owned territory now meets the minimum.
         var allMeetMinimum = TestStateBuilder.Create(layout)
@@ -143,7 +143,7 @@ public class MissionEvaluatorTests
             .WithTerritory(5, owner: 1, troops: 1)
             .Build();
 
-        Assert.True(RiskEngine.Mission.MissionEvaluator.IsFulfilled(in allMeetMinimum, in layout, 0));
+        Assert.True(MissionEvaluator.IsFulfilled(in allMeetMinimum, in layout, 0));
     }
 
     // =====================================================================
@@ -173,7 +173,7 @@ public class MissionEvaluatorTests
             .WithTerritory(3, owner: 1, troops: 1) // Continent B
             .Build();
 
-        Assert.False(RiskEngine.Mission.MissionEvaluator.IsFulfilled(in onlyOneContinent, in layout, 0));
+        Assert.False(MissionEvaluator.IsFulfilled(in onlyOneContinent, in layout, 0));
 
         // Player 0 now owns both continents.
         var bothContinents = TestStateBuilder.Create(layout)
@@ -184,7 +184,7 @@ public class MissionEvaluatorTests
             .WithTerritory(3, owner: 0, troops: 1)
             .Build();
 
-        Assert.True(RiskEngine.Mission.MissionEvaluator.IsFulfilled(in bothContinents, in layout, 0));
+        Assert.True(MissionEvaluator.IsFulfilled(in bothContinents, in layout, 0));
     }
 
     // =====================================================================
@@ -213,7 +213,7 @@ public class MissionEvaluatorTests
             .WithPlayerAlive(1)
             .Build();
 
-        Assert.False(RiskEngine.Mission.MissionEvaluator.IsFulfilled(in targetAlive, in layout, 0));
+        Assert.False(MissionEvaluator.IsFulfilled(in targetAlive, in layout, 0));
 
         var targetEliminated = TestStateBuilder.Create(layout)
             .WithPlayerMission(0, missionId)
@@ -221,7 +221,7 @@ public class MissionEvaluatorTests
             .WithPlayerEliminated(1)
             .Build();
 
-        Assert.True(RiskEngine.Mission.MissionEvaluator.IsFulfilled(in targetEliminated, in layout, 0));
+        Assert.True(MissionEvaluator.IsFulfilled(in targetEliminated, in layout, 0));
     }
 
     /*
@@ -258,7 +258,7 @@ public class MissionEvaluatorTests
             .Build();
 
         // Player 1's mission does NOT target player 2 -> must not falsely win.
-        bool eliminatedIsPlayer2 = RiskEngine.Mission.MissionEvaluator.CheckEliminationWin(
+        bool eliminatedIsPlayer2 = MissionEvaluator.CheckEliminationWin(
             in state, in customLayout, 0 ,out byte winnerId);
 
         Assert.True(eliminatedIsPlayer2);

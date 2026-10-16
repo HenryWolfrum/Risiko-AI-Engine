@@ -1,6 +1,8 @@
-using RiskEngine.Observer;
+using RiskEngine.Layout;
+using RiskEngine.Execution;
+using RiskEngine.Layout.Observer;
 
-namespace RiskEngine.Cards.Execution;
+namespace RiskEngine.Execution;
 
 /// <summary>
 /// Executes the complete turn sequence for a single player.

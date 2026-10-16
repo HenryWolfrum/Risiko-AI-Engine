@@ -1,9 +1,9 @@
-﻿using RiskEngine.AI.Configuration;
-using RiskEngine.AI.Factory;
-using RiskEngine.Replay.Recording;
-using RiskEngine.Cards;
+﻿using RiskEngine.Layout.AI.Factory;
+using RiskEngine.Layout.Replay.Recording;
+using RiskEngine.Layout.AI.Configuration;
+using RiskEngine.Layout;
 
-namespace RiskEngine.Replay.Runner;
+namespace RiskEngine.Layout.Replay.Runner;
 
 public static  class ReplayRunner
 {

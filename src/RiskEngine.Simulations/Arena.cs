@@ -1,10 +1,10 @@
 using System;
 using System.Diagnostics;
-using RiskEngine.AI.Configuration;
-using RiskEngine.AI.Factory;
-using RiskEngine.Cards;
+using RiskEngine.Layout.AI.Configuration;
+using RiskEngine.Layout.AI.Factory;
+using RiskEngine.Layout;
 
-namespace RiskEngine.Simulations;
+namespace RiskEngine.Layout.Simulations;
 
 public static class Arena
 {

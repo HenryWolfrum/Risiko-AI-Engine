@@ -2,7 +2,7 @@ using System;
 using System.Numerics;
 using Raylib_cs;
 
-namespace RiskEngine.Replay.GUI.Controls;
+namespace RiskEngine.Layout.Replay.GUI.Controls;
 
 public class Button
 {

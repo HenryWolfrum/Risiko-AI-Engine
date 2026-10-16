@@ -1,10 +1,11 @@
 using System;
-using RiskEngine.Exceptions;
-using RiskEngine.Observer;
-using RiskEngine.Cards.Validation;
-using RiskEngine.Cards.Mutation;
+using RiskEngine.Layout;
+using RiskEngine.Layout.Exceptions;
+using RiskEngine.Layout.Mutation;
+using RiskEngine.Layout.Observer;
+using RiskEngine.Layout.Validation;
 
-namespace RiskEngine.Cards.Execution;
+namespace RiskEngine.Execution;
 
 /// <summary>
 /// Executes the reinforcement phase of a player's turn.

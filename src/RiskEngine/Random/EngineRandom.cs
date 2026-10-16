@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace RiskEngine.Cards;
+namespace RiskEngine.Layout;
 
 // Deterministic, 100% Zero-Allocation, Fully Unbiased Xoroshiro128++ Generator
 public sealed class EngineRandom

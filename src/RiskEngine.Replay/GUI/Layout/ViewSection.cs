@@ -1,7 +1,7 @@
 using Raylib_cs;
-using RiskEngine.Replay.GUI;
+using RiskEngine.Layout.Replay.GUI;
 
-namespace RiskEngine.Replay.GUI;
+namespace RiskEngine.Layout.Replay.GUI;
 
 public class ViewSection
 {

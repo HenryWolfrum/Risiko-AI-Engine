@@ -1,9 +1,9 @@
-﻿using RiskEngine.Cards.Mutation;
+﻿using RiskEngine.Layout.Mutation;
 
-namespace RiskEngine.Cards.Tests.Mutation;
+namespace RiskEngine.Layout.Tests.Mutation;
 
-using Cards;
-using Cards.Mutation;
+using Layout;
+using Layout.Mutation;
 using Xunit;
 
 public class ReinforceMutatorTests

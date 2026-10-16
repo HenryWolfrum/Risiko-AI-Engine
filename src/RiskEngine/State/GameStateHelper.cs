@@ -1,7 +1,7 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace RiskEngine.Cards;
+namespace RiskEngine.Layout;
 
 public static unsafe class GameStateHelper
 {

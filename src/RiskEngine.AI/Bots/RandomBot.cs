@@ -1,8 +1,8 @@
 using System;
-using RiskEngine.Decisions;
-using RiskEngine.Cards;
+using RiskEngine.Layout.Decisions;
+using RiskEngine.Layout;
 
-namespace RiskEngine.AI.Bots;
+namespace RiskEngine.Layout.AI.Bots;
 
 /// <summary>
 /// Reference AI implementation that selects a uniformly random legal decision.

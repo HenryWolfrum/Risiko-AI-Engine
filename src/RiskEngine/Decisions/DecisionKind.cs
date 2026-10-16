@@ -1,4 +1,4 @@
-﻿namespace RiskEngine.Cards.Generation;
+﻿namespace RiskEngine.Layout.Generation;
 
 /// <summary>
 /// Defines the categories of decisions presented to an external decision-maker (AI, UI, Network Client).

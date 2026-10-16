@@ -1,7 +1,7 @@
 ﻿using System;
-using RiskEngine.Decisions;
-using RiskEngine.Cards;
-using RiskEngine.Cards.Generation;
+using RiskEngine.Layout.Decisions;
+using RiskEngine.Layout;
+using RiskEngine.Layout.Generation;
 
 namespace MyEngineCore.Domain.Actions;
 

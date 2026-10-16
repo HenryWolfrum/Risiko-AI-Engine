@@ -1,6 +1,6 @@
-﻿using RiskEngine.Cards;
+﻿using RiskEngine.Layout;
 
-namespace RiskEngine.Observer;
+namespace RiskEngine.Layout.Observer;
 
 /// <summary>
 /// Observes state changes during a simulation.
