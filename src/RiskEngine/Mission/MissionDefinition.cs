@@ -11,7 +11,6 @@ public readonly struct MissionDefinition
 
     // Continent mission parameters
     public byte TargetContinentMask { get; init; }
-    public bool RequiresThirdContinentChoice { get; init; }
 
     // Elimination mission parameters       // #p1 ; #p2 ; #p3 ; #p4; #p5; 24 GB ; 18GB � 2E ; NA-AU; NA-AF; AS-AF; AS-SA ; EU-AU
     public byte TargetPlayerId { get; init; }

@@ -45,7 +45,7 @@ public sealed class EngineRandom
         return (byte)(1 + NextBoundedUInt32(6u));
     }
 
-    // Unbiased Lemire's Fast Range Reduction mit Rejection Sampling
+    // Unbiased Lemire's Fast Range Reduction with Rejection Sampling
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private uint NextBoundedUInt32(uint range)
     {

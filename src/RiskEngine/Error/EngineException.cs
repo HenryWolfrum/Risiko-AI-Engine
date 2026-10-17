@@ -8,10 +8,6 @@ public abstract class RiskEngineException : Exception
     protected RiskEngineException(string message) : base(message)
     {
     }
-
-    protected RiskEngineException(string message, Exception innerException) : base(message, innerException)
-    {
-    }
 }
 
 /// <summary>

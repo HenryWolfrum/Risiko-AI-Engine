@@ -22,12 +22,5 @@ public readonly struct MissionCatalog
     ///     Returns a direct read-only reference to the mission definition by index (0-allocation).
     /// </summary>
     public ref readonly MissionDefinition this[int index] => ref _missions[index];
-
-    /// <summary>
-    ///     Returns the underlying missions as a ReadOnlySpan for fast iteration.
-    /// </summary>
-    public ReadOnlySpan<MissionDefinition> AsSpan()
-    {
-        return _missions.AsSpan();
-    }
+    
 }

@@ -8,8 +8,7 @@ namespace RiskEngine.Core;
 
 public static class GameInitializer
 {
-    public static unsafe GameState CreateInitialState(GameLayout layout, ref EngineRandom rng,
-        IGameObserver? observer = null)
+    public static unsafe GameState CreateInitialState(GameLayout layout, ref EngineRandom rng, IGameObserver? observer = null)
     {
         // 1. Get Params
         int territoryCount = layout.Map.TerritoryCount;
@@ -61,7 +60,6 @@ public static class GameInitializer
         state.CurrentRound = 1;
 
         // Assign owners and place exactly 1 initial troop per territory
-        // Nutzt jetzt die Helper-Methoden, um das Bitboard von Beginn an korrekt aufzubauen
         for (var i = 0; i < territoryCount; i++)
         {
             GameStateHelper.SetTerritoryOwner(ref state, i, territoryOwners[i]);

@@ -12,7 +12,6 @@ public readonly struct ParameterSpace
     public byte Min { get; }
     public byte Max { get; }
 
-    public bool HasChoice => Max > Min;
     public bool IsEmpty => Min == EngineConstants.NO_VALUE && Max == EngineConstants.NO_VALUE;
 
     public ParameterSpace(byte min, byte max)

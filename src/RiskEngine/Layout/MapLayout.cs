@@ -47,10 +47,4 @@ public class MapLayout
 
         return false;
     }
-
-    public Continent GetContinentOfTerritory(byte territoryId)
-    {
-        var continentId = TerritoryToContinent[territoryId];
-        return Continents[continentId];
-    }
 }
