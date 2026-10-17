@@ -57,7 +57,6 @@ public class CardHelperTests
 
         Assert.Equal(expected, CardHelper.GetPlayerCardsBitboard(in state, 0));
     }
-
     
     [Fact]
     public void CARD_005_ShouldTransferCardsToAnotherPlayer()
