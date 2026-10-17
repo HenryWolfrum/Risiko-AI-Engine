@@ -41,9 +41,7 @@ public static class CombatResolver
     /// The attacker wins a comparison only when their die is strictly higher.
     /// The defender wins ties.
     /// </summary>
-    internal static CombatResult ResolveRolls(
-        Span<byte> attackerDice,
-        Span<byte> defenderDice)
+    internal static CombatResult ResolveRolls(Span<byte> attackerDice, Span<byte> defenderDice)
     {
         SortDescending(attackerDice);
         SortDescending(defenderDice);

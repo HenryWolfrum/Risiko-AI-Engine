@@ -11,8 +11,7 @@ public readonly struct EngineConfig
 
     public ushort MaxRounds { get; }
 
-    public static readonly EngineConfig Default =
-        new(EngineConstants.DEFAULT_PLAYERS, EngineConstants.MAX_ROUNDS);
+    public static readonly EngineConfig Default = new(EngineConstants.DEFAULT_PLAYERS, EngineConstants.MAX_ROUNDS);
 
     public EngineConfig(byte playerCount, ushort maxRounds)
     {
