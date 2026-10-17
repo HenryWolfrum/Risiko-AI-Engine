@@ -58,8 +58,9 @@ public class CardHelperTests
         Assert.Equal(expected, CardHelper.GetPlayerCardsBitboard(in state, 0));
     }
 
+    
     [Fact]
-    public void CARD_005_ShouldTransferCardsOnPlayerElimination()
+    public void CARD_005_ShouldTransferCardsToAnotherPlayer()
     {
         var layout = TestLayoutBuilder.CreateSmallRiskLayout().Build();
         var state = GameStateHelper.CreateEmpty(2);
@@ -67,12 +68,12 @@ public class CardHelperTests
         CardHelper.AddCardToPlayer(ref state, 0, 0, layout.Deck);
         CardHelper.AddCardToPlayer(ref state, 1, 3, layout.Deck);
 
-        CardHelper.EliminateAndTransferCards(ref state, 0, 1);
+        CardHelper.TransferCards(ref state, 0, 1);
 
-        Assert.Equal(2, CardHelper.GetPlayerCardCount(in state, 0));
-
-        Assert.Equal(0, CardHelper.GetPlayerCardCount(in state, 1));
+        Assert.Equal(0, CardHelper.GetPlayerCardCount(in state, 0));
+        Assert.Equal(2, CardHelper.GetPlayerCardCount(in state, 1));
     }
+
 
     [Fact]
     public void CARD_006_ShouldReturnAvailableCards()

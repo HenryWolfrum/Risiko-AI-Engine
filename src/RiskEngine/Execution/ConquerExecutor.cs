@@ -80,7 +80,10 @@ public static class ConquerExecutor
         if (GameStateHelper.GetOwnedTerritoryCount(in state, defenderId) > 0) return;
 
         var attackerId = state.PlayerTurn;
-        CardHelper.EliminateAndTransferCards(ref state, attackerId, defenderId);
+        
+        CardHelper.TransferCards(ref state, defenderId, attackerId);
+        GameStateHelper.EliminatePlayer(ref state, defenderId);
+        
         //Record State before card set Selection for new received cards
         observer?.Record(in state, null);
     }
