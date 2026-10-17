@@ -57,7 +57,7 @@ public static unsafe class CardHelper
     }
 
     /// <summary>
-    ///     Transfers the defender's cards to the attacker and eliminates the defender.
+    /// Transfers all cards from one player to another.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void TransferCards(ref GameState state, byte fromPlayer, byte toPlayer)
