@@ -2,6 +2,7 @@ using RiskEngine.Actions;
 using RiskEngine.Combat;
 using RiskEngine.Error;
 using RiskEngine.Layout;
+using RiskEngine.Observer;
 using RiskEngine.Random;
 using RiskEngine.State;
 
@@ -17,7 +18,7 @@ public static class GameStateMutator
     ///     Applies an action and updates the game state.
     ///     Validation must happen before calling this method.
     /// </summary>
-    public static void Apply(ref GameState state, in GameAction action, ref EngineRandom rng, GameLayout layout)
+    public static void Apply(ref GameState state, in GameAction action, ref EngineRandom rng, GameLayout layout, IGameObserver? observer = null)
     {
         switch (action.Type)
         {
@@ -68,5 +69,8 @@ public static class GameStateMutator
                 throw new InvalidGameActionException($"Unsupported action type: {action.Type}");
             }
         }
+        
+        //Notify observer
+        observer?.OnActionApplied(in state, action);
     }
 }

@@ -8,7 +8,7 @@ namespace RiskEngine.Core;
 
 public static class GameInitializer
 {
-    public static unsafe GameState CreateInitialState(GameLayout layout, ref EngineRandom rng, IGameObserver? observer = null)
+    public static unsafe GameState CreateInitialState(GameLayout layout, ref EngineRandom rng)
     {
         // 1. Get Params
         int territoryCount = layout.Map.TerritoryCount;
@@ -112,8 +112,6 @@ public static class GameInitializer
             for (byte p = 0; p < playerCount; p++) state.PlayerMissions[p] = layout.Missions.FallbackMissionId;
         }
 
-        //11. Inform Observers
-        observer?.Record(in state, null);
 
         return state;
     }

@@ -4,14 +4,22 @@ using RiskEngine.State;
 namespace RiskEngine.Observer;
 
 /// <summary>
-///     Observes state changes during a simulation.
+/// Observes lifecycle events and actions during a game.
 /// </summary>
 public interface IGameObserver
 {
     /// <summary>
-    ///     Records a new simulation frame.
+    /// Called when the game has been initialized.
     /// </summary>
-    /// <param name="state">Current game state.</param>
-    /// <param name="action">Action that produced the state, nullable for first instance.</param>
-    void Record(in GameState state, GameAction? action);
+    void OnGameStarted(in GameState state);
+
+    /// <summary>
+    /// Called after a validated action has been successfully applied.
+    /// </summary>
+    void OnActionApplied(in GameState state, in GameAction action);
+
+    /// <summary>
+    /// Called when the game has finished.
+    /// </summary>
+    void OnGameFinished(in GameState state);
 }

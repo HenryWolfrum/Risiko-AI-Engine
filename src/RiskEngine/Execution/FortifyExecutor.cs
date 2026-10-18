@@ -82,12 +82,8 @@ public static class FortifyExecutor
 
 
             // Apply troop movement.
-            GameStateMutator.Apply(ref state, in action, ref rng, layout);
-
-            // Record completed fortification event.
-            observer?.Record(in state, action);
-
-
+            GameStateMutator.Apply(ref state, in action, ref rng, layout,observer);
+            
             moveCounter++;
         }
     }

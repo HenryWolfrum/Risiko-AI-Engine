@@ -16,8 +16,22 @@ public sealed class ReplayRecorder : IGameObserver
         };
     }
 
+    public void OnGameStarted(in GameState state)
+    {
+        AddFrame(in state, null);
+    }
 
-    public void Record(in GameState state, GameAction? action)
+    public void OnActionApplied(in GameState state, in GameAction action)
+    {
+        AddFrame(in state, action);
+    }
+
+    public void OnGameFinished(in GameState state)
+    {
+        AddFrame(in state, null);
+    }
+
+    private void AddFrame(in GameState state, GameAction? action)
     {
         _replay.Frames.Add(new ReplayFrame
         {
@@ -25,7 +39,6 @@ public sealed class ReplayRecorder : IGameObserver
             Action = action
         });
     }
-
 
     public Replay Build()
     {

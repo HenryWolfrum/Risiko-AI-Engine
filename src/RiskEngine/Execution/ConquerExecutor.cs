@@ -47,11 +47,10 @@ public static class ConquerExecutor
         }
 
         // 2. Apply movement and record state
-        GameStateMutator.Apply(ref state, in conquerAction, ref rng, layout);
-        observer?.Record(in state, conquerAction);
+        GameStateMutator.Apply(ref state, in conquerAction, ref rng, layout,observer);
 
         // 3. Process potential player elimination and card transfer
-        CheckPlayerElimination(ref state, defenderId, observer);
+        CheckPlayerElimination(ref state, defenderId);
 
         // 4. Check for game-winning condition
         if (MissionEvaluator.CheckEliminationWin(in state, in layout, state.PlayerTurn, out byte winnerId))
@@ -75,7 +74,7 @@ public static class ConquerExecutor
     /// <summary>
     ///     Removes eliminated players and transfers their cards.
     /// </summary>
-    private static void CheckPlayerElimination(ref GameState state, byte defenderId, IGameObserver? observer)
+    private static void CheckPlayerElimination(ref GameState state, byte defenderId)
     {
         if (GameStateHelper.GetOwnedTerritoryCount(in state, defenderId) > 0) return;
 
@@ -84,7 +83,5 @@ public static class ConquerExecutor
         CardHelper.TransferCards(ref state, defenderId, attackerId);
         GameStateHelper.EliminatePlayer(ref state, defenderId);
         
-        //Record State before card set Selection for new received cards
-        observer?.Record(in state, null);
     }
 }

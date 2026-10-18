@@ -86,11 +86,8 @@ public static class CardTurnInExecutor
 
 
             // Apply card exchange.
-            GameStateMutator.Apply(ref state, in action, ref rng, layout);
+            GameStateMutator.Apply(ref state, in action, ref rng, layout,observer);
 
-
-            // Record completed event after mutation.
-            observer?.Record(in state, action);
         }
     }
 
@@ -134,11 +131,7 @@ public static class CardTurnInExecutor
 
 
             // Apply voluntary card exchange.
-            GameStateMutator.Apply(ref state, in action, ref rng, layout);
-
-
-            // Record completed event after mutation.
-            observer?.Record(in state, action);
+            GameStateMutator.Apply(ref state, in action, ref rng, layout,observer);
         }
     }
 }

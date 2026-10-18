@@ -92,10 +92,8 @@ public static class ReinforceExecutor
 
 
             // Apply valid reinforcement placement.
-            GameStateMutator.Apply(ref state, in action, ref rng, layout);
-
-            //Record
-            observer?.Record(in state, action);
+            GameStateMutator.Apply(ref state, in action, ref rng, layout,observer);
+            
         }
     }
 }

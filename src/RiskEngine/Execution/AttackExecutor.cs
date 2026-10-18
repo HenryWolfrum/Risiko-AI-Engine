@@ -73,11 +73,8 @@ public static class AttackExecutor
             attackAction.ChosenDefenderDiceCount = defenderAction.ChosenDefenderDiceCount;
 
 
-            GameStateMutator.Apply(ref state, in attackAction, ref rng, layout);
-
-            //State after attack is slected
-            observer?.Record(in state, attackAction);
-
+            GameStateMutator.Apply(ref state, in attackAction, ref rng, layout,observer);
+            
             if (GameStateHelper.GetTerritoryTroops(in state, defenderTerritory) == 0)
             {
                 conqueredTerritoryThisTurn = true;
