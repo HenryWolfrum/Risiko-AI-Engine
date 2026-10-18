@@ -1,7 +1,7 @@
 using Raylib_cs;
 using RiskEngine.Replay.GUI.Renderer;
 
-namespace RiskEngine.Replay.GUI;
+namespace RiskEngine.Replay.GUI.Layout;
 
 public abstract class ViewLayoutFactory
 {

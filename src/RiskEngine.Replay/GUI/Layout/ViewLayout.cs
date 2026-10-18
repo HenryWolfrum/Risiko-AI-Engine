@@ -1,4 +1,4 @@
-namespace RiskEngine.Replay.GUI;
+namespace RiskEngine.Replay.GUI.Layout;
 
 public struct ViewLayout
 {

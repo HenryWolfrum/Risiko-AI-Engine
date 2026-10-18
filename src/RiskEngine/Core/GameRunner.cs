@@ -1,4 +1,3 @@
-
 using RiskEngine.Actions;
 using RiskEngine.Constants;
 using RiskEngine.Execution;

@@ -53,8 +53,7 @@ public static class MissionEvaluator
         return GameStateHelper.GetOwnedTerritoryCount(in state, player) == layout.Map.TerritoryCount;
     }
 
-    private static bool CheckTerritories(in GameState state, in GameLayout layout, byte player,
-        in MissionDefinition mission)
+    private static bool CheckTerritories(in GameState state, in GameLayout layout, byte player, in MissionDefinition mission)
     {
         int count = GameStateHelper.GetOwnedTerritoryCount(in state, player);
         if (count < mission.RequiredTerritories)
@@ -66,8 +65,7 @@ public static class MissionEvaluator
         return MissionHelper.HasMinTroopsOnAllTerritories(in state, in layout, player, mission.MinTroopsPerTerritory);
     }
 
-    private static bool CheckContinents(in GameState state, in GameLayout layout, byte player,
-        in MissionDefinition mission)
+    private static bool CheckContinents(in GameState state, in GameLayout layout, byte player, in MissionDefinition mission)
     {
         var playerContinents = MissionHelper.GetControlledContinentMask(in state, layout, player);
 
