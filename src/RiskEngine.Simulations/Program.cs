@@ -4,6 +4,9 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        Arena.RunTournament(10_000, 4);
+        Arena.Run(
+            gamesPerScenario: 10_000,
+            playerCount: 4,
+            experimentSeed: 20_000);
     }
 }

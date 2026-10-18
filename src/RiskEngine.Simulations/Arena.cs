@@ -5,89 +5,146 @@ using RiskEngine.Constants;
 using RiskEngine.Core;
 using RiskEngine.Layout;
 using RiskEngine.Player;
-using RiskEngine.State;
 
 namespace RiskEngine.Simulations;
 
 public static class Arena
 {
-    public static void RunTournament(ulong numberOfGames, byte playerCount = 4)
+    public static void Run(
+        ulong gamesPerScenario = 10_000,
+        byte playerCount = 4,
+        ulong experimentSeed = 20_000)
     {
-        Console.WriteLine($"=== STARTING ROTATING ARENA TOURNAMENT ({numberOfGames} Games, {playerCount} Players) ===");
-
-        GameLayout layout = RiskMapFactory.CreateStandardRiskMap();
-
-        // 1. Statistische Tracker
-        var aggroWins = 0;
-        var randomWins = 0;
-        var seatWins = new int[playerCount]; // Erfasst Siege pro Slot (0, 1, 2, 3)
-
-        var totalRounds = 0;
-        var maxRoundsReachedCount = 0;
-
-        var sw = Stopwatch.StartNew();
-
-        for (ulong game = 0; game < numberOfGames; game++)
+        if (playerCount < EngineConstants.MIN_PLAYERS ||
+            playerCount > EngineConstants.MAX_PLAYERS)
         {
-            var gameSeed = game + 20000;
+            throw new ArgumentOutOfRangeException(nameof(playerCount));
+        }
 
-            // Der AggroBot wandert in jedem Spiel einen Sitzplatz weiter
-            var aggroSlot = (byte)(game % playerCount);
+        if (gamesPerScenario == 0 ||
+            gamesPerScenario % playerCount != 0)
+        {
+            throw new ArgumentException(
+                "Game count must be positive and divisible by player count.",
+                nameof(gamesPerScenario));
+        }
 
-            IRiskPlayer[] players = new IRiskPlayer[playerCount];
+        var layout = RiskMapFactory.CreateStandardRiskMap();
+
+        Console.WriteLine("=== CONTROLLED AGGRO EXPERIMENT ===");
+        Console.WriteLine($"Games per scenario: {gamesPerScenario}");
+        Console.WriteLine($"Players:            {playerCount}");
+        Console.WriteLine($"Experiment seed:    {experimentSeed}");
+        Console.WriteLine("Seed blocks rotate through every seat.");
+
+        RunScenario(
+            layout, gamesPerScenario, playerCount,
+            experimentSeed, useAggro: true);
+
+        RunScenario(
+            layout, gamesPerScenario, playerCount,
+            experimentSeed, useAggro: false);
+    }
+
+    private static void RunScenario(
+        GameLayout layout,
+        ulong games,
+        byte playerCount,
+        ulong experimentSeed,
+        bool useAggro)
+    {
+        ulong aggroWins = 0;
+        ulong randomWins = 0;
+        ulong stalemates = 0;
+        long totalRounds = 0;
+        var seatWins = new ulong[playerCount];
+
+        var stopwatch = Stopwatch.StartNew();
+
+        for (ulong game = 0; game < games; game++)
+        {
+            // Each block reuses one game seed across all seat rotations.
+            ulong block = game / playerCount;
+            byte rotation = (byte)(game % playerCount);
+            ulong gameSeed = experimentSeed + block;
+
+            // In the mixed scenario, rotate AggroBot through all slots.
+            byte aggroSlot = rotation;
+
+            var players = new IRiskPlayer[playerCount];
 
             for (byte slot = 0; slot < playerCount; slot++)
             {
-                PlayerConfiguration configuration = slot == aggroSlot
+                bool isAggro = useAggro && slot == aggroSlot;
+
+                PlayerConfiguration config = isAggro
                     ? new AggroBotConfiguration()
-                    : new RandomBotConfiguration { Seed = gameSeed + slot };
+                    : new RandomBotConfiguration
+                    {
+                        // Independent, reproducible bot RNG per game and slot.
+                        Seed = gameSeed
+                            + 1_000_000UL
+                            + game * playerCount
+                            + slot
+                    };
 
-                players[slot] = PlayerFactory.Create(configuration);
+                players[slot] = PlayerFactory.Create(config);
             }
 
-            GameState state = GameRunner.PlayGame(layout, players, gameSeed);
-
-            if (state.WinnerId != EngineConstants.NO_VALUE)
-            {
-                // Erfasse Gewinn nach Sitzplatz
-                seatWins[state.WinnerId]++;
-
-                // Erfasse Gewinn nach Bot-Typ
-                if (state.WinnerId == aggroSlot)
-                    aggroWins++;
-                else
-                    randomWins++;
-            }
-            else
-            {
-                maxRoundsReachedCount++;
-            }
+            var state = GameRunner.PlayGame(
+                layout, players, gameSeed);
 
             totalRounds += state.CurrentRound;
+
+            if (state.WinnerId == EngineConstants.NO_VALUE)
+            {
+                stalemates++;
+                continue;
+            }
+
+            seatWins[state.WinnerId]++;
+
+            if (useAggro && state.WinnerId == aggroSlot)
+                aggroWins++;
+            else
+                randomWins++;
         }
 
-        sw.Stop();
+        stopwatch.Stop();
 
-        double totalFinishedGames = numberOfGames - (ulong)maxRoundsReachedCount;
+        ulong decisiveGames = games - stalemates;
 
-        Console.WriteLine("\n=== TOURNAMENT RESULTS ===");
-        Console.WriteLine($"Total Time Elapsed: {sw.ElapsedMilliseconds} ms");
-        Console.WriteLine($"Games per Second:   {numberOfGames / (sw.ElapsedMilliseconds / 1000.0):F2}");
-        Console.WriteLine($"Avg Rounds / Game:  {(double)totalRounds / numberOfGames:F1}");
-        Console.WriteLine($"Unfinished Games:   {maxRoundsReachedCount}");
+        Console.WriteLine();
+        Console.WriteLine(useAggro
+            ? "--- 1 AGGROBOT + RANDOM BOTS ---"
+            : "--- ALL RANDOM BOTS (CONTROL) ---");
 
-        Console.WriteLine("\n--- BOT PERFORMANCE (Position-Agnostic) ---");
-        var aggroWinrate = (double)aggroWins / numberOfGames * 100.0;
-        var randomWinrate = (double)randomWins / numberOfGames * 100.0;
+        Console.WriteLine($"Elapsed:        {stopwatch.ElapsedMilliseconds} ms");
+        Console.WriteLine($"Games/sec:      {games / stopwatch.Elapsed.TotalSeconds:F2}");
+        Console.WriteLine($"Average rounds: {(double)totalRounds / games:F1}");
+        Console.WriteLine($"Stalemates:     {stalemates} ({100.0 * stalemates / games:F2}%)");
+        Console.WriteLine($"Decisive games: {decisiveGames}");
 
-        Console.WriteLine($"AggroBot Overall Winrate:  {aggroWinrate,6:F2}% ({aggroWins} wins)");
-        Console.WriteLine($"RandomBots Combined Winrate: {randomWinrate,6:F2}% ({randomWins} wins)");
+        Console.WriteLine(
+            $"Aggro wins:     {aggroWins} ({100.0 * aggroWins / games:F2}%)");
 
-        Console.WriteLine("\n--- SEAT BIAS (Wins per Slot) ---");
-        for (var slot = 0; slot < playerCount; slot++)
+        Console.WriteLine(
+            $"Random wins:    {randomWins} ({100.0 * randomWins / games:F2}%)");
+
+        if (decisiveGames > 0 && useAggro)
         {
-            var seatWinrate = (double)seatWins[slot] / numberOfGames * 100.0;
-            Console.WriteLine($"Slot {slot} Winrate: {seatWinrate,6:F2}% ({seatWins[slot]} wins)");
+            Console.WriteLine(
+                $"Aggro win share among decisive games: " +
+                $"{100.0 * aggroWins / decisiveGames:F2}%");
+        }
+
+        Console.WriteLine("Seat wins:");
+
+        for (byte slot = 0; slot < playerCount; slot++)
+        {
+            Console.WriteLine(
+                $"  Slot {slot}: {seatWins[slot]} " +
+                $"({100.0 * seatWins[slot] / games:F2}%)");
         }
     }
 }
