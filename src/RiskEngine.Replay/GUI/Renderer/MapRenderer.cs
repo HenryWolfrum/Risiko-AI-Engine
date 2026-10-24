@@ -144,7 +144,7 @@ public class MapRenderer : ISectionRenderer
         // --- LAYER 5: ACTION BANNER (Unten Links) ---
         if (action != null)
         {
-            var layout = context.Player._replay.Header.Layout;
+            var layout = context.Player._replay.Header.Configuration.Layout;
             var activePlayerId = (byte)currentFrame.State.PlayerTurn;
 
             var actionText = ActionTranslator.TranslateAction(action.Value, layout, activePlayerId);

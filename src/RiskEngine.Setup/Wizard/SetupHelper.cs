@@ -1,6 +1,6 @@
-﻿namespace RiskEngine.Replay.Setup;
+﻿namespace RiskEngine.Setup.Wizard;
 
-public static class SetupHelper
+internal static class SetupHelper
 {
     public static bool AskYesNo(string question)
     {
@@ -65,4 +65,6 @@ public static class SetupHelper
             Console.WriteLine();
         }
     }
+    
+    
 }

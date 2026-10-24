@@ -1,5 +1,4 @@
-﻿using RiskEngine.AI.Configuration;
-using RiskEngine.Layout;
+﻿using RiskEngine.Setup.Configuration;
 
 namespace RiskEngine.Replay;
 
@@ -9,17 +8,7 @@ namespace RiskEngine.Replay;
 public readonly struct ReplayHeader
 {
     /// <summary>
-    ///     Random seed used to initialize the simulation.
+    ///     Complete description of the simulated game (seed, layout, players).
     /// </summary>
-    public ulong Seed { get; init; }
-
-    /// <summary>
-    ///     Game layout used for the simulation.
-    /// </summary>
-    public required GameLayout Layout { get; init; }
-
-    /// <summary>
-    ///     Configuration of players participating in the simulation.
-    /// </summary>
-    public required PlayerConfiguration[] PlayerConfigs { get; init; }
+    public required GameConfiguration Configuration { get; init; }
 }

@@ -2,34 +2,44 @@
 using RiskEngine.Constants;
 using RiskEngine.Core;
 using RiskEngine.Layout;
+using RiskEngine.Setup.Builder;
+using RiskEngine.Setup.Configuration;
 
-namespace RiskEngine.Replay.Setup;
+namespace RiskEngine.Setup.Wizard;
 
-public static class ReplaySetup
+public static class ConsoleSetupWizard
 {
-    public static ReplayHeader Create()
+    public static GameConfiguration Run()
     {
-        //Configure the Engine
-        EngineConfig config = ConfigureEngineConfig();
+        var builder = new GameConfigurationBuilder();
 
-        //Select the layout simulated on
-        GameLayout layout = ConfigureLayout(config);
+        // Reihenfolge wie bisher: Engine-Config -> Layout -> Spieler -> Seed
+        EngineConfig engineConfig = ConfigureEngineConfig();
+        builder.WithLayout(ConfigureLayout(engineConfig));
 
-        //Create the participating players
-        var playerConfigs = ConfigurePlayerConfigs(config.PlayerCount);
-
-        //Select a game seed
-        var seed = ConfigureGameSeed();
-
-
-        return new ReplayHeader
+        for (var i = 0; i < engineConfig.PlayerCount; i++)
         {
-            Seed = seed,
-            Layout = layout,
-            PlayerConfigs = playerConfigs
-        };
-    }
+            Console.WriteLine();
+            Console.WriteLine($"=== Configure Player {i + 1} ===");
+            builder.AddPlayer(ConfigurePlayer());
+        }
 
+        builder.WithSeed(ConfigureGameSeed());
+
+        return builder.Build();
+    }
+    
+    private static EngineConfig ConfigureEngineConfig()
+    {
+        if (SetupHelper.AskYesNo("Use default configuration?")) return EngineConfig.Default;
+        
+        var playerCount = (byte)SetupHelper.AskRange("Number of players", EngineConstants.MIN_PLAYERS, EngineConstants.MAX_PLAYERS);
+        
+        var maxRounds = (ushort)SetupHelper.AskRange("Maximum Rounds", EngineConstants.MIN_ROUNDS, EngineConstants.MAX_ROUNDS);
+
+        return new EngineConfig(playerCount, maxRounds);
+    }
+    
     private static GameLayout ConfigureLayout(EngineConfig config)
     {
         if (!SetupHelper.AskYesNo("Use standard Risk layout?"))
@@ -37,28 +47,6 @@ public static class ReplaySetup
 
         return RiskMapFactory.CreateStandardRiskMap(config);
     }
-
-    private static EngineConfig ConfigureEngineConfig()
-    {
-        if (SetupHelper.AskYesNo("Use default configuration?")) return EngineConfig.Default;
-
-        //1. Get player count
-        var playerCount = (byte)SetupHelper.AskRange("Number of players", EngineConstants.MIN_PLAYERS,
-            EngineConstants.MAX_PLAYERS);
-
-        //2. Get max Rounds
-        var maxRounds =
-            (ushort)SetupHelper.AskRange("Maximum Rounds", EngineConstants.MIN_ROUNDS, EngineConstants.MAX_ROUNDS);
-
-        return new EngineConfig(playerCount, maxRounds);
-    }
-
-
-    private static ulong ConfigureGameSeed()
-    {
-        return SetupHelper.AskRange("Seed of Game", 0, int.MaxValue);
-    }
-
 
     private static PlayerConfiguration[] ConfigurePlayerConfigs(int playerCount)
     {
@@ -74,7 +62,7 @@ public static class ReplaySetup
 
         return configs;
     }
-
+    
     private static PlayerConfiguration ConfigurePlayer()
     {
         var agentTypes = Enum.GetValues<AgentType>();
@@ -87,7 +75,7 @@ public static class ReplaySetup
 
         return ConfigureByAgentType(selectedType);
     }
-
+    
     private static PlayerConfiguration ConfigureByAgentType(AgentType type)
     {
         return type switch
@@ -111,4 +99,11 @@ public static class ReplaySetup
         Console.WriteLine("\n--- AggroBot Selected ---");
         return new AggroBotConfiguration();
     }
+
+    private static ulong ConfigureGameSeed()
+    {
+        return SetupHelper.AskRange("Seed of Game", 0, int.MaxValue);
+    }
+    
+
 }

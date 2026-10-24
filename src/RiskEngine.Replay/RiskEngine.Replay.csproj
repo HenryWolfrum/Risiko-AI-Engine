@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-        <ProjectReference Include="..\RiskEngine.AI\RiskEngine.AI.csproj"/>
-        <ProjectReference Include="..\RiskEngine\RiskEngine.csproj"/>
+        <ProjectReference Include="..\RiskEngine.AI\RiskEngine.AI.csproj" />
+        <ProjectReference Include="..\RiskEngine\RiskEngine.csproj" />
+        <ProjectReference Include="..\RiskEngine.Setup\RiskEngine.Setup.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Raylib-cs" Version="8.0.0"/>
+        <PackageReference Include="Raylib-cs" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup>

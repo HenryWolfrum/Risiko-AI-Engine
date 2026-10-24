@@ -32,7 +32,7 @@ public class ControlBarRenderer : ISectionRenderer
         Rectangle rightArea = new(bounds.X + leftWidth + centerWidth, bounds.Y, rightWidth, bounds.Height);
 
         // Render sub Areas (passing 'player' instance so we can inspect frames/winner)
-        RenderLeftMetaInfo(leftArea, player, player._replay.Header.Seed, player.CurrentFrameIndex, player.FrameCount);
+        RenderLeftMetaInfo(leftArea, player, player._replay.Header.Configuration.Seed, player.CurrentFrameIndex, player.FrameCount);
         RenderCenterGameStatus(centerArea, frame);
         RenderRightControls(rightArea, context);
     }

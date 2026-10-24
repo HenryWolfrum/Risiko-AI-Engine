@@ -58,7 +58,7 @@ public class PlayerViewerRenderer : ISectionRenderer
         var player = context.Player;
         var frame = player.CurrentFrame;
         var state = frame.State;
-        var seed = player._replay.Header.Seed;
+        var seed = player._replay.Header.Configuration.Seed;
         var mousePos = Raylib.GetMousePosition();
 
         // 1. Automatisch dem aktiven Spieler folgen bei neuem Zug
@@ -99,7 +99,7 @@ public class PlayerViewerRenderer : ISectionRenderer
         _nextPlayerBtn.Bounds =
             new Rectangle(cardBounds.X + cardBounds.Width - 12f - btnWidth, navY, btnWidth, btnHeight);
 
-        var playerCount = player._replay.Header.PlayerConfigs.Length;
+        var playerCount = player._replay.Header.Configuration.PlayerConfigurations.Count;
         if (_prevPlayerBtn.DrawAndCheck(mousePos)) _selectedPlayerId = (_selectedPlayerId + 3) % playerCount;
 
         if (_nextPlayerBtn.DrawAndCheck(mousePos)) _selectedPlayerId = (_selectedPlayerId + 1) % playerCount;
@@ -134,7 +134,7 @@ public class PlayerViewerRenderer : ISectionRenderer
         currentY += 46f;
 
         // --- B) Sub-Panel: Meta-Info (Dynamisch nach Konfigurationstyp) ---
-        var playerConfig = player._replay.Header.PlayerConfigs[playerId];
+        var playerConfig = player._replay.Header.Configuration.PlayerConfigurations[playerId];
 
         // Dynamische Höhe basierend auf der Anzahl der Parameter
         var metaPanelHeight = GetConfigPanelHeight(playerConfig);
@@ -160,7 +160,7 @@ public class PlayerViewerRenderer : ISectionRenderer
         }
 
         // --- C) Sub-Panel: Territorien & Kontinente ---
-        var layout = player._replay.Header.Layout;
+        var layout = player._replay.Header.Configuration.Layout;
 
         // Auslesen der Bitmaske für den ausgewählten Spieler
         var continentMask = MissionHelper.GetControlledContinentMask(state, layout, (byte)playerId);
