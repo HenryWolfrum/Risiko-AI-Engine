@@ -12,24 +12,24 @@ public static class CardTurnInMutator
     // Trades three cards for reinforcement troops
     public static void Apply(ref GameState state, in GameAction action, DeckLayout deck)
     {
-        var player = state.PlayerTurn;
+        byte playerOnTurn = GameStateHelper.GetPlayerOnTurn(in state);
 
         // 1. Remove cards from player's hand
-        CardHelper.RemoveCardFromPlayer(ref state, player, action.Card1, deck);
-        CardHelper.RemoveCardFromPlayer(ref state, player, action.Card2, deck);
-        CardHelper.RemoveCardFromPlayer(ref state, player, action.Card3, deck);
+        CardHelper.RemoveCardFromPlayer(ref state, playerOnTurn, action.Card1, deck);
+        CardHelper.RemoveCardFromPlayer(ref state, playerOnTurn, action.Card2, deck);
+        CardHelper.RemoveCardFromPlayer(ref state, playerOnTurn, action.Card3, deck);
 
         // 2. Increase traded set counter
         state.CardSetsTradedCount++;
 
         // 3. Add base reinforcement bonus from card trade to player's placement pool
         var baseBonus = CalculateBonus(state.CardSetsTradedCount);
-        GameStateHelper.AddPlayerTroopsToPlace(ref state, player, baseBonus);
+        GameStateHelper.AddPlayerTroopsToPlace(ref state, playerOnTurn, baseBonus);
 
         // 4. Check for territory ownership bonus (+2 troops directly onto the owned territory)
-        ApplyTerritoryCardBonusIfOwned(ref state, player, action.Card1);
-        ApplyTerritoryCardBonusIfOwned(ref state, player, action.Card2);
-        ApplyTerritoryCardBonusIfOwned(ref state, player, action.Card3);
+        ApplyTerritoryCardBonusIfOwned(ref state, playerOnTurn, action.Card1);
+        ApplyTerritoryCardBonusIfOwned(ref state, playerOnTurn, action.Card2);
+        ApplyTerritoryCardBonusIfOwned(ref state, playerOnTurn, action.Card3);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

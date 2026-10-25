@@ -33,7 +33,7 @@ public class AttackOptionGeneratorTests
         var state = GameStateHelper.CreateEmpty(2, 2);
 
         state.CurrentPhase = GamePhase.Attack;
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryTroops(ref state, 0, 3);
@@ -107,7 +107,7 @@ public class AttackOptionGeneratorTests
         var state = GameStateHelper.CreateEmpty(2, 3);
 
         state.CurrentPhase = GamePhase.Attack;
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryTroops(ref state, 0, 3);
@@ -190,7 +190,7 @@ public class AttackOptionGeneratorTests
         var state = GameStateHelper.CreateEmpty(2, 4);
 
         state.CurrentPhase = GamePhase.Attack;
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryTroops(ref state, 0, 3);
@@ -276,7 +276,7 @@ public class AttackOptionGeneratorTests
         var state = GameStateHelper.CreateEmpty(2, 2);
 
         state.CurrentPhase = GamePhase.Attack;
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryTroops(ref state, 1, 1);
@@ -342,7 +342,7 @@ public class AttackOptionGeneratorTests
         var state = GameStateHelper.CreateEmpty(2, 3);
 
         state.CurrentPhase = GamePhase.Attack;
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryTroops(ref state, 0, 3);
@@ -410,7 +410,7 @@ public class AttackOptionGeneratorTests
         var state = GameStateHelper.CreateEmpty(2, 2);
 
         state.CurrentPhase = GamePhase.Attack;
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryTroops(ref state, 0, 1);
@@ -474,7 +474,7 @@ public class AttackOptionGeneratorTests
         var state = GameStateHelper.CreateEmpty(2, 3);
 
         state.CurrentPhase = GamePhase.Attack;
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryTroops(ref state, 0, 5);

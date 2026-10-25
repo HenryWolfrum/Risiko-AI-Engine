@@ -12,7 +12,7 @@ public static class ReinforcementOptionGenerator
     /// </summary>
     public static int Generate(in GameState state, Span<DecisionOption> options)
     {
-        var player = state.PlayerTurn;
+        var player = GameStateHelper.GetPlayerOnTurn(in state);
         var optionCount = 0;
 
         // Fetch remaining unplaced troops for the active player

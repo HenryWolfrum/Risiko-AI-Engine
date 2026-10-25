@@ -33,7 +33,7 @@ public class CardTurnInOptionGeneratorTests
 
         var state = GameStateHelper.CreateEmpty(2, 3);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         CardHelper.AddCardToPlayer(ref state, 0, 0, layout.Deck);
         CardHelper.AddCardToPlayer(ref state, 0, 1, layout.Deck);
@@ -99,7 +99,7 @@ public class CardTurnInOptionGeneratorTests
 
         var state = GameStateHelper.CreateEmpty(2, 4);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         CardHelper.AddCardToPlayer(ref state, 0, 0, layout.Deck);
         CardHelper.AddCardToPlayer(ref state, 0, 1, layout.Deck);
@@ -174,7 +174,7 @@ public class CardTurnInOptionGeneratorTests
 
         var state = GameStateHelper.CreateEmpty(2, 4);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         CardHelper.AddCardToPlayer(ref state, 0, 0, layout.Deck);
         CardHelper.AddCardToPlayer(ref state, 0, 1, layout.Deck);
@@ -215,7 +215,7 @@ public class CardTurnInOptionGeneratorTests
 
         var state = GameStateHelper.CreateEmpty(2, EngineConstants.FORCE_TRADE_CARD_COUNT);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         for (byte card = 0; card < EngineConstants.FORCE_TRADE_CARD_COUNT; card++)
             CardHelper.AddCardToPlayer(ref state, 0, card, layout.Deck);
@@ -254,7 +254,7 @@ public class CardTurnInOptionGeneratorTests
 
         var state = GameStateHelper.CreateEmpty(2, 4);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         CardHelper.AddCardToPlayer(ref state, 0, 0, layout.Deck);
         CardHelper.AddCardToPlayer(ref state, 0, 1, layout.Deck);

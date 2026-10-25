@@ -42,19 +42,20 @@ public static class CardTurnInExecutor
     /// <summary>
     ///     Forces card exchanges while the player exceeds the maximum hand size.
     /// </summary>
-    public static void ExecuteMandatoryTradeIn(ref GameState state, IRiskPlayer player, GameLayout layout,
-        ref EngineRandom rng, IGameObserver? observer = null)
+    public static void ExecuteMandatoryTradeIn(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng, IGameObserver? observer = null)
     {
         var iterationCount = 0;
 
-        while (CardHelper.GetPlayerCardCount(in state, state.PlayerTurn) >= EngineConstants.FORCE_TRADE_CARD_COUNT)
+        byte playerOnTurn = GameStateHelper.GetPlayerOnTurn(in state);
+
+        while (CardHelper.GetPlayerCardCount(in state, playerOnTurn) >= EngineConstants.FORCE_TRADE_CARD_COUNT)
         {
             state.CurrentPhase = GamePhase.CardTurnIn;
 
             if (++iterationCount > MAX_TRADE_ITERATIONS)
                 throw new InvalidGameActionException(
-                    $"Mandatory card trade exceeded maximum iteration limit ({MAX_TRADE_ITERATIONS}) for Player {state.PlayerTurn}!\n" +
-                    $"  • Hand Size: {CardHelper.GetPlayerCardCount(in state, state.PlayerTurn)} cards\n" +
+                    $"Mandatory card trade exceeded maximum iteration limit ({MAX_TRADE_ITERATIONS}) for Player {playerOnTurn}!\n" +
+                    $"  • Hand Size: {CardHelper.GetPlayerCardCount(in state, playerOnTurn)} cards\n" +
                     $"  • Threshold: {EngineConstants.FORCE_TRADE_CARD_COUNT} cards"
                 );
 
@@ -65,7 +66,7 @@ public static class CardTurnInExecutor
 
             if (action.Type != ActionType.TurnInCards)
                 throw new InvalidOperationException(
-                    $"Player {state.PlayerTurn} submitted an invalid action type during mandatory card trade!\n" +
+                    $"Player {playerOnTurn} submitted an invalid action type during mandatory card trade!\n" +
                     $"  • Expected: {ActionType.TurnInCards}\n" +
                     $"  • Actual:   {action.Type}"
                 );
@@ -75,7 +76,7 @@ public static class CardTurnInExecutor
 
             if (!validation.IsValid)
                 throw new InvalidGameActionException(
-                    $"Invalid mandatory card trade action for Player {state.PlayerTurn}!\n" +
+                    $"Invalid mandatory card trade action for Player {playerOnTurn}!\n" +
                     $"  • Error Reason:  {validation.Error}\n" +
                     $"  • Action Type:   {action.Type}\n" +
                     $"  • Submitted Cards:\n" +
@@ -95,22 +96,22 @@ public static class CardTurnInExecutor
     /// <summary>
     ///     Allows the player to voluntarily exchange valid card sets.
     /// </summary>
-    private static void ExecuteOptionalTradeIn(ref GameState state, IRiskPlayer player, GameLayout layout,
-        ref EngineRandom rng, IGameObserver? observer = null)
+    private static void ExecuteOptionalTradeIn(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng, IGameObserver? observer = null)
     {
-        if (CardHelper.HasValidSet(in state, state.PlayerTurn, layout.Deck))
+        byte playerOnTurn = GameStateHelper.GetPlayerOnTurn(in state);
+        
+        if (CardHelper.HasValidSet(in state, playerOnTurn, layout.Deck))
         {
             var action = player.DecideAction(in state, layout);
 
 
-            if (action.Type == ActionType.SkipPhase ||
-                action.Type == ActionType.EndTurn)
+            if (action.Type == ActionType.SkipPhase || action.Type == ActionType.EndTurn) 
                 return;
 
 
             if (action.Type != ActionType.TurnInCards)
                 throw new InvalidGameActionException(
-                    $"Player {state.PlayerTurn} submitted an unexpected action type during optional card trade!\n" +
+                    $"Player {playerOnTurn} submitted an unexpected action type during optional card trade!\n" +
                     $"  • Expected: {ActionType.TurnInCards}, {ActionType.SkipPhase}, or {ActionType.EndTurn}\n" +
                     $"  • Actual:   {action.Type}"
                 );
@@ -120,7 +121,7 @@ public static class CardTurnInExecutor
 
             if (!validation.IsValid)
                 throw new InvalidGameActionException(
-                    $"Invalid voluntary card trade action for Player {state.PlayerTurn}!\n" +
+                    $"Invalid voluntary card trade action for Player {playerOnTurn}!\n" +
                     $"  • Error Reason:  {validation.Error}\n" +
                     $"  • Action Type:   {action.Type}\n" +
                     $"  • Submitted Cards:\n" +

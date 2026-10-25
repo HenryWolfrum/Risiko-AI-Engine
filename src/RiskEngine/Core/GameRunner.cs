@@ -29,7 +29,7 @@ public static class GameRunner
         // Main game loop.
         while (state.CurrentRound < layout.Config.MaxRounds && state.CurrentPhase != GamePhase.Terminated)
         {
-            var currentPlayer = state.PlayerTurn;
+            var currentPlayer = GameStateHelper.GetPlayerOnTurn(in state);
 
             // Skip eliminated players.
             if (!GameStateHelper.IsPlayerAlive(in state, currentPlayer))
@@ -77,10 +77,10 @@ public static class GameRunner
     /// </summary>
     private static void AdvanceToNextTurn(ref GameState state, byte playerCount)
     {
-        state.PlayerTurn = (byte)((state.PlayerTurn + 1) % playerCount);
+        state.TurnIndex = (byte)((state.TurnIndex + 1) % playerCount);
 
         // A new round starts after the last player.
-        if (state.PlayerTurn == 0)
+        if (state.TurnIndex == 0)
             state.CurrentRound++;
     }
 

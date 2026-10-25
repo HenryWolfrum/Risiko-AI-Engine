@@ -29,7 +29,7 @@ public class TurnInCardsRulesTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         CardHelper.AddCardToPlayer(ref state, 0, 0, layout.Deck); // Infantry
         CardHelper.AddCardToPlayer(ref state, 0, 1, layout.Deck); // Cavalry
@@ -70,7 +70,7 @@ public class TurnInCardsRulesTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         CardHelper.AddCardToPlayer(ref state, 0, 6, layout.Deck); // Joker
         CardHelper.AddCardToPlayer(ref state, 0, 0, layout.Deck);
@@ -146,7 +146,7 @@ public class TurnInCardsRulesTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         CardHelper.AddCardToPlayer(ref state, 0, 0, layout.Deck);
         CardHelper.AddCardToPlayer(ref state, 0, 1, layout.Deck);
@@ -186,7 +186,7 @@ public class TurnInCardsRulesTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         CardHelper.AddCardToPlayer(ref state, 0, 0, layout.Deck); // Infantry
         CardHelper.AddCardToPlayer(ref state, 0, 3, layout.Deck); // Infantry

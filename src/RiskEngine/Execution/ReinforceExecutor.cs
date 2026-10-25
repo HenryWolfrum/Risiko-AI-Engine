@@ -20,30 +20,31 @@ public static class ReinforceExecutor
     /// <summary>
     ///     Executes the reinforcement phase for the current player.
     /// </summary>
-    public static void Execute(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng,
-        IGameObserver? observer = null)
+    public static void Execute(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng, IGameObserver? observer = null)
     {
         state.CurrentPhase = GamePhase.Reinforce;
+        
+        byte playerOnTurn = GameStateHelper.GetPlayerOnTurn(in state);
 
         // Calculate reinforcement troops based on current game state.
-        var totalReinforcement = ReinforcementCalculator.CalculateTroops(in state, layout.Map, state.PlayerTurn);
+        var totalReinforcement = ReinforcementCalculator.CalculateTroops(in state, layout.Map, playerOnTurn);
 
-        GameStateHelper.AddPlayerTroopsToPlace(ref state, state.PlayerTurn, totalReinforcement);
+        GameStateHelper.AddPlayerTroopsToPlace(ref state, playerOnTurn, totalReinforcement);
 
         // Upper bound safety limit based on total troops to place.
         // Each valid action places at least 1 troop.
-        var maxIterations = GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn);
+        var maxIterations = GameStateHelper.GetPlayerTroopsToPlace(in state, playerOnTurn);
         var iterationCount = 0;
 
-        while (GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn) > 0)
+        while (GameStateHelper.GetPlayerTroopsToPlace(in state, playerOnTurn) > 0)
         {
             // Guard against infinite loops caused by stuck bots or state mutation bugs.
             if (++iterationCount > maxIterations)
             {
-                var remaining = GameStateHelper.GetPlayerTroopsToPlace(in state, state.PlayerTurn);
+                var remaining = GameStateHelper.GetPlayerTroopsToPlace(in state, playerOnTurn);
 
                 throw new InvalidGameActionException(
-                    $"Reinforcement phase exceeded maximum iteration limit ({maxIterations}) for Player {state.PlayerTurn}!\n" +
+                    $"Reinforcement phase exceeded maximum iteration limit ({maxIterations}) for Player {playerOnTurn}!\n" +
                     $"  • Initial Troops to Place: {totalReinforcement}\n" +
                     $"  • Remaining Troops:         {remaining}"
                 );
@@ -55,7 +56,7 @@ public static class ReinforceExecutor
             // Fail-fast: Reinforce phase strictly requires a Reinforce action type.
             if (action.Type != ActionType.Reinforce)
                 throw new InvalidGameActionException(
-                    $"Player {state.PlayerTurn} submitted an invalid action type during reinforcement phase!\n" +
+                    $"Player {playerOnTurn} submitted an invalid action type during reinforcement phase!\n" +
                     $"  • Expected: {ActionType.Reinforce}\n" +
                     $"  • Actual:   {action.Type}"
                 );
@@ -68,20 +69,14 @@ public static class ReinforceExecutor
 
             if (!validation.IsValid)
             {
-                var remainingTroops = GameStateHelper.GetPlayerTroopsToPlace(
-                    in state,
-                    state.PlayerTurn);
+                var remainingTroops = GameStateHelper.GetPlayerTroopsToPlace(in state, playerOnTurn);
 
-                var targetOwner = GameStateHelper.GetTerritoryOwner(
-                    in state,
-                    action.TargetTerritory);
+                var targetOwner = GameStateHelper.GetTerritoryOwner(in state, action.TargetTerritory);
 
-                var currentTargetTroops = GameStateHelper.GetTerritoryTroops(
-                    in state,
-                    action.TargetTerritory);
+                var currentTargetTroops = GameStateHelper.GetTerritoryTroops(in state, action.TargetTerritory);
 
                 throw new InvalidGameActionException(
-                    $"Invalid reinforcement action for Player {state.PlayerTurn}!\n" +
+                    $"Invalid reinforcement action for Player {playerOnTurn}!\n" +
                     $"  • Error Reason:        {validation.Error}\n" +
                     $"  • Action Type:         {action.Type}\n" +
                     $"  • Target Territory:    #{action.TargetTerritory} (Owner: Player {targetOwner}, Current troops: {currentTargetTroops})\n" +

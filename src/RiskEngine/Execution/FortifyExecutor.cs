@@ -20,11 +20,11 @@ public static class FortifyExecutor
     /// <summary>
     ///     Executes the fortification phase.
     /// </summary>
-    public static void Execute(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng,
-        IGameObserver? observer = null)
+    public static void Execute(ref GameState state, IRiskPlayer player, GameLayout layout, ref EngineRandom rng, IGameObserver? observer = null)
     {
         state.CurrentPhase = GamePhase.Fortify;
 
+        byte playerOnTurn = GameStateHelper.GetPlayerOnTurn(in state);
 
         // Limit the number of actions per phase to prevent infinite loops.
         // This is an execution safety limit, not a game rule.
@@ -39,40 +39,32 @@ public static class FortifyExecutor
 
 
             // Player chooses to end fortification phase.
-            if (action.Type == ActionType.SkipPhase ||
-                action.Type == ActionType.EndTurn)
+            if (action.Type == ActionType.SkipPhase || action.Type == ActionType.EndTurn)
                 break;
 
 
             // Fail-fast: Action type must strictly be Fortify.
             if (action.Type != ActionType.Fortify)
                 throw new InvalidGameActionException(
-                    $"Player {state.PlayerTurn} submitted an invalid action type during fortify phase!\n" +
+                    $"Player {playerOnTurn} submitted an invalid action type during fortify phase!\n" +
                     $"  • Expected: {ActionType.Fortify}, {ActionType.SkipPhase}, or {ActionType.EndTurn}\n" +
                     $"  • Actual:   {action.Type}"
                 );
 
 
             // Validate troop movement and connectivity rules.
-            var validation = RuleValidator.Validate(
-                in state,
-                in action,
-                layout);
+            var validation = RuleValidator.Validate(in state, in action, layout);
 
 
             if (!validation.IsValid)
             {
-                var sourceTroops = GameStateHelper.GetTerritoryTroops(
-                    in state,
-                    action.SourceTerritory);
+                var sourceTroops = GameStateHelper.GetTerritoryTroops(in state, action.SourceTerritory);
 
-                var targetTroops = GameStateHelper.GetTerritoryTroops(
-                    in state,
-                    action.TargetTerritory);
+                var targetTroops = GameStateHelper.GetTerritoryTroops(in state, action.TargetTerritory);
 
 
                 throw new InvalidGameActionException(
-                    $"Invalid fortify action for Player {state.PlayerTurn}!\n" +
+                    $"Invalid fortify action for Player {playerOnTurn}!\n" +
                     $"  • Error Reason:     {validation.Error}\n" +
                     $"  • Source Territory: #{action.SourceTerritory} (Troops: {sourceTroops})\n" +
                     $"  • Target Territory: #{action.TargetTerritory} (Troops: {targetTroops})\n" +

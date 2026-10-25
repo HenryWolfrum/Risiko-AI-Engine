@@ -60,12 +60,14 @@ public class PlayerViewerRenderer : ISectionRenderer
         var state = frame.State;
         var seed = player._replay.Header.Configuration.Seed;
         var mousePos = Raylib.GetMousePosition();
+        
+        var playerOnTurn = GameStateHelper.GetPlayerOnTurn(in state);
 
         // 1. Automatisch dem aktiven Spieler folgen bei neuem Zug
-        if (state.PlayerTurn != _lastTrackedTurn)
+        if (playerOnTurn != _lastTrackedTurn)
         {
-            _selectedPlayerId = state.PlayerTurn;
-            _lastTrackedTurn = state.PlayerTurn;
+            _selectedPlayerId = playerOnTurn;
+            _lastTrackedTurn = playerOnTurn;
         }
 
         // 2. Äußerer Panel-Hintergrund
@@ -85,7 +87,7 @@ public class PlayerViewerRenderer : ISectionRenderer
             bounds.Height - headerHeight - padding * 2f
         );
 
-        var isActiveTurn = state.PlayerTurn == _selectedPlayerId;
+        var isActiveTurn = playerOnTurn == _selectedPlayerId;
 
         // Dossier-Inhalt zeichnen (Schicht 1)
         RenderSinglePlayerDossier(cardBounds, player, _selectedPlayerId, in state, seed, isActiveTurn);

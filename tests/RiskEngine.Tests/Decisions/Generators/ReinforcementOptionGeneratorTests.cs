@@ -23,7 +23,7 @@ public class ReinforcementOptionGeneratorTests
         // Arrange
         var state = GameStateHelper.CreateEmpty(2, 4);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetPlayerTroopsToPlace(ref state, 0, 5);
 
@@ -85,7 +85,7 @@ public class ReinforcementOptionGeneratorTests
         // Arrange
         var state = GameStateHelper.CreateEmpty(2, 2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetPlayerTroopsToPlace(ref state, 0, 0);
 
@@ -119,7 +119,7 @@ public class ReinforcementOptionGeneratorTests
         // Arrange
         var state = GameStateHelper.CreateEmpty(2, 1);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetPlayerTroopsToPlace(ref state, 0, 7);
 
@@ -159,7 +159,7 @@ public class ReinforcementOptionGeneratorTests
         // Arrange
         var state = GameStateHelper.CreateEmpty(2, 3);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetPlayerTroopsToPlace(ref state, 0, 5);
 

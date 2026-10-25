@@ -21,7 +21,7 @@ public class ConquerMutatorTests
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryTroops(ref state, 0, 8);
 
@@ -55,7 +55,7 @@ public class ConquerMutatorTests
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 1, 1);
 
@@ -89,7 +89,7 @@ public class ConquerMutatorTests
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         var action = new GameAction
         {
@@ -121,7 +121,7 @@ public class ConquerMutatorTests
         // Arrange
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryTroops(ref state, 0, 9);
 
@@ -156,7 +156,7 @@ public class ConquerMutatorTests
         // Arrange
         var state = GameStateHelper.CreateEmpty(3);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryTroops(ref state, 0, 8);
         GameStateHelper.SetTerritoryTroops(ref state, 2, 7);

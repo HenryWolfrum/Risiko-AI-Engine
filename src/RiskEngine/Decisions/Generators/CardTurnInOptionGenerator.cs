@@ -15,7 +15,7 @@ public static class CardTurnInOptionGenerator
     /// </summary>
     public static int Generate(in GameState state, GameLayout layout, Span<DecisionOption> options)
     {
-        var player = state.PlayerTurn;
+        var player = GameStateHelper.GetPlayerOnTurn(in state);
 
         var hand = CardHelper.GetPlayerCardsBitboard(in state, player);
 

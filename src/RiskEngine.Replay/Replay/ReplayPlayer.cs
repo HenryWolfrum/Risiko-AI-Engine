@@ -1,4 +1,5 @@
 ﻿using RiskEngine.Actions;
+using RiskEngine.State;
 
 namespace RiskEngine.Replay;
 
@@ -91,10 +92,10 @@ public sealed class ReplayPlayer
     /// </summary>
     public bool NextPlayer()
     {
-        byte currentPlayer = CurrentFrame.State.PlayerTurn;
+        byte currentPlayer = GameStateHelper.GetPlayerOnTurn(CurrentFrame.State);
 
         while (NextFrame())
-            if (CurrentFrame.State.PlayerTurn != currentPlayer)
+            if (GameStateHelper.GetPlayerOnTurn(CurrentFrame.State) != currentPlayer)
                 return true;
 
         return false;
@@ -143,14 +144,14 @@ public sealed class ReplayPlayer
     {
         if (IsFirstFrame) return false;
 
-        byte startPlayer = CurrentFrame.State.PlayerTurn;
+        byte startPlayer = GameStateHelper.GetPlayerOnTurn(CurrentFrame.State);
 
-        while (!IsFirstFrame && CurrentFrame.State.PlayerTurn == startPlayer) PreviousFrame();
+        while (!IsFirstFrame && GameStateHelper.GetPlayerOnTurn(CurrentFrame.State) == startPlayer) PreviousFrame();
 
-        if (CurrentFrame.State.PlayerTurn != startPlayer)
+        if (GameStateHelper.GetPlayerOnTurn(CurrentFrame.State) != startPlayer)
         {
-            byte targetPlayer = CurrentFrame.State.PlayerTurn;
-            while (CurrentFrameIndex > 0 && _replay.Frames[CurrentFrameIndex - 1].State.PlayerTurn == targetPlayer)
+            byte targetPlayer = GameStateHelper.GetPlayerOnTurn(CurrentFrame.State);
+            while (CurrentFrameIndex > 0 &&GameStateHelper.GetPlayerOnTurn( _replay.Frames[CurrentFrameIndex - 1].State)== targetPlayer)
                 CurrentFrameIndex--;
             return true;
         }

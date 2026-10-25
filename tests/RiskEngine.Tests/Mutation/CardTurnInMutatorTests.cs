@@ -29,7 +29,7 @@ public class CardTurnInMutatorTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         CardHelper.AddCardToPlayer(ref state, 0, 0, layout.Deck);
         CardHelper.AddCardToPlayer(ref state, 0, 1, layout.Deck);
@@ -70,7 +70,7 @@ public class CardTurnInMutatorTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         CardHelper.AddCardToPlayer(ref state, 0, 0, layout.Deck);
         CardHelper.AddCardToPlayer(ref state, 0, 1, layout.Deck);
@@ -110,7 +110,7 @@ public class CardTurnInMutatorTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         CardHelper.AddCardToPlayer(ref state, 0, 0, layout.Deck);
         CardHelper.AddCardToPlayer(ref state, 0, 1, layout.Deck);
@@ -151,7 +151,7 @@ public class CardTurnInMutatorTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetPlayerTroopsToPlace(ref state, 0, 3);
 
@@ -193,7 +193,7 @@ public class CardTurnInMutatorTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryTroops(ref state, 0, 5);
@@ -236,7 +236,7 @@ public class CardTurnInMutatorTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 1);
         GameStateHelper.SetTerritoryTroops(ref state, 0, 5);

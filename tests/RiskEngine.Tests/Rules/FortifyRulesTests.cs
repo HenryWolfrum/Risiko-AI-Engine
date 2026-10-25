@@ -29,7 +29,7 @@ public class FortifyRulesTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryOwner(ref state, 1, 0);
@@ -70,7 +70,7 @@ public class FortifyRulesTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         var action = new GameAction
         {
@@ -108,7 +108,7 @@ public class FortifyRulesTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         var action = new GameAction
         {
@@ -147,7 +147,7 @@ public class FortifyRulesTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryTroops(ref state, 0, 5);
@@ -188,7 +188,7 @@ public class FortifyRulesTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryOwner(ref state, 1, 1);
@@ -232,7 +232,7 @@ public class FortifyRulesTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryOwner(ref state, 1, 0);
@@ -274,7 +274,7 @@ public class FortifyRulesTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 1);
         GameStateHelper.SetTerritoryOwner(ref state, 1, 0);
@@ -319,7 +319,7 @@ public class FortifyRulesTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryOwner(ref state, 1, 1);

@@ -14,7 +14,7 @@ public static class FortifyOptionGenerator
     /// </summary>
     public static int Generate(in GameState state, GameLayout layout, Span<DecisionOption> options)
     {
-        var player = state.PlayerTurn;
+        var player = GameStateHelper.GetPlayerOnTurn(in state);
         var optionCount = 0;
 
         // Bitmask of all territories currently owned by the active player

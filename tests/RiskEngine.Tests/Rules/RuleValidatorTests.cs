@@ -28,7 +28,7 @@ public class RuleValidatorTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
         state.CurrentPhase = GamePhase.Reinforce;
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
@@ -69,7 +69,7 @@ public class RuleValidatorTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
         state.CurrentPhase = GamePhase.Attack;
 
         var action = new GameAction
@@ -107,7 +107,7 @@ public class RuleValidatorTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
         state.CurrentPhase = GamePhase.Attack;
 
         var action = new GameAction
@@ -146,7 +146,7 @@ public class RuleValidatorTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
         state.CurrentPhase = GamePhase.Attack;
 
         var action = new GameAction
@@ -182,7 +182,7 @@ public class RuleValidatorTests
 
         var state = GameStateHelper.CreateEmpty(2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
         state.CurrentPhase = GamePhase.Attack;
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);

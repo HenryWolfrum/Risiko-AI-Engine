@@ -20,8 +20,12 @@ public unsafe struct GameState
 
     // --- History / Game Loop ---
     public ushort CurrentRound;
-    public byte PlayerTurn;
+
+    public byte TurnIndex;
+    public fixed byte PlayerOrder[EngineConstants.MAX_PLAYERS];
+    
     public GamePhase CurrentPhase;
+    
 
     public byte PlayersAliveBitboard;
     public byte CardSetsTradedCount;

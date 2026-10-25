@@ -15,7 +15,7 @@ public static class ConquerMutator
     /// </summary>
     public static void Apply(ref GameState state, in GameAction action)
     {
-        var attacker = state.PlayerTurn;
+        var attacker = GameStateHelper.GetPlayerOnTurn(in state);
 
 
         // Get current troop count from the attacking territory.

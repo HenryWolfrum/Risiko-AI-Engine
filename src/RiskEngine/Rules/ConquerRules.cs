@@ -17,7 +17,7 @@ public static class ConquerRules
     {
         var source = action.SourceTerritory;
         var target = action.TargetTerritory;
-        var player = state.PlayerTurn;
+        byte playerOnTurn = GameStateHelper.GetPlayerOnTurn(in state);
 
 
         // Territory range check
@@ -26,7 +26,7 @@ public static class ConquerRules
 
 
         // Source territory must belong to the attacker
-        if (GameStateHelper.GetTerritoryOwner(in state, source) != player)
+        if (GameStateHelper.GetTerritoryOwner(in state, source) != playerOnTurn)
             return ValidationResult.Invalid(EngineError.TerritoryNotOwned);
 
 

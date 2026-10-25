@@ -12,18 +12,18 @@ public static class AttackRules
     {
         var source = action.SourceTerritory;
         var target = action.TargetTerritory;
-        var player = state.PlayerTurn;
+        byte playerOnTurn = GameStateHelper.GetPlayerOnTurn(in state);
 
         // Territory range check
         if (source >= map.TerritoryCount || target >= map.TerritoryCount)
             return ValidationResult.Invalid(EngineError.InvalidTerritory);
 
         // Source must belong to attacker
-        if (GameStateHelper.GetTerritoryOwner(in state, source) != player)
+        if (GameStateHelper.GetTerritoryOwner(in state, source) != playerOnTurn)
             return ValidationResult.Invalid(EngineError.TerritoryNotOwned);
 
         // Target must belong to enemy
-        if (GameStateHelper.GetTerritoryOwner(in state, target) == player)
+        if (GameStateHelper.GetTerritoryOwner(in state, target) == playerOnTurn)
             return ValidationResult.Invalid(EngineError.InvalidTarget);
 
         // Target must have at least 1 defender troop

@@ -115,7 +115,7 @@ public class GameInitializerTests
         }
 
 
-        Assert.Equal(state1.PlayerTurn, state2.PlayerTurn);
+        Assert.Equal(GameStateHelper.GetPlayerOnTurn(state1), GameStateHelper.GetPlayerOnTurn(state2));
     }
 
 

@@ -11,7 +11,7 @@ public static class ReinforceMutator
         //Get values
         var territory = action.TargetTerritory;
         var amount = action.TroopCount;
-        var player = state.PlayerTurn;
+        var player = GameStateHelper.GetPlayerOnTurn(in state);
 
         //Add to Territory
         GameStateHelper.AddTerritoryTroops(ref state, territory, amount);

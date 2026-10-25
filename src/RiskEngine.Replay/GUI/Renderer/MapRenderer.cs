@@ -145,7 +145,7 @@ public class MapRenderer : ISectionRenderer
         if (action != null)
         {
             var layout = context.Player._replay.Header.Configuration.Layout;
-            var activePlayerId = (byte)currentFrame.State.PlayerTurn;
+            var activePlayerId = GameStateHelper.GetPlayerOnTurn(currentFrame.State);
 
             var actionText = ActionTranslator.TranslateAction(action.Value, layout, activePlayerId);
             DrawActionBanner(bounds, actionText, activePlayerId);

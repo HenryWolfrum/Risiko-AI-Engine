@@ -1,6 +1,7 @@
 using Raylib_cs;
 using RiskEngine.Constants;
 using RiskEngine.Replay.GUI.Controls;
+using RiskEngine.State;
 
 namespace RiskEngine.Replay.GUI.Renderer;
 
@@ -91,13 +92,15 @@ public class ControlBarRenderer : ISectionRenderer
     {
         var fontSize = 20;
 
+        var playerOnTurn = GameStateHelper.GetPlayerOnTurn(frame.State);
+
         // 1. Statuszeile in Segmente zerlegen
         var part1 = $"Round: {frame.State.CurrentRound}  |  Player: ";
-        var part2 = $"{frame.State.PlayerTurn}";
+        var part2 = $"{playerOnTurn}";
         var part3 = $"  |  Phase: {frame.State.CurrentPhase}";
 
         // 2. Farbe des aktuellen Spielers ermitteln
-        var playerColor = ReplayViewer.GetPlayerColor(frame.State.PlayerTurn);
+        var playerColor = ReplayViewer.GetPlayerColor(playerOnTurn);
 
         // 3. Breiten für die Gesamtzentrierung messen
         var width1 = Raylib.MeasureText(part1, fontSize);

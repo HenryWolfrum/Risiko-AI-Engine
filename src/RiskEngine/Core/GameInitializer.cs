@@ -55,9 +55,14 @@ public static class GameInitializer
 
         // 9. Initialize GameState
         var state = GameStateHelper.CreateEmpty(playerCount, (byte)territoryCount);
+        
+        //Set PlayerOrder
+        for (byte p = 0; p < playerCount; p++) state.PlayerOrder[p] = playerOrder[p];
 
         // Set Round
         state.CurrentRound = 1;
+        
+     
 
         // Assign owners and place exactly 1 initial troop per territory
         for (var i = 0; i < territoryCount; i++)
@@ -65,9 +70,7 @@ public static class GameInitializer
             GameStateHelper.SetTerritoryOwner(ref state, i, territoryOwners[i]);
             GameStateHelper.SetTerritoryTroops(ref state, i, 1);
         }
-
-        // Set starting player (first player in shuffled order)
-        state.PlayerTurn = playerOrder[0];
+        
 
         // Reset troops to place for all players
         for (byte p = 0; p < playerCount; p++) GameStateHelper.SetPlayerTroopsToPlace(ref state, p, 0);

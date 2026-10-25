@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using RiskEngine.Actions;
 using RiskEngine.Cards;
 using RiskEngine.Constants;
@@ -19,23 +20,23 @@ public static class AttackExecutor
     /// can contain several hundred consecutive attacks.
     private const int MAX_ATTACK_ITERATIONS = 5000;
 
-    public static void Execute(ref GameState state, IRiskPlayer[] players, GameLayout layout, ref EngineRandom rng,
-        IGameObserver? observer = null)
+    public static void Execute(ref GameState state, IRiskPlayer[] players, GameLayout layout, ref EngineRandom rng, IGameObserver? observer = null)
     {
         state.CurrentPhase = GamePhase.Attack;
         var conqueredTerritoryThisTurn = false;
         var iterationCount = 0;
+        var player = GameStateHelper.GetPlayerOnTurn(in state);
 
-        while (AttackHelper.CanPlayerAttack(in state, state.PlayerTurn, layout.Map))
+        while (AttackHelper.CanPlayerAttack(in state, player, layout.Map))
         {
             if (++iterationCount > MAX_ATTACK_ITERATIONS)
                 throw new InvalidEngineStateException(
-                    $"Attack phase exceeded maximum iteration limit ({MAX_ATTACK_ITERATIONS}) for Player {state.PlayerTurn}!");
+                    $"Attack phase exceeded maximum iteration limit ({MAX_ATTACK_ITERATIONS}) for Player {player}!");
 
             if (state.CurrentPhase == GamePhase.Terminated)
                 return;
 
-            var attackerPlayer = players[state.PlayerTurn];
+            var attackerPlayer = players[player];
             var attackAction = attackerPlayer.DecideAction(in state, layout);
 
             if (attackAction.Type == ActionType.SkipPhase ||
@@ -44,7 +45,7 @@ public static class AttackExecutor
 
             if (attackAction.Type != ActionType.Attack)
                 throw new InvalidGameActionException(
-                    $"Player {state.PlayerTurn} submitted invalid action type {attackAction.Type} during attack phase!"
+                    $"Player {player} submitted invalid action type {attackAction.Type} during attack phase!"
                 );
 
             var validation = RuleValidator.Validate(in state, in attackAction, layout);
@@ -58,12 +59,12 @@ public static class AttackExecutor
             var defenderPlayer = players[defenderPlayerId];
 
             state.CurrentPhase = GamePhase.Defend;
-            var previousTurn = state.PlayerTurn;
-            state.PlayerTurn = defenderPlayerId;
+            var previousTurn = player;
+            GameStateHelper.SetPlayerOnTurn(ref state,defenderPlayerId);
 
             var defenderAction = defenderPlayer.DecideAction(in state, layout);
 
-            state.PlayerTurn = previousTurn;
+            GameStateHelper.SetPlayerOnTurn(ref state,previousTurn);
             state.CurrentPhase = GamePhase.Attack;
 
             if (defenderAction.Type != ActionType.Defend ||
@@ -92,6 +93,6 @@ public static class AttackExecutor
         }
 
         if (conqueredTerritoryThisTurn && state.CurrentPhase != GamePhase.Terminated)
-            CardHelper.GiveBonusCard(ref state, state.PlayerTurn, ref rng, layout.Deck);
+            CardHelper.GiveBonusCard(ref state, player, ref rng, layout.Deck);
     }
 }

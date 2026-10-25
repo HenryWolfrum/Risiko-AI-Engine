@@ -40,7 +40,7 @@ public sealed class TestStateBuilder
     /// </summary>
     public TestStateBuilder WithPlayerTurn(byte player)
     {
-        _state.PlayerTurn = player;
+        GameStateHelper.SetPlayerOnTurn(ref _state, player);
         return this;
     }
 

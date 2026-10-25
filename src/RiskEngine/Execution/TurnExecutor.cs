@@ -19,7 +19,8 @@ public static class TurnExecutor
     public static void ExecuteTurn(ref GameState state, IRiskPlayer[] players, GameLayout layout, ref EngineRandom rng, IGameObserver? observer = null)
     {
         // Get the player instance for the current turn.
-        var currentPlayer = players[state.PlayerTurn];
+        byte playerOnTurn = GameStateHelper.GetPlayerOnTurn(in state);
+        var currentPlayer = players[playerOnTurn];
 
 
         // 1. Card trade-in phase.

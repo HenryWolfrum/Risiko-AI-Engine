@@ -16,10 +16,10 @@ public static class TurnInCardsRules
             return ValidationResult.Invalid(EngineError.UnknownCard);
 
         //Does player own the cards
-        var player = state.PlayerTurn;
-        if (!CardHelper.PlayerHasCard(in state, player, action.Card1, deck) ||
-            !CardHelper.PlayerHasCard(in state, player, action.Card2, deck) ||
-            !CardHelper.PlayerHasCard(in state, player, action.Card3, deck))
+        byte playerOnTurn = GameStateHelper.GetPlayerOnTurn(in state);
+        if (!CardHelper.PlayerHasCard(in state, playerOnTurn, action.Card1, deck) ||
+            !CardHelper.PlayerHasCard(in state, playerOnTurn, action.Card2, deck) ||
+            !CardHelper.PlayerHasCard(in state, playerOnTurn, action.Card3, deck))
             return ValidationResult.Invalid(EngineError.CardNotOwned);
 
         //Get Card Types

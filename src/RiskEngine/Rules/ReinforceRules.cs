@@ -9,7 +9,7 @@ public static class ReinforceRules
 {
     public static ValidationResult Validate(in GameState state, in GameAction action, MapLayout map)
     {
-        var player = state.PlayerTurn;
+        byte playerOnTurn = GameStateHelper.GetPlayerOnTurn(in state);
 
 
         //Territory out of Range
@@ -17,14 +17,14 @@ public static class ReinforceRules
             return ValidationResult.Invalid(EngineError.InvalidTerritory);
 
         //Owner not equal to action Executor
-        if (GameStateHelper.GetTerritoryOwner(state, action.TargetTerritory) != player)
+        if (GameStateHelper.GetTerritoryOwner(state, action.TargetTerritory) != playerOnTurn)
             return ValidationResult.Invalid(EngineError.TerritoryNotOwned);
 
         //No Troops to distribute
         if (action.TroopCount == 0) return ValidationResult.Invalid(EngineError.InvalidTroopCount);
 
         //More Troops to place than accessible
-        if (action.TroopCount > GameStateHelper.GetPlayerTroopsToPlace(state, player))
+        if (action.TroopCount > GameStateHelper.GetPlayerTroopsToPlace(state, playerOnTurn))
             return ValidationResult.Invalid(EngineError.NotEnoughTroops);
 
 

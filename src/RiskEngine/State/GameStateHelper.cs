@@ -7,6 +7,33 @@ namespace RiskEngine.State;
 
 public static unsafe class GameStateHelper
 {
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte GetPlayerOnTurn(in GameState state)
+    {
+        return state.PlayerOrder[state.TurnIndex];
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool SetPlayerOnTurn(ref GameState state, byte playerId)
+    {
+        if (playerId >= EngineConstants.MAX_PLAYERS)
+            return false;
+
+        for (byte i = 0; i < EngineConstants.MAX_PLAYERS; i++)
+        {
+            if (state.PlayerOrder[i] != playerId)
+                continue;
+
+            state.TurnIndex = i;
+            return true;
+        }
+
+        return false;
+    }
+
+    
+    
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte GetTerritoryOwner(in GameState state, int territoryId)
     {
@@ -198,7 +225,7 @@ public static unsafe class GameStateHelper
         state.WinnerId = EngineConstants.NO_VALUE;
         state.AttackerTerritory = EngineConstants.NO_VALUE;
         state.DefenderTerritory = EngineConstants.NO_VALUE;
-        state.PlayerTurn = 0;
+        state.TurnIndex = 0;
         state.CardSetsTradedCount = 0;
 
         for (var i = 0; i < playerCount; i++)
@@ -207,6 +234,7 @@ public static unsafe class GameStateHelper
             state.PlayerCardsBitboard[i] = 0UL;
             state.PlayerTroopsToPlace[i] = 0;
             state.PlayerMissions[i] = EngineConstants.NO_VALUE;
+            state.PlayerOrder[i] = (byte)i;
         }
 
         for (var i = 0; i < territoryCount; i++)

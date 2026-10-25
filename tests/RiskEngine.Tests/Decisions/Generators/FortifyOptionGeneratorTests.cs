@@ -30,7 +30,7 @@ public class FortifyOptionGeneratorTests
 
         var state = GameStateHelper.CreateEmpty(2, 2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryTroops(ref state, 0, 3);
@@ -103,7 +103,7 @@ public class FortifyOptionGeneratorTests
 
         var state = GameStateHelper.CreateEmpty(2, 4);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         // Player 0
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
@@ -185,7 +185,7 @@ public class FortifyOptionGeneratorTests
 
         var state = GameStateHelper.CreateEmpty(2, 3);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryTroops(ref state, 0, 3);
@@ -259,7 +259,7 @@ public class FortifyOptionGeneratorTests
 
         var state = GameStateHelper.CreateEmpty(2, 2);
 
-        state.PlayerTurn = 0;
+        GameStateHelper.SetPlayerOnTurn(ref state, 0);
 
         GameStateHelper.SetTerritoryOwner(ref state, 0, 0);
         GameStateHelper.SetTerritoryTroops(ref state, 0, 1);
