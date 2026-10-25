@@ -21,10 +21,7 @@ public class GameInitializerTests
     public void INIT_001_GameInitializer_ShouldCreateValidInitialState()
     {
         // Arrange
-        var layout =
-            TestLayoutBuilder
-                .CreateSmallRiskLayout(2)
-                .Build();
+        var layout = TestLayoutBuilder.CreateSmallRiskLayout(2).Build();
 
         var rng = new EngineRandom(seed: 123);
 
@@ -41,8 +38,7 @@ public class GameInitializerTests
 
 
             Assert.True(
-                owner < layout.Config.PlayerCount,
-                $"Territory {territory} has invalid owner {owner}");
+                owner < layout.Config.PlayerCount, $"Territory {territory} has invalid owner {owner}");
 
 
             Assert.True(troops == 1, $"Territory {territory} should start with exactly one troop but has {troops}");

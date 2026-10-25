@@ -96,11 +96,7 @@ public sealed class TestStateBuilder
     /// </summary>
     public TestStateBuilder WithCard(byte player, byte cardId)
     {
-        CardHelper.AddCardToPlayer(
-            ref _state,
-            player,
-            cardId,
-            _layout.Deck);
+        CardHelper.AddCardToPlayer(ref _state, player, cardId, _layout.Deck);
 
         return this;
     }
@@ -112,11 +108,7 @@ public sealed class TestStateBuilder
     public TestStateBuilder WithCards(byte player, params byte[] cardIds)
     {
         foreach (var cardId in cardIds)
-            CardHelper.AddCardToPlayer(
-                ref _state,
-                player,
-                cardId,
-                _layout.Deck);
+            CardHelper.AddCardToPlayer(ref _state, player, cardId, _layout.Deck);
 
         return this;
     }
@@ -161,8 +153,6 @@ public sealed class TestStateBuilder
     private void ValidateTerritoryId(int territoryId)
     {
         if (territoryId < 0 || territoryId >= _layout.Map.TerritoryCount)
-            throw new ArgumentOutOfRangeException(
-                nameof(territoryId),
-                $"Territory ID must be between 0 and {_layout.Map.TerritoryCount - 1}.");
+            throw new ArgumentOutOfRangeException(nameof(territoryId), $"Territory ID must be between 0 and {_layout.Map.TerritoryCount - 1}.");
     }
 }
