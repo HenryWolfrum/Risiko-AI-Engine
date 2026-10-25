@@ -59,6 +59,10 @@ public static class GameRunner
             // Execute the current player's turn.
             TurnExecutor.ExecuteTurn(ref state, players, layout, ref rng, observer);
             
+            // The game can end during the turn, for example when an elimination fulfills another player's mission.
+            if (state.CurrentPhase == GamePhase.Terminated)
+                return TerminateGame(ref state, observer, state.WinnerId);
+            
             // Check victory condition.
             if (HasPlayerWon(in state, in layout, currentPlayer))
                 return TerminateGame(ref state, observer, currentPlayer);
