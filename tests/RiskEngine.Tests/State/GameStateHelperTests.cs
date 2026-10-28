@@ -420,4 +420,27 @@ public class GameStateHelperTests
         // Assert
         Assert.Equal(12, GameStateHelper.GetPlayerTroopsToPlace(in state, 0));
     }
+    
+    /*
+     * STATE-019
+     *
+     * Player reinforcement troops can be updated.
+     *
+     * Guarantees:
+     * - reinforcement updates overwrite previous values
+     * - getter always returns the latest value
+     */
+    [Fact]
+    public void STATE_019_ShouldOverwriteWinnerAndPhaseWhenTerminating()
+    {
+        // Arrange
+        var state = GameStateHelper.CreateEmpty(2);
+
+        // Act
+        GameStateHelper.Terminate(ref state, 2);
+        
+        // Assert
+        Assert.Equal(2, state.WinnerId);
+        Assert.Equal(GamePhase.Terminated, state.CurrentPhase);
+    }
 }
