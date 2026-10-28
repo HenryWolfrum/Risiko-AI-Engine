@@ -223,4 +223,38 @@ public class GameInitializerTests
         Assert.True(foundFallback, "Die Self-Elimination-Mission wurde nicht erkannt; Es wurde kein Fallback ausgelöst.");
         Assert.True(foundNormalMission, "Es wurden fälschlicherweise alle Missionen überschrieben (Kollateralschaden).");
     }
+    
+    [Fact]
+    public void INIT_010_GameInitializer_ShouldFallbackForInvalidPlayerTargetId()
+    {
+        // Arrange
+        var customMissions = new MissionDefinition[]
+        {
+            new() { Id = 0, Type = MissionType.EliminatePlayer, TargetPlayerId = 2 }, //Invalid, non existing Target Id
+            new() { Id = 1, Type = MissionType.WorldDomination },
+            new() { Id = 2, Type = MissionType.WorldDomination } // Fallback
+        };
+
+        var layout = TestLayoutBuilder.CreateCircularLayout(territoryCount: 42, playerCount: 2)
+            .WithMissionCatalog(customMissions,2)
+            .Build();
+
+        var rng = new EngineRandom(seed: 42);
+
+        // Act
+        var state = GameInitializer.CreateInitialState(layout, ref rng);
+
+        // Assert Should resolve in assigning the Fallback
+        bool fallbackTriggered = false;
+        for (byte p = 0; p < 2; p++)
+        {
+            if (MissionHelper.GetPlayerMission(in state,p) == 2)
+            {
+                fallbackTriggered = true;
+                break;
+            }
+        }
+
+        Assert.True(fallbackTriggered, "Der Fallback wurde für die Mission mit ungültiger TargetPlayerId nicht ausgelöst.");
+    }
 }
