@@ -16,6 +16,10 @@ public sealed class TestLayoutBuilder
     private byte _playerCount = 2;
     private int _territoryCount = 2;
 
+    private MissionCatalog _catalog;
+    private bool _hasCustomCatalog; // Flag, ob ein eigener Katalog gesetzt wurde
+    private byte _fallbackMissionId = 0;
+
     private TestLayoutBuilder()
     {
     }
@@ -49,6 +53,31 @@ public sealed class TestLayoutBuilder
     }
 
     /// <summary>
+    ///     Sets a custom mission catalog with optional fallback ID.
+    /// </summary>
+    public TestLayoutBuilder WithMissionCatalog(MissionDefinition[] missions, byte fallbackMissionId = 0)
+    {
+        if (missions == null || missions.Length < 1)
+        {
+            throw new ArgumentException("Catalogue array must contain at least one MissionDefinition", nameof(missions));
+        }
+        
+        _fallbackMissionId = fallbackMissionId;
+        _catalog = new MissionCatalog(missions, _fallbackMissionId);
+        _hasCustomCatalog = true; // Aktivieren
+        return this;
+    }
+
+    /// <summary>
+    ///     Shorthand to define just a custom fallback mission ID for default catalogs.
+    /// </summary>
+    public TestLayoutBuilder WithFallbackMissionId(byte fallbackMissionId)
+    {
+        _fallbackMissionId = fallbackMissionId;
+        return this;
+    }
+
+    /// <summary>
     ///     Adds an undirected connection.
     /// </summary>
     public TestLayoutBuilder Connect(byte territoryA, byte territoryB)
@@ -66,31 +95,16 @@ public sealed class TestLayoutBuilder
 
     /// <summary>
     ///     Builds only the MapLayout without validating the complete GameLayout.
-    ///     Useful for validator and traverser tests that intentionally use invalid maps.
     /// </summary>
     public MapLayout BuildMap()
     {
         EnsureAdjacencyInitialized();
 
-        // -----------------------
-        // Territory names
-        // -----------------------
-
         var territoryNames = new string[_territoryCount];
-
         for (var i = 0; i < _territoryCount; i++) territoryNames[i] = $"Territory{i}";
 
-        // -----------------------
-        // Adjacency
-        // -----------------------
-
         var adjacencyArray = new byte[_territoryCount][];
-
         for (var i = 0; i < _territoryCount; i++) adjacencyArray[i] = _adjacencies[i].ToArray();
-
-        // -----------------------
-        // Continents
-        // -----------------------
 
         var territoryToContinent = new byte[_territoryCount];
 
@@ -134,11 +148,15 @@ public sealed class TestLayoutBuilder
     }
 
     /// <summary>
-    ///     Builds a simple MissionCatalog for testing.
-    ///     Assigns World Domination to all players by default.
+    ///     Builds the MissionCatalog (returns the custom one if provided, otherwise builds a default one).
     /// </summary>
     public MissionCatalog BuildMissionCatalog()
     {
+        if (_hasCustomCatalog)
+        {
+            return _catalog;
+        }
+
         var missions = new MissionDefinition[_playerCount];
 
         for (byte i = 0; i < _playerCount; i++)
@@ -148,7 +166,7 @@ public sealed class TestLayoutBuilder
                 Type = MissionType.WorldDomination
             };
 
-        return new MissionCatalog(missions, 0);
+        return new MissionCatalog(missions, _fallbackMissionId);
     }
 
     /// <summary>
@@ -156,11 +174,7 @@ public sealed class TestLayoutBuilder
     /// </summary>
     public GameLayout Build()
     {
-        return new GameLayout(
-            BuildMap(),
-            BuildDeck(),
-            BuildConfig(),
-            BuildMissionCatalog());
+        return new GameLayout(BuildMap(), BuildDeck(), BuildConfig(), BuildMissionCatalog());
     }
 
     private void InitializeAdjacencyList()
@@ -175,10 +189,8 @@ public sealed class TestLayoutBuilder
         if (_adjacencies.Count != _territoryCount) InitializeAdjacencyList();
     }
 
-
     /// <summary>
     ///     Adds a one-way connection.
-    ///     Useful for testing invalid directed maps.
     /// </summary>
     public TestLayoutBuilder ConnectOneWay(byte source, byte target)
     {
@@ -188,33 +200,25 @@ public sealed class TestLayoutBuilder
 
         return this;
     }
-
+ 
     /// <summary>
-    ///     Removes an existing undirected connection.
+    ///     Erstellt automatisch eine valide, zirkulär verknüpfte Map mit beliebiger Territorien-Anzahl.
+    ///     Jedes Territorium i ist mit (i + 1) % count verbunden.
     /// </summary>
-    public TestLayoutBuilder Disconnect(byte territoryA, byte territoryB)
+    public static TestLayoutBuilder CreateCircularLayout(int territoryCount, byte playerCount = 2)
     {
-        EnsureAdjacencyInitialized();
+        var builder = Create()
+            .WithTerritories(territoryCount)
+            .WithPlayerCount(playerCount);
 
-        _adjacencies[territoryA].Remove(territoryB);
-        _adjacencies[territoryB].Remove(territoryA);
+        for (int i = 0; i < territoryCount; i++)
+        {
+            byte current = (byte)i;
+            byte next = (byte)((i + 1) % territoryCount);
+            builder.Connect(current, next);
+        }
 
-        return this;
-    }
-
-    /// <summary>
-    ///     Removes every connection from a territory.
-    ///     Useful for creating disconnected maps.
-    /// </summary>
-    public TestLayoutBuilder Isolate(byte territory)
-    {
-        EnsureAdjacencyInitialized();
-
-        foreach (var neighbour in _adjacencies[territory].ToArray()) _adjacencies[neighbour].Remove(territory);
-
-        _adjacencies[territory].Clear();
-
-        return this;
+        return builder;
     }
 
     /// <summary>
