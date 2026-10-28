@@ -1,4 +1,5 @@
-﻿using RiskEngine.Cards;
+﻿using System.Diagnostics;
+using RiskEngine.Cards;
 using RiskEngine.Constants;
 using RiskEngine.Core;
 using RiskEngine.Layout;
@@ -55,7 +56,7 @@ public sealed class TestLayoutBuilder
     /// <summary>
     ///     Sets a custom mission catalog with optional fallback ID.
     /// </summary>
-    public TestLayoutBuilder WithMissionCatalog(MissionDefinition[] missions, byte fallbackMissionId = 0)
+    public TestLayoutBuilder WithMissionCatalog(MissionDefinition[] missions, byte fallbackMissionId)
     {
         if (missions == null || missions.Length < 1)
         {
@@ -64,18 +65,10 @@ public sealed class TestLayoutBuilder
         
         _fallbackMissionId = fallbackMissionId;
         _catalog = new MissionCatalog(missions, _fallbackMissionId);
-        _hasCustomCatalog = true; // Aktivieren
+        _hasCustomCatalog = true;
         return this;
     }
-
-    /// <summary>
-    ///     Shorthand to define just a custom fallback mission ID for default catalogs.
-    /// </summary>
-    public TestLayoutBuilder WithFallbackMissionId(byte fallbackMissionId)
-    {
-        _fallbackMissionId = fallbackMissionId;
-        return this;
-    }
+    
 
     /// <summary>
     ///     Adds an undirected connection.
@@ -156,7 +149,7 @@ public sealed class TestLayoutBuilder
         {
             return _catalog;
         }
-
+        
         var missions = new MissionDefinition[_playerCount];
 
         for (byte i = 0; i < _playerCount; i++)

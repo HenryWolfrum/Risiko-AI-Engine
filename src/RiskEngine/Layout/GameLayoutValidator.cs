@@ -33,7 +33,7 @@ public static class GameLayoutValidator
         if (!result.IsValid)
             return result;
 
-        result = ValidateMissions(missions, map, config);
+        result = ValidateMissions(missions, map);
         if (!result.IsValid) return result;
 
         return ValidationResult.Valid();
@@ -286,11 +286,28 @@ public static class GameLayoutValidator
     }
 
 
-    private static ValidationResult ValidateMissions(MissionCatalog missions, MapLayout map, EngineConfig config)
+    private static ValidationResult ValidateMissions(MissionCatalog missions, MapLayout map)
     {
         // A game without missions is valid (Fallback to WorldDomination happens in GameInitializer)
         if (missions.Count == 0)
             return ValidationResult.Valid();
+
+        //Check whether the Fallback ID refers to an existing Mission in the Catalogue
+        bool fallBackFound = false;
+        for (int i = 0; i < missions.Count; i++)
+        {
+            ref readonly var mission = ref missions[i];
+            if (mission.Id == missions.FallbackMissionId)
+            {
+                fallBackFound = true;
+                break;
+            }
+        }
+
+        if (!fallBackFound)
+        {
+            return ValidationResult.Invalid(EngineError.FallbackMissionNotFound);
+        }
 
         var ids = new HashSet<byte>();
 
@@ -343,15 +360,7 @@ public static class GameLayoutValidator
                     return ValidationResult.Invalid(EngineError.InvalidMissionType);
             }
         }
-
-        // ----------------------------
-        // 3. ID Sequentiality (Optional but recommended)
-        // ----------------------------
-        // Ensure IDs are 0 to Count-1 for direct array mapping
-        for (byte i = 0; i < missions.Count; i++)
-            if (!ids.Contains(i))
-                return ValidationResult.Invalid(EngineError.InvalidMissionIdSequence);
-
+        
         return ValidationResult.Valid();
     }
 }

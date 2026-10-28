@@ -89,6 +89,7 @@ public enum EngineError : byte
     InvalidMissionPlayerTarget = 148,
     InvalidMissionType = 149,
     InvalidMissionIdSequence = 150,
+    FallbackMissionNotFound = 151,
 
     // =========================================
     // Internal

@@ -159,11 +159,12 @@ public class GameInitializerTests
     [Fact]
     public void INIT_008_GameInitializer_ShouldFallbackToDefaultMissionIfCatalogIsTooSmall()
     {
-        // Arrange: Custom Missionskatalog mit nur 2 Missionen, aber 4 Spielern
+        // Arrange
         var customMissions = new MissionDefinition[]
         {
             new() { Id = 0, Type = MissionType.WorldDomination },
-            new() { Id = 1, Type = MissionType.WorldDomination }
+            new() { Id = 1, Type = MissionType.WorldDomination },
+            new() { Id = 99, Type = MissionType.WorldDomination }
         };
 
         var layout = TestLayoutBuilder.CreateCircularLayout(42,4)
@@ -184,16 +185,17 @@ public class GameInitializerTests
     [Fact]
     public void INIT_009_GameInitializer_ShouldFallbackOnlyForSelfEliminationMission()
     {
-        // Arrange: Wir definieren einen Katalog, der eine illegale "Eliminiere Spieler X"-Mission enthält
+        // Arrange
         var customMissions = new MissionDefinition[]
         {
             new() { Id = 0, Type = MissionType.EliminatePlayer, TargetPlayerId = 0 }, // Guaranteed self elimination case for playerId 0
             new() { Id = 1, Type = MissionType.EliminatePlayer, TargetPlayerId = 0 },
-            new() { Id = 2, Type = MissionType.EliminatePlayer, TargetPlayerId = 0}
+            new() { Id = 2, Type = MissionType.EliminatePlayer, TargetPlayerId = 0},
+            new() { Id = 99, Type = MissionType.EliminatePlayer, TargetPlayerId = 0 }
         };
 
         var layout = TestLayoutBuilder.CreateCircularLayout(42,3)
-            .WithMissionCatalog(customMissions, fallbackMissionId: 99) // Fallback-ID = 99
+            .WithMissionCatalog(customMissions, 99) // Fallback-ID = 99
             .Build();
 
         var rng = new EngineRandom(seed: 42);
@@ -218,7 +220,7 @@ public class GameInitializerTests
             }
         }
 
-        Assert.True(foundFallback, "Die Self-Elimination-Mission wurde nicht erkannt; es wurde kein Fallback ausgelöst.");
+        Assert.True(foundFallback, "Die Self-Elimination-Mission wurde nicht erkannt; Es wurde kein Fallback ausgelöst.");
         Assert.True(foundNormalMission, "Es wurden fälschlicherweise alle Missionen überschrieben (Kollateralschaden).");
     }
 }
