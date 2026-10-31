@@ -44,7 +44,7 @@ public static unsafe class GameStateHelper
     }
 
     /// <summary>
-    ///     Setzt den Besitzer eines Territoriums und aktualisiert automatisch das inkrementelle Bitboard.
+    ///     Set the owner of the Territory Bitboard in the GameState reference.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SetTerritoryOwner(ref GameState state, int territoryId, byte owner)
@@ -54,14 +54,14 @@ public static unsafe class GameStateHelper
 
         var oldOwner = state.TerritoryOwners[territoryId];
 
-        // 1. Territorium beim alten Besitzer entfernen
+        // 1. Remove Territory from old Owner
         if (oldOwner != EngineConstants.NO_VALUE && oldOwner < EngineConstants.MAX_PLAYERS)
             state.PlayerTerritoriesBitboard[oldOwner] &= ~(1UL << territoryId);
 
-        // 2. Neuer Besitzer setzen
+        // 2. Set new Owner to Territory
         state.TerritoryOwners[territoryId] = owner;
 
-        // 3. Territorium beim neuen Besitzer hinzufügen
+        // 3. Add Territory to new Owner
         if (owner != EngineConstants.NO_VALUE && owner < EngineConstants.MAX_PLAYERS)
             state.PlayerTerritoriesBitboard[owner] |= 1UL << territoryId;
     }
